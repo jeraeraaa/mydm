@@ -33,9 +33,37 @@
         <a href="/profil"
             class="text-sm font-semibold leading-6 {{ Request::is('profil') ? 'bg-orange-500 text-white rounded-full px-4 py-2' : 'text-orange-500 hover:bg-orange-500 hover:text-white rounded-full px-4 py-2' }}">Profil</a>
     </div>
-    <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+    {{-- <div class="hidden lg:flex lg:flex-1 lg:justify-end">
         <a href="/login"
             class="text-sm font-semibold leading-6 {{ Request::is('login') ? 'bg-orange-500 text-white rounded-full px-4 py-2' : 'text-orange-500 hover:bg-orange-500 hover:text-white rounded-full px-4 py-2' }}">Log
             in <span aria-hidden="true">&rarr;</span></a>
+    </div> --}}
+
+    {{-- login --}}
+    <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+        @guest
+            <a href="{{ route('login') }}"
+                class="text-sm font-semibold leading-6 {{ Request::is('login') ? 'bg-orange-500 text-white rounded-full px-4 py-2' : 'text-orange-500 hover:bg-orange-500 hover:text-white rounded-full px-4 py-2' }}">
+                Log in
+                <span aria-hidden="true">&rarr;</span>
+            </a>
+            <a href="{{ route('register') }}"
+                class="ml-4 text-sm font-semibold leading-6 {{ Request::is('register') ? 'bg-orange-500 text-white rounded-full px-4 py-2' : 'text-orange-500 hover:bg-orange-500 hover:text-white rounded-full px-4 py-2' }}">
+                Register
+                <span aria-hidden="true">&rarr;</span>
+            </a>
+        @else
+            <a href="{{ route('logout') }}"
+                class="text-sm font-semibold leading-6 text-orange-500 hover:bg-orange-500 hover:text-white rounded-full px-4 py-2"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                Logout
+                <span aria-hidden="true">&rarr;</span>
+            </a>
+
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
+        @endguest
     </div>
+
 </nav>

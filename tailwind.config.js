@@ -10,16 +10,13 @@ export default {
         './resources/**/*.vue',
     ],
     theme: {
-        // extend: {
-        //     fontFamily: {
-        //         sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-        //     },
-        // },
         extend: {
             fontFamily: {
               sans: ['InterVariable', ...defaultTheme.fontFamily.sans],
             },
           },
     },
-    plugins: [],
+    plugins: [
+      require('@tailwindcss/forms'), //menambahkan plugin form
+    ],
 };

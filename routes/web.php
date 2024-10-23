@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\LogoutController;
 
 // Halaman statis
 Route::get('/', function () {
@@ -30,3 +33,12 @@ Route::get('/pengajuan', function () {
 Route::get('/profil', function () {
     return view('profil');
 });
+
+//authentification
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
+
+Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
