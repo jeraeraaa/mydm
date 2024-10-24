@@ -7,31 +7,66 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\RegistersUsers;
 
+
+
+// class RegisterController extends Controller
+// {
+//     public function showRegistrationForm()
+//     {
+//         return view('auth.register');
+//     }
+
+//     public function register(Request $request)
+//     {
+//         $request->validate([
+//             'name' => 'required|string|max:255',
+//             'email' => 'required|string|email|max:255|unique:users',
+//             'password' => 'required|string|min:8|confirmed',
+//         ]);
+
+//         $user = User::create([
+//             'name' => $request->name,
+//             'email' => $request->email,
+//             'password' => Hash::make($request->password),
+//         ]);
+
+//         Auth::login($user);
+
+//         return redirect('/home');  // Redirect to the home page
+//     }
+// }
 
 class RegisterController extends Controller
 {
-    public function showRegistrationForm()
+    use RegistersUsers;
+
+    // Redirect user setelah registrasi
+    protected $redirectTo = '/home';
+
+    public function __construct()
     {
-        return view('auth.register');
+        $this->middleware('guest');
     }
 
-    public function register(Request $request)
+    // Validator untuk validasi input register
+    protected function validator(array $data)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
+    }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+    // Buat user baru dan simpan ke database
+    protected function create(array $data)
+    {
+        return User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
         ]);
-
-        Auth::login($user);
-
-        return redirect('/home');  // Redirect to the home page
     }
 }
