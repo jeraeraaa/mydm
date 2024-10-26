@@ -5,7 +5,7 @@
             aria-hidden="true" id="iconSidenav"></i>
         <a class="align-items-center d-flex m-0 navbar-brand text-wrap" href="{{ route('dashboard') }}">
             <img src="../assets/img/logo-ct.png" class="navbar-brand-img h-100" alt="...">
-            <span class="ms-3 font-weight-bold">Soft UI Dashboard Laravel</span>
+            <span class="ms-3 font-weight-bold">myDM Dashboard</span>
         </a>
     </div>
     <hr class="horizontal dark mt-0">
@@ -41,8 +41,7 @@
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Laravel Examples</h6>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Request::is('user-profile') ? 'active' : '' }} "
-                    href="{{ url('user-profile') }}">
+                <a class="nav-link {{ Request::is('user-profile') ? 'active' : '' }} " href="{{ url('user-profile') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <svg width="12px" height="12px" viewBox="0 0 46 42" version="1.1"
@@ -83,6 +82,18 @@
                     <span class="nav-link-text ms-1">User Management</span>
                 </a>
             </li>
+            <li class="nav-item pb-2">
+                <a class="nav-link {{ Request::is('member-management') ? 'active' : '' }}"
+                    href="{{ url('member-management') }}">
+                    <div
+                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i style="font-size: 1rem;"
+                            class="fas fa-lg fa-list-ul ps-2 pe-2 text-center text-dark {{ Request::is('member-management') ? 'text-white' : 'text-dark' }} "
+                            aria-hidden="true"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Member Management</span>
+                </a>
+            </li>
             <li class="nav-item mt-2">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Example pages</h6>
             </li>
@@ -94,7 +105,8 @@
                             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <title>office</title>
                             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <g transform="translate(-1869.000000, -293.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                                <g transform="translate(-1869.000000, -293.000000)" fill="#FFFFFF"
+                                    fill-rule="nonzero">
                                     <g transform="translate(1716.000000, 291.000000)">
                                         <g id="office" transform="translate(153.000000, 2.000000)">
                                             <path class="color-background opacity-6"

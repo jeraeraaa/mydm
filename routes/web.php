@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -71,21 +71,17 @@ Route::group(['middleware' => 'auth'], function () {
         return view('profile');
     })->name('profile');
 
-    Route::get('rtl', function () {
-        return view('rtl');
-    })->name('rtl');
-
     Route::get('user-management', function () {
         return view('laravel-examples/user-management');
     })->name('user-management');
 
+    Route::get('member-management', function () {
+        return view('laravel-examples/member-management');
+    })->name('member-management');
+
     Route::get('tables', function () {
         return view('tables');
     })->name('tables');
-
-    Route::get('virtual-reality', function () {
-        return view('virtual-reality');
-    })->name('virtual-reality');
 
     Route::get('/user-profile', [InfoUserController::class, 'create']);
     Route::post('/user-profile', [InfoUserController::class, 'store']);
