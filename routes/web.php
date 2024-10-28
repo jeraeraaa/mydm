@@ -10,6 +10,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InfoUserController;
 use App\Http\Controllers\ResetController;
 use App\Http\Controllers\SessionsController;
+use App\Http\Controllers\AnggotaController;
+use App\Http\Controllers\ProdiController;
+use App\Http\Controllers\DashboardController;
 
 // Halaman home dan halaman statis lainnya
 Route::get('/', function () {
@@ -58,10 +61,9 @@ Route::group(['middleware' => 'guest'], function () {
 Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 
 // Dashboard dan halaman lain yang membutuhkan autentikasi
+// Dashboard dan halaman lain yang membutuhkan autentikasi
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('billing', function () {
         return view('billing');
@@ -75,9 +77,7 @@ Route::group(['middleware' => 'auth'], function () {
         return view('laravel-examples/user-management');
     })->name('user-management');
 
-    Route::get('member-management', function () {
-        return view('laravel-examples/member-management');
-    })->name('member-management');
+    Route::resource('anggota', AnggotaController::class);
 
     Route::get('tables', function () {
         return view('tables');
@@ -85,7 +85,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/user-profile', [InfoUserController::class, 'create']);
     Route::post('/user-profile', [InfoUserController::class, 'store']);
+
+    Route::resource('prodi', ProdiController::class);
 });
+
 
 // Ini akan mengaktifkan semua route autentikasi default Laravel (login, register, reset password, dll.)
 Auth::routes();

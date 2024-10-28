@@ -32,6 +32,6 @@ class RegisterController extends Controller
 
         Auth::login($user);
 
-        return redirect('/home');  // Redirect to the home page
+        return redirect('/login');  // Redirect to the home page
     }
 }
