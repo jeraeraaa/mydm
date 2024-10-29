@@ -32,7 +32,7 @@ class AnggotaController extends Controller
         // Validasi input
         $request->validate([
             'id_anggota' => 'required|string|unique:anggota,id_anggota|digits:9',
-            'nama_anggota' => 'required|string|max:255',
+            'nama_anggota' => 'required|string|regex:/^[a-zA-Z\s]*$/|max:255',
             'email' => 'required|email|unique:anggota',
             'tanggal_lahir' => 'required|date|before:' . now()->subYears(17)->format('Y-m-d'),
             'no_hp' => 'required|string|regex:/^[0-9]{10,13}$/', // Nomor HP hanya angka, panjang antara 10-13 digit
@@ -43,6 +43,7 @@ class AnggotaController extends Controller
             'id_anggota.required' => 'NIM wajib diisi.',
             'id_anggota.digits' => 'NIM harus terdiri dari 9 digit angka.',
             'nama_anggota.required' => 'Nama wajib diisi.',
+            'nama_anggota.regex' => 'Nama hanya boleh berisi huruf dan spasi.',
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
             'email.unique' => 'Email sudah terdaftar.',
@@ -94,51 +95,33 @@ class AnggotaController extends Controller
         }
     }
 
-
-    // Menampilkan form untuk mengedit data anggota
-    public function edit(Anggota $anggota)
+    public function edit($id)
     {
-        $prodi = Prodi::all();
-        return view('anggota.edit', compact('anggota', 'prodi'));
+        $anggota = Anggota::findOrFail($id);
+        return view('anggota.edit', compact('anggota'));
     }
 
-
-    public function update(Request $request, Anggota $anggota)
+    public function update(Request $request, $id)
     {
-        // Log untuk debugging
-        Log::info("ID Anggota: {$anggota->id_anggota}");
-        Log::info("Request ID Anggota: {$request->id_anggota}");
-        Log::info("Request Email: {$request->email}");
+        $anggota = Anggota::findOrFail($id);
 
-        // Validasi input dengan pengecualian untuk `id_anggota` dan `email` milik anggota yang sedang diedit
         $request->validate([
-            'id_anggota' => 'required|string|unique:anggota,id_anggota,' . $anggota->id_anggota . ',id_anggota',
+            'id_anggota' => 'required|string|digits:9|unique:anggota,id_anggota,' . $anggota->id_anggota . ',id_anggota',
+            'nama_anggota' => 'required|string|regex:/^[a-zA-Z\s]*$/|max:255',
             'email' => 'required|email|unique:anggota,email,' . $anggota->id_anggota . ',id_anggota',
-            'nama_anggota' => 'required|string|max:255',
-            'password' => 'nullable|string|min:8',
-            'no_hp' => 'required|string',
-            'tanggal_lahir' => 'required|date',
+            'tanggal_lahir' => 'required|date|before:' . now()->subYears(17)->format('Y-m-d'),
+            'no_hp' => 'required|string|regex:/^[0-9]{10,13}$/',
             'alamat' => 'required|string',
             'jenis_kelamin' => 'required|in:L,P',
             'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Log untuk memastikan validasi telah dilewati
-        Log::info("Validation Passed");
-
-        // Data update
         $data = $request->all();
 
-        // Update password jika diisi
-        if ($request->filled('password')) {
-            $data['password'] = bcrypt($request->password);
-        }
-
-        // Proses upload foto profil jika ada
         if ($request->hasFile('foto_profil')) {
             // Hapus foto lama jika ada
-            if ($anggota->foto_profil) {
-                Storage::disk('public')->delete('foto_profil/' . $anggota->foto_profil);
+            if ($anggota->foto_profil && file_exists(storage_path('app/public/foto_profil/' . $anggota->foto_profil))) {
+                unlink(storage_path('app/public/foto_profil/' . $anggota->foto_profil));
             }
 
             // Simpan foto baru
@@ -147,17 +130,9 @@ class AnggotaController extends Controller
             $data['foto_profil'] = basename($path);
         }
 
-        try {
-            $anggota->update($data);
-            return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil diperbarui.');
-        } catch (\Exception $e) {
-            Log::error("Update Failed: " . $e->getMessage());
-            return back()->withErrors([
-                'error' => 'Gagal memperbarui data anggota: ' . $e->getMessage(),
-            ]);
-        }
+        $anggota->update($data);
+        return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil diperbarui.');
     }
-
 
 
     // Menghapus data anggota

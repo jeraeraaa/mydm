@@ -24,8 +24,19 @@
                 </div>
             </div>
             <ul class="navbar-nav  justify-content-end">
+                {{-- <li class="nav-item d-flex align-items-center">
+                    <a href="#" class="nav-link text-body font-weight-bold px-0"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class="fa fa-user me-sm-1"></i>
+                        <span class="d-sm-inline d-none">Sign Out</span>
+                    </a>
+                </li> --}}
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
                 <li class="nav-item d-flex align-items-center">
-                    <a href="{{ url('/logout') }}" class="nav-link text-body font-weight-bold px-0">
+                    <a href="#" class="nav-link text-body font-weight-bold px-0"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="fa fa-user me-sm-1"></i>
                         <span class="d-sm-inline d-none">Sign Out</span>
                     </a>

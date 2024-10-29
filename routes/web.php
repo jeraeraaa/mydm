@@ -53,9 +53,6 @@ Route::group(['middleware' => 'guest'], function () {
     Route::post('/reset-password', [ChangePasswordController::class, 'changePassword'])->name('password.update');
 });
 
-// Route untuk logout setelah login
-Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
-
 // Dashboard dan halaman lain yang membutuhkan autentikasi
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -81,7 +78,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/user-profile', [InfoUserController::class, 'create']);
     Route::post('/user-profile', [InfoUserController::class, 'store']);
 
-    Route::resource('prodi', ProdiController::class);
+    // Route untuk logout setelah login
+    Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 });
 
 

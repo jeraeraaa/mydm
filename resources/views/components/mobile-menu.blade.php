@@ -39,6 +39,8 @@
                     <a href="/login"
                         class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-orange-500 hover:bg-orange-500 hover:text-white">Log
                         in</a>
+                    <a href="/register"
+                        class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-orange-500 hover:bg-orange-500 hover:text-white">Register</a>
                 </div>
             </div>
         </div>
