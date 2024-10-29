@@ -27,10 +27,6 @@ Route::get('/kegiatan', function () {
     return view('kegiatan', ['title' => 'Kegiatan']);
 });
 
-Route::get('/anggota', function () {
-    return view('anggota', ['title' => 'Anggota']);
-});
-
 Route::get('/alat', function () {
     return view('alat', ['title' => 'Alat']);
 });
@@ -61,7 +57,6 @@ Route::group(['middleware' => 'guest'], function () {
 Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 
 // Dashboard dan halaman lain yang membutuhkan autentikasi
-// Dashboard dan halaman lain yang membutuhkan autentikasi
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -90,5 +85,5 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 
-// Ini akan mengaktifkan semua route autentikasi default Laravel (login, register, reset password, dll.)
+// // Ini akan mengaktifkan semua route autentikasi default Laravel (login, register, reset password, dll.)
 Auth::routes();

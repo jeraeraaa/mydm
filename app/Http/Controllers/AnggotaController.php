@@ -6,6 +6,9 @@ use App\Models\Anggota;
 use App\Models\Prodi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+
 
 class AnggotaController extends Controller
 {
@@ -99,14 +102,19 @@ class AnggotaController extends Controller
         return view('anggota.edit', compact('anggota', 'prodi'));
     }
 
-    // Memperbarui data anggota
+
     public function update(Request $request, Anggota $anggota)
     {
-        // Validasi input
+        // Log untuk debugging
+        Log::info("ID Anggota: {$anggota->id_anggota}");
+        Log::info("Request ID Anggota: {$request->id_anggota}");
+        Log::info("Request Email: {$request->email}");
+
+        // Validasi input dengan pengecualian untuk `id_anggota` dan `email` milik anggota yang sedang diedit
         $request->validate([
-            'id_anggota' => 'required|string|unique:anggota,id_anggota,' . $anggota->id_anggota,
+            'id_anggota' => 'required|string|unique:anggota,id_anggota,' . $anggota->id_anggota . ',id_anggota',
+            'email' => 'required|email|unique:anggota,email,' . $anggota->id_anggota . ',id_anggota',
             'nama_anggota' => 'required|string|max:255',
-            'email' => 'required|email|unique:anggota,email,' . $anggota->id_anggota,
             'password' => 'nullable|string|min:8',
             'no_hp' => 'required|string',
             'tanggal_lahir' => 'required|date',
@@ -115,17 +123,27 @@ class AnggotaController extends Controller
             'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        // Log untuk memastikan validasi telah dilewati
+        Log::info("Validation Passed");
+
+        // Data update
         $data = $request->all();
 
-        // Hanya memperbarui password jika ada input
+        // Update password jika diisi
         if ($request->filled('password')) {
             $data['password'] = bcrypt($request->password);
         }
 
         // Proses upload foto profil jika ada
         if ($request->hasFile('foto_profil')) {
+            // Hapus foto lama jika ada
+            if ($anggota->foto_profil) {
+                Storage::disk('public')->delete('foto_profil/' . $anggota->foto_profil);
+            }
+
+            // Simpan foto baru
             $file = $request->file('foto_profil');
-            $path = $file->store('public/foto_profil');
+            $path = $file->store('foto_profil', 'public');
             $data['foto_profil'] = basename($path);
         }
 
@@ -133,15 +151,24 @@ class AnggotaController extends Controller
             $anggota->update($data);
             return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil diperbarui.');
         } catch (\Exception $e) {
+            Log::error("Update Failed: " . $e->getMessage());
             return back()->withErrors([
                 'error' => 'Gagal memperbarui data anggota: ' . $e->getMessage(),
             ]);
         }
     }
 
+
+
     // Menghapus data anggota
-    public function destroy(Anggota $anggota)
+    public function destroy($id)
     {
+        $anggota = Anggota::find($id);
+
+        if (!$anggota) {
+            return back()->withErrors(['error' => 'Anggota tidak ditemukan.']);
+        }
+
         try {
             $anggota->delete();
             return redirect()->route('anggota.index')->with('success', 'Anggota berhasil dihapus.');
