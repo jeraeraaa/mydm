@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Anggota;
+use App\Models\Prodi;
 
 
 class RegisterController extends Controller
@@ -18,33 +19,14 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        Auth::login($user);
-
-        return redirect('/login');  // Redirect to the home page
-    }
-
-    public function register(Request $request)
-    {
         // Validasi input
         $request->validate([
             'id_anggota' => 'required|string|unique:anggota,id_anggota|digits:9',
             'nama_anggota' => 'required|string|regex:/^[a-zA-Z\s]*$/|max:255',
-            'email' => 'required|email|unique:anggota',
+            'email' => 'required|email|unique:anggota,email',
             'password' => 'required|string|min:8|confirmed',
             'tanggal_lahir' => 'required|date|before:' . now()->subYears(17)->format('Y-m-d'),
-            'no_hp' => 'required|string|regex:/^[0-9]{10,13}$/', // Nomor HP hanya angka, panjang antara 10-13 digit
+            'no_hp' => 'required|string|regex:/^[0-9]{10,13}$/',
             'alamat' => 'required|string',
             'jenis_kelamin' => 'required|in:L,P',
             'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -56,6 +38,9 @@ class RegisterController extends Controller
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
             'email.unique' => 'Email sudah terdaftar.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal 8 karakter.',
+            'password.confirmed' => 'Password tidak cocok.',
             'tanggal_lahir.required' => 'Tanggal lahir wajib diisi.',
             'tanggal_lahir.before' => 'Usia minimal harus 17 tahun.',
             'no_hp.required' => 'Nomor HP wajib diisi.',
@@ -64,11 +49,8 @@ class RegisterController extends Controller
             'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
         ]);
 
-        // Menentukan prodi dan fakultas berdasarkan 3 digit pertama dari NIM
-        $nim = $request->id_anggota;
-        $kode_prodi = substr($nim, 0, 3); // mengambil 3 digit pertama
-
-        // Mencari prodi berdasarkan kode_prodi
+        // Menentukan prodi berdasarkan 3 digit pertama dari NIM
+        $kode_prodi = substr($request->id_anggota, 0, 3);
         $prodi = Prodi::where('id_prodi', $kode_prodi)->first();
 
         if (!$prodi) {
@@ -77,30 +59,35 @@ class RegisterController extends Controller
             ])->withInput();
         }
 
-        // Membuat password default dari nama anggota + tanggal lahir
-        $tanggal_lahir = \Carbon\Carbon::parse($request->tanggal_lahir)->format('dmY'); // format ddmmyyyy
-        $password_default = strtolower($request->nama_anggota) . $tanggal_lahir;
-
-        // Menyiapkan data untuk disimpan
-        $data = $request->all();
-        $data['id_prodi'] = $prodi->id_prodi;
-        $data['password'] = bcrypt($password_default);
+        // Menyiapkan data untuk disimpan ke tabel anggota
+        $data = [
+            'id_anggota' => $request->id_anggota,
+            'nama_anggota' => $request->nama_anggota,
+            'email' => $request->email,
+            'password' => Hash::make($request->password), // menggunakan password yang di-input oleh pengguna
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'no_hp' => $request->no_hp,
+            'alamat' => $request->alamat,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'id_prodi' => $prodi->id_prodi
+        ];
 
         // Proses upload foto profil jika ada
         if ($request->hasFile('foto_profil')) {
             $file = $request->file('foto_profil');
-            $path = $file->store('foto_profil', 'public'); // Gunakan disk 'public'
+            $path = $file->store('foto_profil', 'public');
             $data['foto_profil'] = basename($path);
         }
 
-        // Simpan data ke database
+        // Simpan data anggota ke database
         try {
             Anggota::create($data);
-            return redirect()->route('anggota.index')->with('success', 'Anggota berhasil ditambahkan dengan password default.');
+            return redirect('/login')->with('success', 'Pendaftaran berhasil, silakan login.');
         } catch (\Exception $e) {
-            return back()->withErrors([
-                'error' => 'Gagal menambahkan anggota: ' . $e->getMessage(),
-            ])->withInput();
+            return back()->withErrors(['error' => 'Pendaftaran gagal' . $e->getMessage()])->withInput();
         }
+
+        Auth::login($anggota);
+        return redirect('/login');
     }
 }

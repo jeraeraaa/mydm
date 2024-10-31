@@ -47,19 +47,15 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [RegisterController::class, 'register']);
 
-    Route::get('/login/forgot-password', [ResetController::class, 'create']);
-    Route::post('/forgot-password', [ResetController::class, 'sendEmail']);
+    Route::get('/forgot-password', [ResetController::class, 'create'])->name('password.request');
+    Route::post('/forgot-password', [ResetController::class, 'sendEmail'])->name('password.email');
     Route::get('/reset-password/{token}', [ResetController::class, 'resetPass'])->name('password.reset');
     Route::post('/reset-password', [ChangePasswordController::class, 'changePassword'])->name('password.update');
 });
 
 // Dashboard dan halaman lain yang membutuhkan autentikasi
-Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => 'auth:anggota'], function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    Route::get('billing', function () {
-        return view('billing');
-    })->name('billing');
 
     Route::get('profile', function () {
         return view('profile');
@@ -71,9 +67,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::resource('anggota', AnggotaController::class);
 
-    Route::get('tables', function () {
-        return view('tables');
-    })->name('tables');
+    // Route::get('tables', function () {
+    //     return view('tables');
+    // })->name('tables');
 
     Route::get('/user-profile', [InfoUserController::class, 'create']);
     Route::post('/user-profile', [InfoUserController::class, 'store']);
@@ -83,5 +79,5 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 
-// // Ini akan mengaktifkan semua route autentikasi default Laravel (login, register, reset password, dll.)
-Auth::routes();
+// // // Ini akan mengaktifkan semua route autentikasi default Laravel (login, register, reset password, dll.)
+// Auth::routes();

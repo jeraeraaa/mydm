@@ -14,6 +14,11 @@ class Anggota extends Authenticatable
     public $incrementing = false; // Karena id_anggota bukan auto-increment
     protected $keyType = 'string'; 
 
+    protected $hidden = [
+        'password',
+    ];
+    
+
     protected $fillable = [
         'id_anggota', 
         'id_prodi',

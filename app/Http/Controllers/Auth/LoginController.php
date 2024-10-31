@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User; // pastikan model User diimport
+use App\Models\Anggota;
 
 class LoginController extends Controller
 {
@@ -22,9 +22,9 @@ class LoginController extends Controller
         ]);
 
         // Cek apakah email terdaftar
-        $user = User::where('email', $request->email)->first();
+        $anggota = Anggota::where('email', $request->email)->first();
 
-        if (!$user) {
+        if (!$anggota) {
             // Jika email tidak ditemukan, arahkan ke halaman register
             return back()->withErrors([
                 'email' => 'Akun tidak ditemukan. Silakan daftar terlebih dahulu.',
@@ -32,9 +32,8 @@ class LoginController extends Controller
         }
 
         // Jika email ditemukan, lakukan autentikasi
-        if (Auth::attempt($credentials)) {
+        if (Auth::guard('anggota')->attempt($credentials)) {
             $request->session()->regenerate();
-
             return redirect()->intended('dashboard');
         }
 
@@ -42,14 +41,5 @@ class LoginController extends Controller
         return back()->withErrors([
             'password' => 'Password yang Anda masukkan salah.',
         ])->withInput(); // Mengembalikan input email
-    }
-
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect('/');
     }
 }
