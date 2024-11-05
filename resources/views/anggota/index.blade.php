@@ -21,10 +21,11 @@
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
-                                    <th
-                                        class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center"
+                                        style="width: 100px;">
                                         Actions</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">NIM</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">NIM
+                                    </th>
                                     {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         Photo</th> --}}
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
@@ -47,7 +48,7 @@
                             <tbody>
                                 @foreach ($anggota as $item)
                                     <tr>
-                                        <td class="ps-4">
+                                        <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center gap-2">
                                                 <!-- Edit Member -->
                                                 <a href="{{ route('anggota.edit', $item->id_anggota) }}"

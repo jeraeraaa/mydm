@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bph', function (Blueprint $table) {
-            $table->id('id_bph');
+            $table->string('id_bph', 2)->primary();
             $table->string('nama_divisi_bph');
-            $table->string('nama_koordinator');
             $table->timestamps();
         });
     }

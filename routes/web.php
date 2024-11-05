@@ -13,6 +13,7 @@ use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KegiatanController;
 
 // Halaman home dan halaman statis lainnya
 Route::get('/', function () {
@@ -66,10 +67,7 @@ Route::group(['middleware' => 'auth:anggota'], function () {
     })->name('user-management');
 
     Route::resource('anggota', AnggotaController::class);
-
-    // Route::get('tables', function () {
-    //     return view('tables');
-    // })->name('tables');
+    Route::resource('kegiatan', KegiatanController::class);
 
     Route::get('/user-profile', [InfoUserController::class, 'create']);
     Route::post('/user-profile', [InfoUserController::class, 'store']);
