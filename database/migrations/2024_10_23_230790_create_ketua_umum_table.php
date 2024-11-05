@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateKetuaUmumTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('ketua_umum', function (Blueprint $table) {
             $table->id('id_ketum');
-            $table->string('nama_ketum');
+            $table->string('id_anggota');
             $table->year('tahun_jabatan');
             $table->timestamps();
+
+            // Menambahkan foreign key constraint
+            $table->foreign('id_anggota')->references('id_anggota')->on('anggota')->onDelete('cascade');
         });
     }
 
@@ -26,4 +29,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('ketua_umum');
     }
-};
+}

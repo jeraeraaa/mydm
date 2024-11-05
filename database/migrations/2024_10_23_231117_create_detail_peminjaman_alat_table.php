@@ -13,18 +13,18 @@ return new class extends Migration
     {
         Schema::create('detail_peminjaman_alat', function (Blueprint $table) {
             $table->id('id_detail_peminjaman_alat');
-            $table->morphs('peminjamable'); // polymorphic relation for peminjam
-            $table->unsignedBigInteger('id_alat');
-            $table->unsignedBigInteger('id_inventaris');
+            $table->morphs('peminjamable');
+            $table->string('id_alat');
+            $table->string('id_inventaris');
             $table->unsignedBigInteger('id_persetujuan_ketum');
             $table->date('tanggal_pinjam');
-            $table->date('tanggal_kembali');
+            $table->date('tanggal_kembali')->nullable();
             $table->string('kondisi_alat_dipinjam');
             $table->string('kondisi_setelah_dikembalikan')->nullable();
             $table->text('catatan')->nullable();
             $table->integer('jumlah_dipinjam');
             $table->timestamps();
-        
+
             $table->foreign('id_alat')->references('id_alat')->on('alat')->onDelete('cascade');
             $table->foreign('id_inventaris')->references('id_inventaris')->on('inventaris')->onDelete('cascade');
             $table->foreign('id_persetujuan_ketum')->references('id_persetujuan_ketum')->on('persetujuan_ketum')->onDelete('cascade');

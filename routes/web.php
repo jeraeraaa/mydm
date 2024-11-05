@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AlatController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\LoginController;
@@ -68,6 +69,7 @@ Route::group(['middleware' => 'auth:anggota'], function () {
 
     Route::resource('anggota', AnggotaController::class);
     Route::resource('kegiatan', KegiatanController::class);
+    Route::resource('alat', AlatController::class);
 
     Route::get('/user-profile', [InfoUserController::class, 'create']);
     Route::post('/user-profile', [InfoUserController::class, 'store']);

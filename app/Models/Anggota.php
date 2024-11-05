@@ -12,15 +12,15 @@ class Anggota extends Authenticatable
     protected $table = 'anggota';
     protected $primaryKey = 'id_anggota';
     public $incrementing = false; // Karena id_anggota bukan auto-increment
-    protected $keyType = 'string'; 
+    protected $keyType = 'string';
 
     protected $hidden = [
         'password',
     ];
-    
+
 
     protected $fillable = [
-        'id_anggota', 
+        'id_anggota',
         'id_prodi',
         'nama_anggota',
         'email',
@@ -36,5 +36,16 @@ class Anggota extends Authenticatable
     public function prodi()
     {
         return $this->belongsTo(Prodi::class, 'id_prodi');
+    }
+
+    // Relationship to  Detail Peminjaman Alat
+    public function detailPeminjamanAlat()
+    {
+        return $this->morphMany(DetailPeminjamanAlat::class, 'peminjamable');
+    }
+
+    public function ketuaUmum()
+    {
+        return $this->hasOne(KetuaUmum::class, 'id_anggota', 'id_anggota');
     }
 }

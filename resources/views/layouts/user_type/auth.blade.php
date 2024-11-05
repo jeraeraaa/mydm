@@ -23,6 +23,6 @@
     @include('components.fixed-plugin')
 @endsection
 
-@section('scripts')
+{{-- @section('scripts')
     <script src="{{ asset('js/anggota.js') }}"></script>
-@endsection
+@endsection --}}
