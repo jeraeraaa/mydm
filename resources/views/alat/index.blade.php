@@ -9,6 +9,19 @@
                         <h5 class="mb-0">All Items</h5>
                         <p class="text-sm">Berikut adalah daftar alat yang tersedia</p>
                     </div>
+                    <div class="text-right">
+                        <form action="{{ route('alat.index') }}" method="GET" class="d-inline-block">
+                            <select name="divisi_filter" class="form-select" onchange="this.form.submit()">
+                                <option value="">Semua Divisi</option>
+                                @foreach ($bph as $divisi)
+                                    <option value="{{ $divisi->id_bph }}"
+                                        {{ request('divisi_filter') == $divisi->id_bph ? 'selected' : '' }}>
+                                        {{ $divisi->nama_divisi_bph }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </form>
+                    </div>
                 </div>
             </div>
             <div class="card-body">

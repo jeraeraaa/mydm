@@ -10,10 +10,17 @@ use Illuminate\Support\Str;
 
 class AlatController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $alat = Alat::with('bph')->get();
         $bph = Bph::all();
+        $query = Alat::with('bph');
+
+        // Filter berdasarkan divisi
+        if ($request->filled('divisi_filter')) {
+            $query->where('id_bph', $request->divisi_filter);
+        }
+
+        $alat = $query->get();
         return view('alat.index', compact('alat', 'bph'));
     }
 
