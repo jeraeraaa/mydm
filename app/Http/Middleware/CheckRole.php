@@ -8,22 +8,24 @@ use Illuminate\Support\Facades\Auth;
 
 class CheckRole
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string  ...$roles
-     * @return mixed
-     */
-    public function handle(Request $request, Closure $next, ...$roles)
+    public function handle(Request $request, Closure $next, $role)
     {
-        $user = Auth::user();
-
-        if (!$user || !in_array($user->role, $roles)) {
-            return redirect()->route('home')->with('error', 'Unauthorized access.');
+        if (!Auth::check()) {
+            return redirect('/login');
         }
 
-        return $next($request);
+        $user = Auth::user();
+
+        // Akses super user ke semua halaman
+        if ($user->role === 'superuser') {
+            return $next($request);
+        }
+
+        // Akses berdasarkan peran yang diteruskan
+        if ($user->role === $role) {
+            return $next($request);
+        }
+
+        return redirect('/'); // redirect jika peran tidak sesuai
     }
 }

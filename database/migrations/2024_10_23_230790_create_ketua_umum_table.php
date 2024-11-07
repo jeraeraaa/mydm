@@ -13,7 +13,7 @@ class CreateKetuaUmumTable extends Migration
     {
         Schema::create('ketua_umum', function (Blueprint $table) {
             $table->id('id_ketum');
-            $table->string('id_anggota');
+            $table->string('id_anggota', 10); // Menambahkan kolom id_anggota sebagai foreign key
             $table->year('tahun_jabatan');
             $table->timestamps();
 

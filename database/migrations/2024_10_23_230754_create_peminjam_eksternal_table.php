@@ -12,11 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('peminjam_eksternal', function (Blueprint $table) {
-            $table->id('id_peminjam_eksternal');
+            $table->id('id_peminjam_eksternal'); // Primary key otomatis increment
+            $table->string('id_prodi', 3); // Foreign key untuk program_studi
             $table->string('nama');
-            $table->string('jurusan');
             $table->string('organisasi');
             $table->timestamps();
+
+            // Foreign key constraint untuk menghubungkan ke tabel program_studi
+            $table->foreign('id_prodi')->references('id_prodi')->on('program_studi')->onDelete('cascade');
         });
     }
 

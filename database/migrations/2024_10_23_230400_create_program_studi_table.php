@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('prodi', function (Blueprint $table) {
+        Schema::create('program_studi', function (Blueprint $table) {
             $table->string('id_prodi', 3)->primary(); // 3 digit pertama dari NIM sebagai kode prodi
             $table->unsignedBigInteger('id_fakultas');
             $table->string('nama_prodi');

@@ -42,4 +42,14 @@ class LoginController extends Controller
             'password' => 'Password yang Anda masukkan salah.',
         ])->withInput(); // Mengembalikan input email
     }
+
+    protected function authenticated($request, $user)
+    {
+        if ($user->role == 'admin' || $user->role == 'superuser') {
+            return redirect()->route('dashboard');
+        }
+
+        // Pengguna dengan peran anggota diarahkan ke halaman alat frontend
+        return redirect()->route('alat.frontend');
+    }
 }

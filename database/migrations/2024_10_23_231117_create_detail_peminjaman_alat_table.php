@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('detail_peminjaman_alat', function (Blueprint $table) {
             $table->id('id_detail_peminjaman_alat');
-            $table->morphs('peminjamable');
+            $table->morphs('peminjamable'); //polymorphism id_anggota dan id_peminjam_eksternal
             $table->string('id_alat');
             $table->string('id_inventaris');
             $table->unsignedBigInteger('id_persetujuan_ketum');

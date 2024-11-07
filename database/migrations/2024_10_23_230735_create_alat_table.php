@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('deskripsi');
             $table->integer('jumlah_tersedia');
             $table->string('foto')->nullable();
+            $table->enum('status_alat', ['A', 'P', 'R']); //Ada,  Pinjam, Rusak
             $table->timestamps();
 
             $table->foreign('id_bph')->references('id_bph')->on('bph')->onDelete('cascade');

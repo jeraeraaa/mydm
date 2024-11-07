@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamps();
 
             //foreign key ke prodi
-            $table->foreign('id_prodi')->references('id_prodi')->on('prodi')->onDelete('cascade');
+            $table->foreign('id_prodi')->references('id_prodi')->on('program_studi')->onDelete('cascade');
         });
     }
 

@@ -13,13 +13,10 @@ return new class extends Migration
     {
         Schema::create('kegiatan', function (Blueprint $table) {
             $table->id('id_kegiatan');
-            $table->unsignedBigInteger('id_kategori_kegiatan');
+            $table->enum('kategori_kegiatan', ['H', 'T']); //Harian (BPH) atau Tahunan (Program Kerja)
             $table->string('nama_kegiatan');
             $table->text('deskripsi_kegiatan');
             $table->timestamps();
-
-            //foreign key ke kategori kegiatan
-            $table->foreign('id_kategori_kegiatan')->references('id_kategori_kegiatan')->on('kategori_kegiatan')->onDelete('cascade');
         });
     }
 

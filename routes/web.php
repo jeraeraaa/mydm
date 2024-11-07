@@ -13,8 +13,13 @@ use App\Http\Controllers\ResetController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\ProdiController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KegiatanController;
+
+use App\Http\Controllers\FrontendAlatController;
+use App\Http\Controllers\BackendAlatController;
+use App\Http\Controllers\BackendAnggotaController;
+use App\Http\Controllers\BackendKegiatanController;
+use App\Http\Controllers\DashboardController;
 
 // Halaman home dan halaman statis lainnya
 Route::get('/', function () {
@@ -29,16 +34,15 @@ Route::get('/kegiatan', function () {
     return view('kegiatan', ['title' => 'Kegiatan']);
 });
 
-Route::get('/alat', function () {
-    return view('alat', ['title' => 'Alat']);
-});
-
-Route::get('/pengajuan', function () {
-    return view('pengajuan');
-});
-
-Route::get('/profil', function () {
-    return view('profil');
+// Rute frontend yang dapat diakses oleh anggota setelah login
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/alat', [FrontendAlatController::class, 'index'])->name('alat.frontend');
+    Route::get('/pengajuan', function () {
+        return view('pengajuan');
+    });
+    Route::get('/profil', function () {
+        return view('profil');
+    });
 });
 
 // Authentication Routes
@@ -55,8 +59,8 @@ Route::group(['middleware' => 'guest'], function () {
     Route::post('/reset-password', [ChangePasswordController::class, 'changePassword'])->name('password.update');
 });
 
-// Dashboard dan halaman lain yang membutuhkan autentikasi
-Route::group(['middleware' => 'auth:anggota'], function () {
+// Rute backend yang hanya dapat diakses oleh admin dan super user
+Route::group(['middleware' => ['auth', 'checkRole:admin,superuser']], function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('profile', function () {
