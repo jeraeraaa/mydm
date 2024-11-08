@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Anggota;
 use App\Models\Prodi;
+use App\Models\ProgramStudi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +17,7 @@ class AnggotaController extends Controller
     public function index()
     {
         $anggota = Anggota::all();
-        $prodi = Prodi::all();
+        $prodi = ProgramStudi::all();
         return view('anggota.index', compact('anggota', 'prodi'));
     }
 
@@ -60,7 +61,7 @@ class AnggotaController extends Controller
         $kode_prodi = substr($nim, 0, 3); // mengambil 3 digit pertama
 
         // Mencari prodi berdasarkan kode_prodi
-        $prodi = Prodi::where('id_prodi', $kode_prodi)->first();
+        $prodi = ProgramStudi::where('id_prodi', $kode_prodi)->first();
 
         if (!$prodi) {
             return back()->withErrors([

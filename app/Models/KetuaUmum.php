@@ -10,8 +10,10 @@ class KetuaUmum extends Model
     use HasFactory;
 
     protected $table = 'ketua_umum';
-
     protected $primaryKey = 'id_ketum';
+
+    protected $keyType = 'int';
+    public $incrementing = true;
 
     protected $fillable = [
         'id_anggota',

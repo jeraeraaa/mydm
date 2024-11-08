@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\KategoriKegiatan;
+use Illuminate\Support\Facades\DB;
 
 class KategoriKegiatanSeeder extends Seeder
 {
@@ -12,9 +12,17 @@ class KategoriKegiatanSeeder extends Seeder
      */
     public function run(): void
     {
-        KategoriKegiatan::insert([
-            ['nama_kategori' => 'BPH', 'created_at' => now(), 'updated_at' => now()],
-            ['nama_kategori' => 'Program Kerja', 'created_at' => now(), 'updated_at' => now()],
+        DB::table('kategori_kegiatan')->insert([
+            [
+                'nama_kategori' => 'BPH',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama_kategori' => 'Program Kerja',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }

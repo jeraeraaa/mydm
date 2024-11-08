@@ -13,12 +13,8 @@ class Kegiatan extends Model
     public $incrementing = true;
     protected $keyType = 'int';
 
-    protected $fillable = ['nama_kegiatan', 'id_kategori_kegiatan', 'deskripsi_kegiatan'];
+    protected $fillable = ['nama_kegiatan', 'kategori_kegiatan', 'deskripsi_kegiatan'];
 
-    public function kategori()
-    {
-        return $this->belongsTo(KategoriKegiatan::class, 'id_kategori_kegiatan', 'id_kategori_kegiatan');
-    }
 
     public function detail_kegiatan()
     {

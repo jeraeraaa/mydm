@@ -11,8 +11,8 @@ class KategoriKegiatan extends Model
 
     protected $table = 'kategori_kegiatan';
 
-    public function kegiatan()
+    public function detail_kegiatan()
     {
-        return $this->hasMany(Kegiatan::class, 'id_kategori_kegiatan');
+        return $this->hasOne(DetailKegiatan::class, 'id_kategori_kegiatan', 'id_kategori_kegiatan');
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Anggota;
-use App\Models\Prodi;
+use App\Models\ProgramStudi;
 
 
 class RegisterController extends Controller
@@ -51,7 +51,7 @@ class RegisterController extends Controller
 
         // Menentukan prodi berdasarkan 3 digit pertama dari NIM
         $kode_prodi = substr($request->id_anggota, 0, 3);
-        $prodi = Prodi::where('id_prodi', $kode_prodi)->first();
+        $prodi = ProgramStudi::where('id_prodi', $kode_prodi)->first();
 
         if (!$prodi) {
             return back()->withErrors([

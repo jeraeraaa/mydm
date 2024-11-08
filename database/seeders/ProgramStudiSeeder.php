@@ -3,10 +3,10 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Prodi;
+use App\Models\ProgramStudi;
 use App\Models\Fakultas;
 
-class ProdiSeeder extends Seeder
+class ProgramStudiSeeder extends Seeder
 {
     public function run()
     {
@@ -50,7 +50,7 @@ class ProdiSeeder extends Seeder
             $fakultas = Fakultas::create(['nama_fakultas' => $namaFakultas]);
 
             foreach ($prodiList as $prodi) {
-                Prodi::create([
+                ProgramStudi::create([
                     'id_prodi' => $prodi['id_prodi'],
                     'id_fakultas' => $fakultas->id_fakultas,
                     'nama_prodi' => $prodi['nama_prodi'],

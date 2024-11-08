@@ -20,6 +20,7 @@ class Alat extends Model
         'deskripsi',
         'jumlah_tersedia',
         'foto',
+        'status_alat', // Menambahkan kolom status_alat ke fillable
     ];
 
     // Primary key pada tabel ini
@@ -85,5 +86,21 @@ class Alat extends Model
     public function scopeByBph($query, $bphId)
     {
         return $query->where('id_bph', $bphId);
+    }
+
+    /**
+     * Get the status description of the alat.
+     * 
+     * @return string
+     */
+    public function getStatusDescriptionAttribute()
+    {
+        $status = [
+            'A' => 'Ada',
+            'P' => 'Pinjam',
+            'R' => 'Rusak',
+        ];
+
+        return $status[$this->status_alat] ?? 'Tidak Diketahui';
     }
 }

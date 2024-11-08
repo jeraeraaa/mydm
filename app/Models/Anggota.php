@@ -35,7 +35,7 @@ class Anggota extends Authenticatable
     // Relationship to Prodi
     public function prodi()
     {
-        return $this->belongsTo(Prodi::class, 'id_prodi');
+        return $this->belongsTo(ProgramStudi::class, 'id_prodi');
     }
 
     // Relationship to  Detail Peminjaman Alat

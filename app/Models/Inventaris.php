@@ -24,7 +24,7 @@ class Inventaris extends Model
 
     public function anggota()
     {
-        return $this->belongsTo(Anggota::class, 'id_inventaris', 'nim'); 
+        return $this->belongsTo(Anggota::class, 'id_anggota', 'id_anggota'); 
     }
 
 
