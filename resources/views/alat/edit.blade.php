@@ -7,8 +7,8 @@
                     <h5 class="mb-0">Edit Alat</h5>
                 </div>
                 <div class="card-body px-4 pt-4 pb-2">
-                    <form action="{{ route('alat.update', $alat->id_alat) }}" method="POST"
-                        enctype="multipart/form-data" id="editForm">
+                    <form action="{{ route('alat.update', $alat->id_alat) }}" method="POST" enctype="multipart/form-data"
+                        id="editForm">
                         @csrf
                         @method('PUT')
 
@@ -58,8 +58,8 @@
                         </div>
 
                         <div class="d-flex justify-content-end mt-3">
-                            <a href="{{ route('alat.index') }}" class="btn btn-secondary me-2"><i
-                                    class="fa fa-times"></i> Cancel</a>
+                            <a href="{{ route('alat.index') }}" class="btn btn-secondary me-2"><i class="fa fa-times"></i>
+                                Cancel</a>
                             <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </form>
@@ -67,4 +67,22 @@
             </div>
         </div>
     </div>
+
+    <!-- Pesan Sukses setelah Tabel -->
+    @if (session('success'))
+        <div class="alert alert-success mt-2 mx-4">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <!-- Pesan Error setelah Tabel -->
+    @if ($errors->any())
+        <div class="alert alert-danger mt-2 mx-4">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 @endsection

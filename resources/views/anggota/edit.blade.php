@@ -90,6 +90,24 @@
         </div>
     </div>
 
+    <!-- Pesan Sukses setelah Tabel -->
+    @if (session('success'))
+        <div class="alert alert-success mt-2 mx-4">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <!-- Pesan Error setelah Tabel -->
+    @if ($errors->any())
+        <div class="alert alert-danger mt-2 mx-4">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const nimField = document.getElementById('id_anggota');

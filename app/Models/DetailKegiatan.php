@@ -12,8 +12,10 @@ class DetailKegiatan extends Model
     protected $primaryKey = 'id_detail_kegiatan';
     public $incrementing = true;
     protected $fillable = [
-        'id_kegiatan',
         'id_bph',
+        'id_kegiatan',
+        'nama_detail_kegiatan',
+        'deskripsi_detail',
         'tanggal_mulai',
         'tanggal_selesai',
         'waktu_mulai',
@@ -31,4 +33,10 @@ class DetailKegiatan extends Model
     {
         return $this->belongsTo(Bph::class, 'id_bph', 'id_bph');
     }
+
+    public function materi()
+    {
+        return $this->hasMany(Materi::class, 'id_detail_kegiatan');
+    }
+
 }

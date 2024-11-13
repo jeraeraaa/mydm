@@ -13,7 +13,7 @@
 
 <body>
     <div class="bg-white" x-data="{ isOpen: false }">
-        <header class="absolute inset-x-0 top-0 z-50">
+        <header class="fixed inset-x-0 top-0 z-50">
             <x-navbar></x-navbar>
             <x-mobile-menu>/</x-mobile-menu>
         </header>

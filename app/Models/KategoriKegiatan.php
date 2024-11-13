@@ -10,9 +10,13 @@ class KategoriKegiatan extends Model
     use HasFactory;
 
     protected $table = 'kategori_kegiatan';
-
-    public function detail_kegiatan()
+    protected $primaryKey = 'id_kategori_kegiatan';
+    public $incrementing = true;
+    protected $fillable = [
+        'nama_kategori',
+    ];
+    public function kegiatan()
     {
-        return $this->hasOne(DetailKegiatan::class, 'id_kategori_kegiatan', 'id_kategori_kegiatan');
+        return $this->hasOne(Kegiatan::class, 'id_kategori_kegiatan', 'id_kategori_kegiatan');
     }
 }

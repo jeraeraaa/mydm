@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             AnggotaSeeder::class,
             BphSeeder::class,
             KategoriKegiatanSeeder::class,
+            KegiatanSeeder::class,
         ]);
     }
 }

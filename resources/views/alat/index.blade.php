@@ -85,6 +85,24 @@
         </div>
     </div>
 
+    <!-- Success Message -->
+    @if (session('success'))
+        <div class="alert alert-success mt-2 mx-4">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <!-- Pesan Error setelah Tabel -->
+    @if ($errors->any())
+        <div class="alert alert-danger mt-2 mx-4">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <!-- Modal for Creating New Alat -->
     <div class="modal fade" id="createAlatModal" tabindex="-1" role="dialog" aria-labelledby="createAlatModalLabel"
         aria-hidden="true">

@@ -1,25 +1,22 @@
 <?php
 
-use App\Http\Controllers\AlatController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AlatController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\ChangePasswordController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InfoUserController;
 use App\Http\Controllers\ResetController;
-use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\AnggotaController;
-use App\Http\Controllers\ProdiController;
-use App\Http\Controllers\KegiatanController;
-
-use App\Http\Controllers\FrontendAlatController;
-use App\Http\Controllers\BackendAlatController;
-use App\Http\Controllers\BackendAnggotaController;
-use App\Http\Controllers\BackendKegiatanController;
 use App\Http\Controllers\DashboardController;
+
+// Import Controller di BackendKegiatan
+use App\Http\Controllers\BackendKegiatan\KategoriKegiatanController;
+use App\Http\Controllers\BackendKegiatan\KegiatanController;
+use App\Http\Controllers\BackendKegiatan\MateriController;
+use App\Http\Controllers\BackendKegiatan\PembicaraController;
+use App\Http\Controllers\BackendKegiatan\DetailKegiatanController;
 
 // Halaman home dan halaman statis lainnya
 Route::get('/', function () {
@@ -36,7 +33,7 @@ Route::get('/kegiatan', function () {
 
 // Rute frontend yang dapat diakses oleh anggota setelah login
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/alat', [FrontendAlatController::class, 'index'])->name('alat.frontend');
+    Route::get('/alat', [AlatController::class, 'index'])->name('alat.frontend');
     Route::get('/pengajuan', function () {
         return view('pengajuan');
     });
@@ -60,7 +57,7 @@ Route::group(['middleware' => 'guest'], function () {
 });
 
 // Rute backend yang hanya dapat diakses oleh admin dan super user
-Route::group(['middleware' => ['auth', 'checkRole:admin,superuser']], function () {
+Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('profile', function () {
@@ -71,17 +68,21 @@ Route::group(['middleware' => ['auth', 'checkRole:admin,superuser']], function (
         return view('laravel-examples/user-management');
     })->name('user-management');
 
+    // Resource untuk Anggota dan Alat
     Route::resource('anggota', AnggotaController::class);
-    Route::resource('kegiatan', KegiatanController::class);
     Route::resource('alat', AlatController::class);
 
+    // Resource routes untuk controller di BackendKegiatan
+    Route::resource('kategori-kegiatan', KategoriKegiatanController::class);
+    Route::resource('kegiatan', KegiatanController::class);
+    Route::resource('detail-kegiatan',DetailKegiatanController::class);
+    Route::resource('materi', MateriController::class);
+    Route::resource('pembicara', PembicaraController::class);
+
+    // Route untuk user profile
     Route::get('/user-profile', [InfoUserController::class, 'create']);
     Route::post('/user-profile', [InfoUserController::class, 'store']);
 
     // Route untuk logout setelah login
     Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 });
-
-
-// // // Ini akan mengaktifkan semua route autentikasi default Laravel (login, register, reset password, dll.)
-// Auth::routes();

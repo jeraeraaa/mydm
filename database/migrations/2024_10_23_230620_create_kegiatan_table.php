@@ -13,9 +13,13 @@ return new class extends Migration
     {
         Schema::create('kegiatan', function (Blueprint $table) {
             $table->id('id_kegiatan');
+            $table->unsignedBigInteger('id_kategori_kegiatan');
             $table->string('nama_kegiatan');
-            $table->text('deskripsi_kegiatan');
+            $table->text('deskripsi_kegiatan')->nullable();
             $table->timestamps();
+
+            // Foreign Key ke tabel kategori kegiatan
+            $table->foreign('id_kategori_kegiatan')->references('id_kategori_kegiatan')->on('kategori_kegiatan')->onDelete('cascade');
         });
     }
 
