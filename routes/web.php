@@ -17,6 +17,7 @@ use App\Http\Controllers\BackendKegiatan\KegiatanController;
 use App\Http\Controllers\BackendKegiatan\MateriController;
 use App\Http\Controllers\BackendKegiatan\PembicaraController;
 use App\Http\Controllers\BackendKegiatan\DetailKegiatanController;
+use App\Http\Controllers\FrontendPeminjamanController;
 
 // Halaman home dan halaman statis lainnya
 Route::get('/', function () {
@@ -31,18 +32,6 @@ Route::get('/kegiatan', function () {
     return view('kegiatan', ['title' => 'Kegiatan']);
 });
 
-// Rute frontend yang dapat diakses oleh anggota setelah login
-Route::group(['middleware' => ['auth', 'anggota']], function () {
-    Route::get('/alat', [AlatController::class, 'index'])->name('alat.frontend');
-    Route::get('/pengajuan', function () {
-        return view('pengajuan');
-    });
-    Route::get('/profil', function () {
-        return view('profil');
-    });
-});
-
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('checkRole:admin');
 
 // Authentication Routes
 Route::group(['middleware' => 'guest'], function () {
@@ -60,6 +49,15 @@ Route::group(['middleware' => 'guest'], function () {
 
 //Rute backend yang hanya dapat diakses oleh admin dan super user
 Route::group(['middleware' => 'auth'], function () {
+
+    //Alat Anggota
+    Route::get('/frontend-peminjaman/alat', [FrontendPeminjamanController::class, 'index'])->name('alat.frontend');
+    Route::get('/frontend-peminjaman/alat/{id}', [FrontendPeminjamanController::class, 'show'])->name('alat.frontend.show');
+    Route::get('/frontend-peminjaman/cart', [FrontendPeminjamanController::class, 'cart'])->name('alat.frontend.cart');
+    Route::post('/frontend-peminjaman/alat/add/{id}', [FrontendPeminjamanController::class, 'addToCart'])->name('alat.frontend.addToCart');
+    Route::delete('/frontend-peminjaman/cart/remove/{id}', [FrontendPeminjamanController::class, 'removeFromCart'])->name('alat.frontend.removeFromCart');
+
+    //Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('profile', function () {
