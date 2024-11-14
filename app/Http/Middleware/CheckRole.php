@@ -8,24 +8,25 @@ use Illuminate\Support\Facades\Auth;
 
 class CheckRole
 {
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
         if (!Auth::check()) {
             return redirect('/login');
         }
 
-        $user = Auth::user();
+        $user = Auth::guard('anggota')->user();
 
-        // Akses super user ke semua halaman
-        if ($user->role === 'superuser') {
+        // Beri akses penuh kepada super_user
+        if ($user->role === 'super_user') {
             return $next($request);
         }
 
-        // Akses berdasarkan peran yang diteruskan
-        if ($user->role === $role) {
+        // Cek apakah peran user ada di dalam list $roles
+        if (in_array($user->role, $roles)) {
             return $next($request);
         }
 
-        return redirect('/'); // redirect jika peran tidak sesuai
+        // Jika role tidak sesuai, redirect ke halaman akses ditolak
+        return abort(403, 'Akses ditolak');
     }
 }

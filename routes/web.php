@@ -32,7 +32,7 @@ Route::get('/kegiatan', function () {
 });
 
 // Rute frontend yang dapat diakses oleh anggota setelah login
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth', 'anggota']], function () {
     Route::get('/alat', [AlatController::class, 'index'])->name('alat.frontend');
     Route::get('/pengajuan', function () {
         return view('pengajuan');
@@ -41,6 +41,8 @@ Route::group(['middleware' => ['auth']], function () {
         return view('profil');
     });
 });
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('checkRole:admin');
 
 // Authentication Routes
 Route::group(['middleware' => 'guest'], function () {
@@ -56,7 +58,7 @@ Route::group(['middleware' => 'guest'], function () {
     Route::post('/reset-password', [ChangePasswordController::class, 'changePassword'])->name('password.update');
 });
 
-// Rute backend yang hanya dapat diakses oleh admin dan super user
+//Rute backend yang hanya dapat diakses oleh admin dan super user
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -75,14 +77,14 @@ Route::group(['middleware' => 'auth'], function () {
     // Resource routes untuk controller di BackendKegiatan
     Route::resource('kategori-kegiatan', KategoriKegiatanController::class);
     Route::resource('kegiatan', KegiatanController::class);
-    Route::resource('detail-kegiatan',DetailKegiatanController::class);
+    Route::resource('detail-kegiatan', DetailKegiatanController::class);
     Route::resource('materi', MateriController::class);
     Route::resource('pembicara', PembicaraController::class);
 
     // Route untuk user profile
     Route::get('/user-profile', [InfoUserController::class, 'create']);
     Route::post('/user-profile', [InfoUserController::class, 'store']);
-
-    // Route untuk logout setelah login
-    Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 });
+
+// Route untuk logout setelah login
+Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');

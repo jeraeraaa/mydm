@@ -22,6 +22,7 @@ class Anggota extends Authenticatable
     protected $fillable = [
         'id_anggota',
         'id_prodi',
+        'id_role',
         'nama_anggota',
         'email',
         'password',
@@ -47,5 +48,10 @@ class Anggota extends Authenticatable
     public function ketuaUmum()
     {
         return $this->hasOne(KetuaUmum::class, 'id_anggota', 'id_anggota');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'id_role');
     }
 }

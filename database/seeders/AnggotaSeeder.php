@@ -16,6 +16,7 @@ class AnggotaSeeder extends Seeder
             [
                 'id_anggota' => '825210058',
                 'id_prodi' => '825',
+                'id_role' => '1',
                 'nama_anggota' => 'Rizera Dwi P',
                 'email' => 'rizera@gmail.com',
                 'password' => Hash::make('11111111'), // nama + tanggal lahir sebagai password default
@@ -28,9 +29,10 @@ class AnggotaSeeder extends Seeder
             [
                 'id_anggota' => '825210002',
                 'id_prodi' => '825',
+                'id_role' => '4',
                 'nama_anggota' => 'Jane Smith',
-                'email' => 'janesmith@example.com',
-                'password' => Hash::make('janesmith15051995'),
+                'email' => 'anggota@gmail.com',
+                'password' => Hash::make('11111111'),
                 'no_hp' => '081298765432',
                 'tanggal_lahir' => Carbon::create('1995', '05', '15'),
                 'alamat' => 'Jl. Kebon Jeruk No. 2, Bandung',
@@ -40,9 +42,10 @@ class AnggotaSeeder extends Seeder
             [
                 'id_anggota' => '535210003',
                 'id_prodi' => '535',
+                'id_role' => '3', 
                 'nama_anggota' => 'Robert Brown',
-                'email' => 'robertbrown@example.com',
-                'password' => Hash::make('robertbrown22071992'),
+                'email' => 'inven@gmail.com',
+                'password' => Hash::make('11111111'),
                 'no_hp' => '081234123456',
                 'tanggal_lahir' => Carbon::create('1992', '07', '22'),
                 'alamat' => 'Jl. Raya No. 3, Surabaya',
@@ -52,9 +55,10 @@ class AnggotaSeeder extends Seeder
             [
                 'id_anggota' => '705210004',
                 'id_prodi' => '705',
+                'id_role' => '2',
                 'nama_anggota' => 'Emily White',
-                'email' => 'emilywhite@example.com',
-                'password' => Hash::make('emilywhite01081993'),
+                'email' => 'admin@gmail.com',
+                'password' => Hash::make('11111111'),
                 'no_hp' => '082134567890',
                 'tanggal_lahir' => Carbon::create('1993', '08', '01'),
                 'alamat' => 'Jl. Mawar No. 4, Malang',
