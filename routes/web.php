@@ -55,7 +55,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/frontend-peminjaman/alat/{id}', [FrontendPeminjamanController::class, 'show'])->name('alat.frontend.show');
     Route::get('/frontend-peminjaman/cart', [FrontendPeminjamanController::class, 'cart'])->name('alat.frontend.cart');
     Route::post('/frontend-peminjaman/alat/add/{id}', [FrontendPeminjamanController::class, 'addToCart'])->name('alat.frontend.addToCart');
-    Route::delete('/frontend-peminjaman/cart/remove/{id}', [FrontendPeminjamanController::class, 'removeFromCart'])->name('alat.frontend.removeFromCart');
+    Route::post('/frontend-peminjaman/checkout-selected', [FrontendPeminjamanController::class, 'checkoutSelected'])->name('alat.frontend.checkoutSelected');
+    Route::post('/frontend-peminjaman/alat/update-quantity/{id}', [FrontendPeminjamanController::class, 'updateCartQuantity'])->name('alat.frontend.updateCartQuantity');
+
+
 
     //Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');

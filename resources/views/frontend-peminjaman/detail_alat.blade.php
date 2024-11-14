@@ -1,45 +1,152 @@
 <x-layout></x-layout>
 
 <div class="w-full pt-32">
-    <div class="col-12">
-        <div class="card mb-4 mx-4">
-            <div class="card-header pb-0">
-                <div class="d-flex flex-row justify-content-between">
+    <div class="container mx-auto px-4">
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="bg-gray-100 px-6 py-4 border-b">
+                <div class="flex justify-between items-center">
                     <div>
-                        <h5 class="mb-0">{{ $alat->nama_alat }}</h5>
-                        <p class="text-sm text-muted">Detail lengkap dari alat</p>
+                        <h2 class="text-2xl font-semibold text-gray-800">{{ $alat->nama_alat }}</h2>
+                        <p class="text-sm text-gray-600">Detail lengkap dari alat</p>
                     </div>
-                    <div>
-                        <!-- Tombol Kembali ke Daftar Alat -->
-                        <a href="{{ route('alat.frontend') }}" class="btn btn-outline-primary btn-sm mb-0">
-                            <i class="fas fa-arrow-left"></i> Kembali
-                        </a>
-                    </div>
+                    <a href="{{ route('alat.frontend') }}"
+                        class="text-orange-500 hover:text-orange-700 text-sm font-semibold flex items-center">
+                        <i class="fas fa-arrow-left mr-2"></i> Kembali
+                    </a>
                 </div>
             </div>
-            <div class="card-body">
-                <div class="row">
+
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Image Section -->
-                    <div class="col-xl-5 col-md-6 mb-4">
+                    <div class="flex justify-center">
                         <img src="{{ $alat->foto ? url('storage/' . $alat->foto) : asset('assets/img/defaultbarang.jpg') }}"
-                            alt="Alat Photo" class="img-fluid shadow border-radius-xl"
-                            style="width: 100%; height: auto; object-fit: cover;">
+                            alt="Foto Alat" class="rounded-lg shadow-md object-cover w-full h-64">
                     </div>
 
                     <!-- Details Section -->
-                    <div class="col-xl-7 col-md-6">
-                        <h6 class="text-secondary">Informasi Alat</h6>
-                        <p class="text-sm mb-2"><strong>Nama Alat:</strong> {{ $alat->nama_alat }}</p>
-                        <p class="text-sm mb-2"><strong>Deskripsi:</strong> {{ $alat->deskripsi ?? 'Tidak ada Deskripsi' }}</p>
-                        <p class="text-sm mb-2"><strong>Jumlah Tersedia:</strong> {{ $alat->jumlah_tersedia }}</p>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Informasi Alat</h3>
+                        <p class="text-sm text-gray-800 mb-2"><strong>Nama Alat:</strong> {{ $alat->nama_alat }}</p>
+                        <p class="text-sm text-gray-800 mb-2"><strong>Deskripsi:</strong>
+                            {{ $alat->deskripsi ?? 'Tidak ada Deskripsi' }}</p>
+                        <p class="text-sm text-gray-800 mb-2"><strong>Jumlah Tersedia:</strong>
+                            {{ $alat->jumlah_tersedia }}</p>
+                        <p class="text-sm text-gray-800 mb-2"><strong>Status:</strong>
+                            @if ($alat->status_alat == 'A')
+                                Ada
+                            @elseif($alat->status_alat == 'P')
+                                Sedang Dipinjam
+                            @else
+                                Rusak
+                            @endif
+                        </p>
+                        <p class="text-sm text-gray-800"><strong>Divisi BPH:</strong>
+                            {{ $alat->bph->nama_divisi_bph ?? 'Tidak ada Divisi' }}</p>
+                        <!-- Form for Add to Cart in detail_alat.blade -->
+                        @php
+                            $inCart = session('cart') && isset(session('cart')[$alat->id_alat]); // Cek apakah item sudah ada di keranjang
+                        @endphp
 
-                        <hr class="my-3">
+                        @if (session('message'))
+                            <div class="text-green-500 font-semibold mb-4">
+                                {{ session('message') }}
+                            </div>
+                        @endif
+                        
+                        @if (!$inCart)
+                            <form action="{{ route('alat.frontend.addToCart', $alat->id_alat) }}" method="POST"
+                                class="add-to-cart-form" data-id="{{ $alat->id_alat }}">
+                                @csrf
+                                <input type="hidden" name="jumlah" value="1">
+                                <button type="submit" id="add-to-cart-btn-{{ $alat->id_alat }}">
+                                    <img src="{{ asset('assets/img/cart.png') }}" alt="Add to Cart" class="h-8 w-8">
+                                </button>
+                            </form>
+                        @else
+                            <span id="in-cart-label-{{ $alat->id_alat }}" class="text-green-500 font-semibold">Sudah di
+                                Keranjang</span>
+                        @endif
 
-                        <h6 class="text-secondary">Divisi</h6>
-                        <p class="text-sm mb-2"><strong>Divisi BPH:</strong> {{ $alat->bph->nama_divisi_bph ?? 'Tidak ada Divisi' }}</p>
                     </div>
+                </div>
+
+                <!-- Riwayat Peminjaman -->
+                <div class="mt-6">
+                    <hr class="my-4">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Riwayat Peminjaman</h3>
+                    @if ($alat->detailPeminjaman->isEmpty())
+                        <p class="text-sm text-gray-500">Belum ada riwayat peminjaman untuk alat ini.</p>
+                    @else
+                        <table class="w-full text-sm text-left text-gray-700 border">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="py-2 px-4">Peminjam</th>
+                                    <th class="py-2 px-4">Tanggal Pinjam</th>
+                                    <th class="py-2 px-4">Tanggal Kembali</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($alat->detailPeminjaman as $peminjaman)
+                                    <tr class="border-b">
+                                        <td class="py-2 px-4">
+                                            {{ $peminjaman->peminjamable->nama ?? 'Tidak Diketahui' }}</td>
+                                        <td class="py-2 px-4">
+                                            {{ $peminjaman->tanggal_pinjam ? \Carbon\Carbon::parse($peminjaman->tanggal_pinjam)->format('d/m/Y') : '-' }}
+                                        </td>
+                                        <td class="py-2 px-4">
+                                            {{ $peminjaman->tanggal_kembali ? \Carbon\Carbon::parse($peminjaman->tanggal_kembali)->format('d/m/Y') : '-' }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('.add-to-cart-form');
+
+        forms.forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const itemId = form.getAttribute('data-id');
+                const formData = new FormData(form);
+
+                fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        },
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Response dari server:", data);
+                        if (data.success) {
+                            // Update jumlah item di cart-count
+                            const cartCountElement = document.getElementById('cart-count');
+                            if (cartCountElement) {
+                                cartCountElement.textContent = data.cartCount;
+                            }
+
+                            // Ubah tampilan tombol menjadi "Sudah di Keranjang"
+                            document.getElementById(`add-to-cart-btn-${itemId}`).style
+                                .display = 'none';
+                            document.getElementById(`in-cart-label-${itemId}`).style
+                                .display = 'inline';
+                        } else {
+                            alert(data.message || 'Gagal menambah ke keranjang.');
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+    });
+</script>

@@ -1,6 +1,6 @@
 <x-layout></x-layout>
 
-<div class="w-full pt-32"> 
+<div class="w-full pt-32">
     <!-- Bagian Sambutan -->
     <div class="bg-white rounded-lg p-6 text-center mb-8">
         <h1 class="text-balance text-2xl font-bold tracking-tight text-gray-800 sm:text-3xl lg:text-4xl mb-6">Selamat
@@ -56,27 +56,48 @@
                 </div>
             </template>
 
+            <!-- Blade Template for Alat Cards -->
             @foreach ($alat as $item)
+                @php
+                    $inCart = session('cart') && isset(session('cart')[$item->id_alat]); // Cek apakah item sudah ada di keranjang
+                @endphp
                 <div x-show="selectedDivisi === 'All' || selectedDivisi === '{{ $item->id_bph }}'"
-                    data-divisi="{{ $item->id_bph }}"
+                    data-divisi="{{ $item->id_bph }}" data-in-cart="{{ $inCart ? 'true' : 'false' }}"
+                    id="alat-{{ $item->id_alat }}"
                     class="flex flex-col bg-white border shadow-sm rounded-lg overflow-hidden">
-                    <img src="{{ url('storage/' . $item->foto) }}" alt="Foto Alat" class="h-40 object-cover">
+                    <img src="{{ $item->foto ? url('storage/' . $item->foto) : asset('assets/img/defaultbarang.jpg') }}"
+                        alt="Foto Alat" class="h-40 object-cover">
                     <div class="p-4 text-center">
                         <h5 class="text-lg font-bold text-gray-800">{{ $item->nama_alat }}</h5>
-                        <p class="mt-2 text-gray-500">{{ \Illuminate\Support\Str::limit($item->deskripsi, 60) }}</p>
-                        <div class="flex justify-center mt-4 gap-x-2">
-                            <button @click="addToCart({{ $item->id_alat }})" class="hover:scale-105 transition-transform">
-                                <img src="{{ asset('assets/img/cart.png') }}" alt="Add to Cart" class="h-8 w-8">
-                            </button>
+                        <p class="mt-2 text-gray-500 h-16 overflow-hidden">
+                            {{ \Illuminate\Support\Str::limit($item->deskripsi, 60) }}
+                        </p>
+                        <div class="flex justify-between items-center mt-4">
+                            <!-- Form for Add to Cart -->
+                            <form action="{{ route('alat.frontend.addToCart', $item->id_alat) }}" method="POST"
+                                class="add-to-cart-form" data-id="{{ $item->id_alat }}">
+                                @csrf
+                                <input type="hidden" name="jumlah" value="1">
+                                <button type="submit" id="add-to-cart-btn-{{ $item->id_alat }}"
+                                    style="{{ $inCart ? 'display: none;' : '' }}">
+                                    <img src="{{ asset('assets/img/cart.png') }}" alt="Add to Cart" class="h-8 w-8">
+                                </button>
+                            </form>
+                            <span id="in-cart-label-{{ $item->id_alat }}"
+                                style="{{ $inCart ? '' : 'display: none;' }}"
+                                class="text-green-500 font-semibold">Sudah di Keranjang</span>
                             <a href="{{ route('alat.frontend.show', $item->id_alat) }}"
-                                class="py-2 px-3  bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
+                                class="px-3 py-2 bg-gray-400 text-white rounded-lg hover:bg-orange-600 transition">
                                 Detail
                             </a>
                         </div>
                     </div>
                 </div>
             @endforeach
+
+
         </div>
+
     </div>
 
     <!-- Pagination dengan Informasi -->
@@ -129,8 +150,8 @@
                     aria-label="Next">
                     <span class="sr-only">Next</span>
                     <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path d="m9 18 6-6-6-6"></path>
                     </svg>
                 </a>
@@ -153,17 +174,43 @@
 
 </div>
 
+
 <script>
-    function addToCart(id) {
-        fetch(`/keranjang/add/${id}`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
+    document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('.add-to-cart-form');
+        
+        forms.forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                const itemId = form.getAttribute('data-id');
+                const formData = new FormData(form);
+                
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Response dari server:", data);
+                    if (data.success) {
+                        // Update jumlah item di cart-count
+                        const cartCountElement = document.getElementById('cart-count');
+                        cartCountElement.textContent = data.cartCount;
+
+                        // Ubah tampilan tombol menjadi "Sudah di Keranjang"
+                        document.getElementById(`add-to-cart-btn-${itemId}`).style.display = 'none';
+                        document.getElementById(`in-cart-label-${itemId}`).style.display = 'inline';
+                    } else {
+                        alert(data.message || 'Gagal menambah ke keranjang.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
             });
-    }
+        });
+    });
 </script>
+
