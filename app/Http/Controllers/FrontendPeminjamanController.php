@@ -17,7 +17,6 @@ class FrontendPeminjamanController extends Controller
     public function index()
     {
         Log::info("Memuat halaman daftar alat.");
-
         $alat = Alat::where('status_alat', 'A')
             ->whereHas('bph', function ($query) {
                 $query->where('nama_divisi_bph', '!=', 'inti');
@@ -33,7 +32,6 @@ class FrontendPeminjamanController extends Controller
     public function show($id)
     {
         Log::info("Memuat detail alat dengan ID: $id");
-
         $alat = Alat::findOrFail($id);
         return view('frontend-peminjaman.detail_alat', compact('alat'));
     }
@@ -44,7 +42,6 @@ class FrontendPeminjamanController extends Controller
         Log::info("Menambahkan ke keranjang, ID alat: $id, Jumlah: " . $request->jumlah);
 
         $alat = Alat::findOrFail($id);
-
         if ($alat->jumlah_tersedia < $request->jumlah) {
             Log::warning("Jumlah alat yang diminta melebihi jumlah tersedia.");
             return response()->json(['success' => false, 'message' => 'Jumlah alat yang diminta melebihi jumlah tersedia.']);
@@ -55,6 +52,7 @@ class FrontendPeminjamanController extends Controller
             "id_alat" => $alat->id_alat,
             "name" => $alat->nama_alat,
             "jumlah" => $request->jumlah,
+            "jumlah_tersedia" => $alat->jumlah_tersedia,
             "status" => $alat->status_alat,
             "foto" => $alat->foto,
         ];
@@ -82,13 +80,11 @@ class FrontendPeminjamanController extends Controller
         Log::info("Menghapus item dari keranjang, ID alat: $id");
 
         $cart = session()->get('cart', []);
-
         if (isset($cart[$id])) {
             unset($cart[$id]);
             session()->put('cart', $cart);
 
             Log::info("Keranjang setelah penghapusan item: ", $cart);
-
             return response()->json([
                 'success' => true,
                 'message' => 'Alat berhasil dihapus dari keranjang!',
@@ -96,14 +92,11 @@ class FrontendPeminjamanController extends Controller
             ]);
         }
 
-        // Return error jika item tidak ditemukan di keranjang
         return response()->json([
             'success' => false,
             'message' => 'Gagal menghapus item dari keranjang.'
         ], 400);
     }
-
-
 
     // Update jumlah alat di keranjang
     public function updateCartQuantity(Request $request, $id)
@@ -111,7 +104,6 @@ class FrontendPeminjamanController extends Controller
         Log::info("Memperbarui jumlah alat di keranjang, ID alat: $id, Aksi: " . $request->action);
 
         $cart = session()->get('cart', []);
-
         if (isset($cart[$id])) {
             $currentQty = $cart[$id]['jumlah'];
             if ($request->action === 'increment') {
@@ -123,7 +115,6 @@ class FrontendPeminjamanController extends Controller
         }
 
         Log::info("Keranjang setelah perubahan jumlah: ", $cart);
-
         return response()->json([
             'success' => true,
             'message' => 'Jumlah alat berhasil diperbarui!',
@@ -144,16 +135,30 @@ class FrontendPeminjamanController extends Controller
         $cart = session()->get('cart', []);
         $selectedCart = array_intersect_key($cart, array_flip($selectedItems));
 
-        // Mengirim selectedCart ke view
-        return view('frontend-peminjaman.confirm-loan', compact('selectedCart'));
+        // Ambil data peminjam dari pengguna yang sedang login
+        $peminjam = Auth::user();
+
+        // Mengirim selectedCart dan peminjam ke view
+        return view('frontend-peminjaman.confirm-loan', compact('selectedCart', 'peminjam'));
     }
 
+
+    // Generate nomor invoice
+    private function generateInvoiceNumber($isEksternal)
+    {
+        $prefix = $isEksternal ? 'INV-E' : 'INV-I';
+        $count = DetailPeminjamanAlat::count() + 1;
+        return sprintf('%s-%03d', $prefix, $count);
+    }
 
     // Simpan peminjaman alat ke dalam database
     public function checkout(Request $request)
     {
         $cart = session()->get('cart', []);
         Log::info("Memproses peminjaman keranjang: ", $cart);
+
+        // Mendefinisikan peminjam dari pengguna yang sedang login
+        $peminjam = Auth::user();
 
         foreach ($cart as $id => $details) {
             $alat = Alat::find($id);
@@ -163,23 +168,30 @@ class FrontendPeminjamanController extends Controller
                 return redirect()->route('alat.frontend.cart')->withErrors('Jumlah alat yang diminta melebihi jumlah yang tersedia.');
             }
 
+            // Buat nomor invoice berdasarkan apakah peminjam internal atau eksternal
+            $invoiceNumber = $this->generateInvoiceNumber(!($peminjam instanceof Anggota));
+
+            // Simpan data peminjaman
             DetailPeminjamanAlat::create([
-                'peminjamable_type' => Auth::user() instanceof Anggota ? 'App\Models\Anggota' : 'App\Models\PeminjamEksternal',
-                'peminjamable_id' => Auth::id(),
+                'peminjamable_type' => $peminjam instanceof Anggota ? 'App\Models\Anggota' : 'App\Models\PeminjamEksternal',
+                'peminjamable_id' => $peminjam->id,
                 'id_alat' => $details['id_alat'],
                 'id_inventaris' => '1',
                 'id_persetujuan_ketum' => '1',
-                'tanggal_pinjam' => now(),
+                'tanggal_pinjam' => $request->input('tanggal_peminjaman'),
+                'tanggal_kembali' => $request->input('tanggal_pengembalian'),
                 'kondisi_alat_dipinjam' => 'Baik',
-                'jumlah_dipinjam' => $details['jumlah']
+                'jumlah_dipinjam' => $details['jumlah'],
+                'invoice_number' => $invoiceNumber,
             ]);
 
+            // Kurangi jumlah tersedia pada alat
             $alat->jumlah_tersedia -= $details['jumlah'];
             $alat->save();
         }
 
+        // Hapus session keranjang setelah checkout berhasil
         session()->forget('cart');
-
         Log::info("Checkout berhasil, keranjang dikosongkan.");
         return redirect()->route('alat.frontend')->with('success', 'Peminjaman alat berhasil diproses!');
     }

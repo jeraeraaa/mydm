@@ -1,3 +1,4 @@
+<!-- Cart Blade Template -->
 <x-layout></x-layout>
 
 <div class="w-full pt-24">
@@ -48,22 +49,13 @@
                                             </td>
                                             <td class="p-6">
                                                 <div class="flex items-center">
-                                                    <!-- Tombol decrement dengan font lebih besar dan padding -->
-                                                    {{-- <button type="button"
-                                                        class="p-2 bg-gray-200 rounded text-lg font-bold"
-                                                        onclick="updateCartQuantity('{{ $id }}', 'decrement')">-</button> --}}
-
-                                                    <!-- Input jumlah dengan ukuran lebih besar dan tanpa tanda panah -->
                                                     <input type="number" min="1"
-                                                        class="mx-2 w-16 text-center border rounded text-lg font-semibold"
+                                                        max="{{ $item['jumlah_tersedia'] ?? 1 }}"
+                                                        data-max="{{ $item['jumlah_tersedia'] ?? 1 }}"
+                                                        class="mx-2 w-16 text-center border rounded text-lg font-semibold quantity-input"
                                                         value="{{ $item['jumlah'] }}" id="quantity-{{ $id }}"
                                                         onchange="manualUpdateCartQuantity('{{ $id }}')"
                                                         style="appearance: none; -moz-appearance: textfield;">
-
-                                                    {{-- <!-- Tombol increment dengan font lebih besar dan padding -->
-                                                    <button type="button"
-                                                        class="p-2 bg-gray-200 rounded text-lg font-bold"
-                                                        onclick="updateCartQuantity('{{ $id }}', 'increment')">+</button> --}}
                                                 </div>
                                             </td>
 
@@ -74,7 +66,6 @@
                                             </td>
                                         </tr>
                                     @endforeach
-
                                 </tbody>
                             </table>
 
@@ -104,7 +95,7 @@
         });
     });
 
-    // Function to remove item from cart with AJAX
+    // Function to remove item from cart with AJAX and update cart count
     function removeFromCart(id) {
         if (!confirm('Apakah Anda yakin ingin menghapus item ini dari keranjang?')) return;
 
@@ -119,54 +110,12 @@
             .then(data => {
                 if (data.success) {
                     document.querySelector(`tr[data-id='${id}']`).remove();
+
+                    // Update cart count in navbar
+                    const cartCount = document.getElementById('cart-count');
+                    cartCount.textContent = data.cartCount;
                 } else {
                     alert('Gagal menghapus item dari keranjang.');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    }
-
-    // Function to update quantity in cart with AJAX
-    // function updateCartQuantity(id, action) {
-    //     fetch(`{{ url('/frontend-peminjaman/alat/update-quantity') }}/${id}`, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify({
-    //                 action: action
-    //             })
-    //         })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             if (data.success) {
-    //                 document.getElementById(`quantity-${id}`).value = data.newQuantity;
-    //             }
-    //         })
-    //         .catch(error => console.error('Error:', error));
-    // }
-
-    // Function to manually update quantity from the input
-    function manualUpdateCartQuantity(id) {
-        const quantity = document.getElementById(`quantity-${id}`).value;
-
-        fetch(`{{ url('/frontend-peminjaman/alat/update-quantity') }}/${id}`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    action: 'manual',
-                    quantity: quantity
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (!data.success) {
-                    alert('Jumlah yang dimasukkan melebihi jumlah tersedia.');
-                    document.getElementById(`quantity-${id}`).value = data.maxAvailable;
                 }
             })
             .catch(error => console.error('Error:', error));
