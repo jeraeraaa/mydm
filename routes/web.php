@@ -10,6 +10,7 @@ use App\Http\Controllers\InfoUserController;
 use App\Http\Controllers\ResetController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
 
 // Import Controller di BackendKegiatan
 use App\Http\Controllers\BackendKegiatan\KategoriKegiatanController;
@@ -75,9 +76,12 @@ Route::group(['middleware' => 'auth'], function () {
         return view('profile');
     })->name('profile');
 
-    Route::get('user-management', function () {
-        return view('laravel-examples/user-management');
-    })->name('user-management');
+    Route::get('/role', [UserController::class, 'index'])->name('role.index');
+    Route::put('/role/{id}', [UserController::class, 'updateRole'])->name('role.update');
+    Route::post('/role', [UserController::class, 'createUser'])->name('role.create');
+    Route::delete('/role/{id}', [UserController::class, 'deleteUser'])->name('role.delete');
+    Route::get('/role/check-nim', [UserController::class, 'checkNim'])->name('role.checkNim');
+
 
     // Resource untuk Anggota dan Alat
     Route::resource('anggota', AnggotaController::class);
@@ -93,7 +97,13 @@ Route::group(['middleware' => 'auth'], function () {
     // Route untuk user profile
     Route::get('/user-profile', [InfoUserController::class, 'create']);
     Route::post('/user-profile', [InfoUserController::class, 'store']);
+
+    //Route untuk ketum dan inventaris
+    Route::resource('ketua-umum', KetuaUmumController::class);
+    Route::resource('inventaris', InventarisController::class);
 });
+
+
 
 // Route untuk logout setelah login
 Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
