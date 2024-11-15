@@ -10,23 +10,28 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Anggota;
 use App\Models\Bph;
 use App\Models\PeminjamEksternal;
+use App\Models\PersetujuanKetum;
 
 class FrontendPeminjamanController extends Controller
 {
     // Tampilkan daftar alat yang tersedia
-    public function index()
+    public function index(Request $request)
     {
-        Log::info("Memuat halaman daftar alat.");
-        $alat = Alat::where('status_alat', 'A')
-            ->whereHas('bph', function ($query) {
-                $query->where('nama_divisi_bph', '!=', 'inti');
-            })
-            ->paginate(8);
+        $selectedDivisi = $request->input('divisi', 'All');
+        $alatQuery = Alat::query()->whereHas('bph', function ($query) {
+            $query->where('nama_divisi_bph', '!=', 'inti');
+        });
 
+        if ($selectedDivisi !== 'All') {
+            $alatQuery->where('id_bph', $selectedDivisi);
+        }
+
+        $alat = $alatQuery->paginate(8)->appends(['divisi' => $selectedDivisi]);
         $divisi = Bph::where('nama_divisi_bph', '!=', 'inti')->get();
 
-        return view('frontend-peminjaman.alat', compact('alat', 'divisi'));
+        return view('frontend-peminjaman.alat', compact('alat', 'divisi', 'selectedDivisi'));
     }
+
 
     // Menampilkan detail alat tertentu
     public function show($id)
@@ -101,20 +106,16 @@ class FrontendPeminjamanController extends Controller
     // Update jumlah alat di keranjang
     public function updateCartQuantity(Request $request, $id)
     {
-        Log::info("Memperbarui jumlah alat di keranjang, ID alat: $id, Aksi: " . $request->action);
+        Log::info("Memperbarui jumlah alat di keranjang, ID alat: $id, Jumlah Baru: " . $request->quantity);
 
         $cart = session()->get('cart', []);
         if (isset($cart[$id])) {
-            $currentQty = $cart[$id]['jumlah'];
-            if ($request->action === 'increment') {
-                $cart[$id]['jumlah'] = $currentQty + 1;
-            } elseif ($request->action === 'decrement' && $currentQty > 1) {
-                $cart[$id]['jumlah'] = $currentQty - 1;
-            }
-            session()->put('cart', $cart);
+            $cart[$id]['jumlah'] = $request->input('quantity'); // Gunakan jumlah dari input langsung
+            session()->put('cart', $cart); // Simpan perubahan di session
         }
 
         Log::info("Keranjang setelah perubahan jumlah: ", $cart);
+
         return response()->json([
             'success' => true,
             'message' => 'Jumlah alat berhasil diperbarui!',
@@ -122,6 +123,7 @@ class FrontendPeminjamanController extends Controller
             'cartCount' => count($cart)
         ]);
     }
+
 
     // Menampilkan halaman konfirmasi peminjaman
     public function confirmLoan(Request $request)
@@ -136,10 +138,16 @@ class FrontendPeminjamanController extends Controller
         $selectedCart = array_intersect_key($cart, array_flip($selectedItems));
 
         // Ambil data peminjam dari pengguna yang sedang login
-        $peminjam = Auth::user();
+        $peminjam = Auth::user(); // Pastikan guard auth mengarah ke model Anggota
+        $peminjamData = [
+            'nama' => $peminjam->nama_anggota,
+            'nim' => $peminjam->id_anggota,
+            'fakultas' => $peminjam->prodi->fakultas->nama_fakultas ?? 'Fakultas Tidak Diketahui',
+            'jurusan' => $peminjam->prodi->nama_prodi ?? 'Jurusan Tidak Diketahui',
+            'organisasi' => 'Internal Dharmayana',
+        ];
 
-        // Mengirim selectedCart dan peminjam ke view
-        return view('frontend-peminjaman.confirm-loan', compact('selectedCart', 'peminjam'));
+        return view('frontend-peminjaman.confirm-loan', compact('selectedCart', 'peminjamData'));
     }
 
 
@@ -157,9 +165,6 @@ class FrontendPeminjamanController extends Controller
         $cart = session()->get('cart', []);
         Log::info("Memproses peminjaman keranjang: ", $cart);
 
-        // Mendefinisikan peminjam dari pengguna yang sedang login
-        $peminjam = Auth::user();
-
         foreach ($cart as $id => $details) {
             $alat = Alat::find($id);
 
@@ -168,31 +173,37 @@ class FrontendPeminjamanController extends Controller
                 return redirect()->route('alat.frontend.cart')->withErrors('Jumlah alat yang diminta melebihi jumlah yang tersedia.');
             }
 
-            // Buat nomor invoice berdasarkan apakah peminjam internal atau eksternal
-            $invoiceNumber = $this->generateInvoiceNumber(!($peminjam instanceof Anggota));
+            $persetujuanKetum = PersetujuanKetum::create([
+                'id_ketum' => 1, // Sesuaikan dengan id_ketum yang sesuai
+                'status_persetujuan' => 'menunggu',
+                'catatan' => null,
+            ]);
 
-            // Simpan data peminjaman
             DetailPeminjamanAlat::create([
-                'peminjamable_type' => $peminjam instanceof Anggota ? 'App\Models\Anggota' : 'App\Models\PeminjamEksternal',
-                'peminjamable_id' => $peminjam->id,
+                'peminjamable_type' => Auth::user() instanceof Anggota ? 'App\Models\Anggota' : 'App\Models\PeminjamEksternal',
+                'peminjamable_id' => Auth::id(),
                 'id_alat' => $details['id_alat'],
-                'id_inventaris' => '1',
-                'id_persetujuan_ketum' => '1',
+                'id_inventaris' => null,
+                'id_persetujuan_ketum' => $persetujuanKetum->id_persetujuan_ketum,
                 'tanggal_pinjam' => $request->input('tanggal_peminjaman'),
                 'tanggal_kembali' => $request->input('tanggal_pengembalian'),
                 'kondisi_alat_dipinjam' => 'Baik',
-                'jumlah_dipinjam' => $details['jumlah'],
-                'invoice_number' => $invoiceNumber,
+                'jumlah_dipinjam' => $details['jumlah']
             ]);
 
-            // Kurangi jumlah tersedia pada alat
             $alat->jumlah_tersedia -= $details['jumlah'];
             $alat->save();
         }
 
-        // Hapus session keranjang setelah checkout berhasil
         session()->forget('cart');
         Log::info("Checkout berhasil, keranjang dikosongkan.");
-        return redirect()->route('alat.frontend')->with('success', 'Peminjaman alat berhasil diproses!');
+
+        // Redirect ke halaman konfirmasi
+        return redirect()->route('alat.frontend.checkout-confirmation');
+    }
+
+    public function checkoutConfirmation()
+    {
+        return view('frontend-peminjaman.checkout-confirmation');
     }
 }

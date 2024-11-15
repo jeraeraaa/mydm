@@ -1,0 +1,119 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+
+class UserController extends Controller
+{
+    /**
+     * Menampilkan daftar user dengan role.
+     */
+    public function index(Request $request)
+    {
+        // Ambil data anggota dengan role
+        $anggota = DB::table('anggota')
+            ->join('roles', 'anggota.id_role', '=', 'roles.id')
+            ->select('anggota.id_anggota', 'anggota.nama_anggota', 'anggota.email', 'roles.name as role_name')
+            ->get();
+
+        // Ambil daftar role untuk dropdown, batasi pada role yang dapat diubah
+        $roles = DB::table('roles')->whereIn('name', ['Super User', 'Admin', 'Inventaris'])->get();
+
+        return view('role.index', compact('anggota', 'roles'));
+    }
+
+    /**
+     * Update role anggota berdasarkan ID.
+     */
+    public function updateRole(Request $request, $id)
+    {
+        // Validasi input
+        $validator = Validator::make($request->all(), [
+            'id_role' => 'required|exists:roles,id',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('role.index')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Pastikan role "Super User" hanya ada satu
+        $selectedRole = DB::table('roles')->where('id', $request->id_role)->first();
+        if ($selectedRole->name === 'Super User') {
+            $existingSuperUser = DB::table('anggota')
+                ->where('id_role', $request->id_role)
+                ->where('id_anggota', '!=', $id)
+                ->first();
+
+            if ($existingSuperUser) {
+                return redirect()->route('role.index')
+                    ->with('error', 'Hanya satu Super User yang diizinkan.');
+            }
+        }
+
+        // Update role di tabel anggota
+        DB::table('anggota')->where('id_anggota', $id)->update(['id_role' => $request->id_role]);
+
+        return redirect()->route('role.index')->with('success', 'Role berhasil diperbarui.');
+    }
+
+    /**
+     * Tambahkan user baru (opsional).
+     */
+    public function createUser(Request $request)
+    {
+        // Validasi input
+        $validator = Validator::make($request->all(), [
+            'id_anggota' => 'required|string|unique:anggota,id_anggota|max:10',
+            'nama_anggota' => 'required|string|max:255',
+            'email' => 'required|email|unique:anggota,email',
+            'password' => 'required|string|min:8|confirmed',
+            'id_role' => 'required|exists:roles,id',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Buat user baru
+        DB::table('anggota')->insert([
+            'id_anggota' => $request->id_anggota,
+            'nama_anggota' => $request->nama_anggota,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'id_role' => $request->id_role,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->route('role.index')->with('success', 'User berhasil ditambahkan.');
+    }
+
+    /**
+     * Hapus user (opsional).
+     */
+    public function deleteUser($id)
+    {
+        // Validasi apakah user yang dihapus bukan Super User aktif
+        $user = DB::table('anggota')->where('id_anggota', $id)->first();
+        if (!$user) {
+            return redirect()->route('role.index')->with('error', 'User tidak ditemukan.');
+        }
+
+        $role = DB::table('roles')->where('id', $user->id_role)->first();
+        if ($role && $role->name === 'Super User') {
+            return redirect()->route('role.index')->with('error', 'Tidak dapat menghapus Super User aktif.');
+        }
+
+        // Hapus user
+        DB::table('anggota')->where('id_anggota', $id)->delete();
+
+        return redirect()->route('role.index')->with('success', 'User berhasil dihapus.');
+    }
+}

@@ -18,11 +18,6 @@ class PersetujuanKetum extends Model
         'catatan',
     ];
 
-    // Tipe data untuk casting
-    protected $casts = [
-        'status_persetujuan' => 'boolean',
-    ];
-
     /**
      * Relasi ke model KetuaUmum
      */
@@ -41,10 +36,17 @@ class PersetujuanKetum extends Model
 
     /**
      * Accessor untuk status persetujuan dalam bentuk deskriptif.
-     * Mengembalikan "Disetujui" jika status_persetujuan true, "Tidak Disetujui" jika false.
+     * Mengembalikan status dalam bentuk teks deskriptif: "Menunggu Persetujuan", "Disetujui", atau "Ditolak".
      */
     public function getStatusPersetujuanTextAttribute()
     {
-        return $this->status_persetujuan ? 'Disetujui' : 'Tidak Disetujui';
+        switch ($this->status_persetujuan) {
+            case 'disetujui':
+                return 'Disetujui';
+            case 'ditolak':
+                return 'Ditolak';
+            default:
+                return 'Menunggu Persetujuan';
+        }
     }
 }

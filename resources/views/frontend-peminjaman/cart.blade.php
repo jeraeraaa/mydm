@@ -120,4 +120,28 @@
             })
             .catch(error => console.error('Error:', error));
     }
+
+    function manualUpdateCartQuantity(id) {
+        const inputElement = document.getElementById(`quantity-${id}`);
+        const quantity = parseInt(inputElement.value, 10);
+
+        fetch(`{{ url('/frontend-peminjaman/alat/update-quantity') }}/${id}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    quantity: quantity // kirim jumlah terbaru
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    alert('Gagal memperbarui jumlah. Silakan coba lagi.');
+                    inputElement.value = data.newQuantity || 1;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
 </script>

@@ -58,12 +58,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/frontend-peminjaman/alat/update-quantity/{id}', [FrontendPeminjamanController::class, 'updateCartQuantity'])->name('alat.frontend.updateCartQuantity');
     // Mengubah route menjadi POST untuk menghindari error DELETE
     Route::post('/frontend-peminjaman/cart/remove/{id}', [FrontendPeminjamanController::class, 'removeFromCart'])->name('alat.frontend.removeFromCart');
-
     // Route baru untuk mengajukan peminjaman setelah checkout
     Route::post('/frontend-peminjaman/confirm-loan', [FrontendPeminjamanController::class, 'confirmLoan'])->name('alat.frontend.confirmLoan');
-
     // Route untuk checkout final setelah konfirmasi
     Route::post('/frontend-peminjaman/checkout', [FrontendPeminjamanController::class, 'checkout'])->name('alat.frontend.checkout');
+    Route::get('/frontend-peminjaman/checkout-confirmation', [FrontendPeminjamanController::class, 'checkoutConfirmation'])->name('alat.frontend.checkout-confirmation');
+
 
 
 
