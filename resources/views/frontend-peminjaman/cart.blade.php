@@ -19,7 +19,7 @@
                         </div>
 
                         <!-- Cart Table -->
-                        <form id="cart-form" action="{{ route('alat.frontend.checkoutSelected') }}" method="POST">
+                        <form id="cart-form" action="{{ route('alat.frontend.confirmLoan') }}" method="POST">
                             @csrf
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
@@ -35,7 +35,7 @@
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
                                     @foreach ($cart as $id => $item)
-                                        <tr>
+                                        <tr data-id="{{ $id }}">
                                             <td class="p-6">
                                                 <input type="checkbox"
                                                     class="rounded text-blue-600 focus:ring-blue-500 item-checkbox"
@@ -48,33 +48,45 @@
                                             </td>
                                             <td class="p-6">
                                                 <div class="flex items-center">
-                                                    <button type="button" class="p-1 bg-gray-200 rounded"
-                                                        onclick="updateCartQuantity({{ $id }}, 'decrement')">-</button>
+                                                    <!-- Tombol decrement dengan font lebih besar dan padding -->
+                                                    {{-- <button type="button"
+                                                        class="p-2 bg-gray-200 rounded text-lg font-bold"
+                                                        onclick="updateCartQuantity('{{ $id }}', 'decrement')">-</button> --}}
+
+                                                    <!-- Input jumlah dengan ukuran lebih besar dan tanpa tanda panah -->
                                                     <input type="number" min="1"
-                                                        class="mx-2 w-12 text-center border rounded"
+                                                        class="mx-2 w-16 text-center border rounded text-lg font-semibold"
                                                         value="{{ $item['jumlah'] }}" id="quantity-{{ $id }}"
-                                                        readonly>
-                                                    <button type="button" class="p-1 bg-gray-200 rounded"
-                                                        onclick="updateCartQuantity({{ $id }}, 'increment')">+</button>
+                                                        onchange="manualUpdateCartQuantity('{{ $id }}')"
+                                                        style="appearance: none; -moz-appearance: textfield;">
+
+                                                    {{-- <!-- Tombol increment dengan font lebih besar dan padding -->
+                                                    <button type="button"
+                                                        class="p-2 bg-gray-200 rounded text-lg font-bold"
+                                                        onclick="updateCartQuantity('{{ $id }}', 'increment')">+</button> --}}
                                                 </div>
                                             </td>
+
                                             <td class="p-6">
-                                                <button type="button" class="text-red-500 hover:underline"
-                                                    onclick="removeFromCart({{ $id }})">Hapus</button>
+                                                <!-- Button untuk Hapus dengan JavaScript -->
+                                                <button type="button" onclick="removeFromCart('{{ $id }}')"
+                                                    class="text-red-500 hover:underline">Hapus</button>
                                             </td>
                                         </tr>
                                     @endforeach
+
                                 </tbody>
                             </table>
+
+                            <!-- Checkout Button di form yang sama -->
+                            <div class="p-6 border-t border-gray-200 flex justify-end">
+                                <button type="submit"
+                                    class="py-2 px-4 bg-orange-500 text-white rounded-lg hover:bg-orange-600">
+                                    Checkout
+                                </button>
+                            </div>
                         </form>
                         <!-- End Cart Table -->
-
-                        <!-- Checkout Button -->
-                        <div class="p-6 border-t border-gray-200 flex justify-end">
-                            <button type="button"
-                                class="py-2 px-4 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
-                                onclick="checkoutSelected()">Checkout Selected</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -84,59 +96,6 @@
 
 <!-- JavaScript for Cart Management -->
 <script>
-    // Update quantity function
-    function updateCartQuantity(id, action) {
-        let qtyInput = document.getElementById(`quantity-${id}`);
-        let newQty = parseInt(qtyInput.value);
-
-        if (action === 'increment') {
-            newQty += 1;
-        } else if (action === 'decrement' && newQty > 1) {
-            newQty -= 1;
-        }
-
-        qtyInput.value = newQty;
-
-        fetch(`/frontend-peminjaman/alat/update-quantity/${id}`, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                quantity: newQty
-            })
-        }).then(response => response.json()).then(data => {
-            if (data.success) {
-                // Update cart count if needed
-                const cartCountElement = document.getElementById('cart-count');
-                cartCountElement.textContent = data.cartCount;
-            } else {
-                alert('Gagal memperbarui jumlah item.');
-            }
-        }).catch(error => {
-            console.error('Error:', error);
-        });
-    }
-
-    // Remove item from cart function
-    function removeFromCart(id) {
-        fetch(`/frontend-peminjaman/cart/remove/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            }
-        }).then(response => response.json()).then(data => {
-            if (data.success) {
-                location.reload(); // Reload page to show updated cart
-            } else {
-                alert('Gagal menghapus item dari keranjang.');
-            }
-        }).catch(error => {
-            console.error('Error:', error);
-        });
-    }
-
     // Select All function
     document.getElementById('selectAll').addEventListener('change', function() {
         const checkboxes = document.querySelectorAll('.item-checkbox');
@@ -145,15 +104,71 @@
         });
     });
 
-    // Checkout selected items function
-    function checkoutSelected() {
-        const form = document.getElementById('cart-form');
-        const selectedItems = document.querySelectorAll('.item-checkbox:checked');
+    // Function to remove item from cart with AJAX
+    function removeFromCart(id) {
+        if (!confirm('Apakah Anda yakin ingin menghapus item ini dari keranjang?')) return;
 
-        if (selectedItems.length > 0) {
-            form.submit();
-        } else {
-            alert('Pilih item yang ingin di-checkout.');
-        }
+        fetch(`{{ url('/frontend-peminjaman/cart/remove') }}/${id}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.querySelector(`tr[data-id='${id}']`).remove();
+                } else {
+                    alert('Gagal menghapus item dari keranjang.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Function to update quantity in cart with AJAX
+    // function updateCartQuantity(id, action) {
+    //     fetch(`{{ url('/frontend-peminjaman/alat/update-quantity') }}/${id}`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify({
+    //                 action: action
+    //             })
+    //         })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             if (data.success) {
+    //                 document.getElementById(`quantity-${id}`).value = data.newQuantity;
+    //             }
+    //         })
+    //         .catch(error => console.error('Error:', error));
+    // }
+
+    // Function to manually update quantity from the input
+    function manualUpdateCartQuantity(id) {
+        const quantity = document.getElementById(`quantity-${id}`).value;
+
+        fetch(`{{ url('/frontend-peminjaman/alat/update-quantity') }}/${id}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: 'manual',
+                    quantity: quantity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    alert('Jumlah yang dimasukkan melebihi jumlah tersedia.');
+                    document.getElementById(`quantity-${id}`).value = data.maxAvailable;
+                }
+            })
+            .catch(error => console.error('Error:', error));
     }
 </script>

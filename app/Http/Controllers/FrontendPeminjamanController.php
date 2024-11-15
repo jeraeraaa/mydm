@@ -24,7 +24,6 @@ class FrontendPeminjamanController extends Controller
             })
             ->paginate(8);
 
-        // Mengambil semua divisi kecuali "inti" untuk filter divisi
         $divisi = Bph::where('nama_divisi_bph', '!=', 'inti')->get();
 
         return view('frontend-peminjaman.alat', compact('alat', 'divisi'));
@@ -62,7 +61,6 @@ class FrontendPeminjamanController extends Controller
 
         session()->put('cart', $cart);
         Log::info("Session cart setelah put: ", session()->get('cart'));
-        Log::info("Keranjang setelah penambahan: ", $cart);
 
         return response()->json([
             'success' => true,
@@ -70,7 +68,7 @@ class FrontendPeminjamanController extends Controller
         ]);
     }
 
-    // Tampilkan halaman keranjang peminjaman
+    // Tampilkan halaman keranjang
     public function cart()
     {
         $cart = session()->get('cart', []);
@@ -88,16 +86,24 @@ class FrontendPeminjamanController extends Controller
         if (isset($cart[$id])) {
             unset($cart[$id]);
             session()->put('cart', $cart);
+
+            Log::info("Keranjang setelah penghapusan item: ", $cart);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Alat berhasil dihapus dari keranjang!',
+                'cartCount' => count($cart)
+            ]);
         }
 
-        Log::info("Keranjang setelah penghapusan item: ", $cart);
-
+        // Return error jika item tidak ditemukan di keranjang
         return response()->json([
-            'success' => true,
-            'message' => 'Alat berhasil dihapus dari keranjang!',
-            'cartCount' => count($cart)
-        ]);
+            'success' => false,
+            'message' => 'Gagal menghapus item dari keranjang.'
+        ], 400);
     }
+
+
 
     // Update jumlah alat di keranjang
     public function updateCartQuantity(Request $request, $id)
@@ -126,11 +132,28 @@ class FrontendPeminjamanController extends Controller
         ]);
     }
 
+    // Menampilkan halaman konfirmasi peminjaman
+    public function confirmLoan(Request $request)
+    {
+        $selectedItems = $request->input('selectedItems', []);
+
+        if (empty($selectedItems)) {
+            return redirect()->route('alat.frontend.cart')->with('message', 'Tidak ada item yang dipilih untuk checkout.');
+        }
+
+        $cart = session()->get('cart', []);
+        $selectedCart = array_intersect_key($cart, array_flip($selectedItems));
+
+        // Mengirim selectedCart ke view
+        return view('frontend-peminjaman.confirm-loan', compact('selectedCart'));
+    }
+
+
     // Simpan peminjaman alat ke dalam database
     public function checkout(Request $request)
     {
         $cart = session()->get('cart', []);
-        Log::info("Memproses checkout keranjang: ", $cart);
+        Log::info("Memproses peminjaman keranjang: ", $cart);
 
         foreach ($cart as $id => $details) {
             $alat = Alat::find($id);
@@ -159,26 +182,5 @@ class FrontendPeminjamanController extends Controller
 
         Log::info("Checkout berhasil, keranjang dikosongkan.");
         return redirect()->route('alat.frontend')->with('success', 'Peminjaman alat berhasil diproses!');
-    }
-
-    public function checkoutSelected(Request $request)
-    {
-        $selectedItems = $request->input('selectedItems', []);
-
-        if (empty($selectedItems)) {
-            return redirect()->route('alat.frontend.cart')->with('message', 'Tidak ada item yang dipilih untuk checkout.');
-        }
-
-        foreach ($selectedItems as $id) {
-            $item = session('cart')[$id] ?? null;
-
-            if ($item) {
-                unset(session('cart')[$id]);
-            }
-        }
-
-        session()->put('cart', session('cart'));
-
-        return redirect()->route('alat.frontend.cart')->with('message', 'Checkout berhasil untuk item yang dipilih.');
     }
 }
