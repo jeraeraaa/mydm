@@ -11,6 +11,8 @@ return new class extends Migration
         Schema::create('inventaris', function (Blueprint $table) {
             $table->string('id_inventaris')->primary();
             $table->string('id_anggota', 10); // Menambahkan kolom id_anggota sebagai foreign key
+            $table->year('tahun_jabatan');
+            
             $table->timestamps();
 
             // Foreign key constraint untuk menghubungkan ke tabel anggota

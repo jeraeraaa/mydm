@@ -45,15 +45,25 @@
                 </a>
             </li>
             <li class="nav-item pb-2">
-                <a class="nav-link {{ Request::is('ketum-inventaris') ? 'active' : '' }}"
-                    href="{{ url('ketum-inventaris') }}">
+                <a class="nav-link {{ Request::is('ketua-umum') ? 'active' : '' }}" href="{{ url('ketua-umum') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i style="font-size: 1rem;"
-                            class="fas fa-lg fa-list-ul ps-2 pe-2 text-center text-dark {{ Request::is('ketum-inventaris') ? 'text-white' : 'text-dark' }} "
+                            class="fas fa-lg fa-list-ul ps-2 pe-2 text-center text-dark {{ Request::is('ketua-umum') ? 'text-white' : 'text-dark' }} "
                             aria-hidden="true"></i>
                     </div>
-                    <span class="nav-link-text ms-1">Daftar Ketua Umum dan Inventaris</span>
+                    <span class="nav-link-text ms-1">Daftar Ketua Umum</span>
+                </a>
+            </li>
+            <li class="nav-item pb-2">
+                <a class="nav-link {{ Request::is('inventaris') ? 'active' : '' }}" href="{{ url('inventaris') }}">
+                    <div
+                        class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i style="font-size: 1rem;"
+                            class="fas fa-lg fa-list-ul ps-2 pe-2 text-center text-dark {{ Request::is('inventaris') ? 'text-white' : 'text-dark' }} "
+                            aria-hidden="true"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Daftar Inventaris</span>
                 </a>
             </li>
             <li class="nav-item pb-2">

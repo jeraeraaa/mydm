@@ -16,7 +16,8 @@ class InventarisSeeder extends Seeder
         DB::table('inventaris')->insert([
             [
                 'id_inventaris' => 'INV-001',
-                'id_anggota' => '535210003', 
+                'id_anggota' => '535210003',
+                'tahun_jabatan' => '2020',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],

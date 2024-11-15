@@ -47,9 +47,13 @@ class Anggota extends Authenticatable
 
     public function ketuaUmum()
     {
-        return $this->hasOne(KetuaUmum::class, 'id_anggota', 'id_anggota');
+        return $this->hasMany(KetuaUmum::class, 'id_anggota', 'id_anggota');
     }
 
+    public function inventaris()
+    {
+        return $this->hasMany(Inventaris::class, 'id_anggota', 'id_anggota');
+    }
     public function role()
     {
         return $this->belongsTo(Role::class, 'id_role');

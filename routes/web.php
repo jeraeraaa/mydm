@@ -11,6 +11,8 @@ use App\Http\Controllers\ResetController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\KetuaUmumController;
+use App\Http\Controllers\InventarisController;
 
 // Import Controller di BackendKegiatan
 use App\Http\Controllers\BackendKegiatan\KategoriKegiatanController;
