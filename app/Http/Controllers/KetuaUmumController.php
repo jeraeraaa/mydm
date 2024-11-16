@@ -30,16 +30,18 @@ class KetuaUmumController extends Controller
         return view('ketua-umum.create', compact('anggota'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // Validasi input
         $request->validate([
-            'id_anggota' => 'required|exists:anggota,id_anggota',
+            'id_anggota' => 'required',
             'tahun_jabatan' => 'required|integer|min:1900|max:' . date('Y'),
         ]);
+
+        // Cek apakah id_anggota ada di tabel anggota
+        $anggota = Anggota::where('id_anggota', $request->id_anggota)->first();
+        if (!$anggota) {
+            return redirect()->route('ketua-umum.index')->with('error', 'ID Anggota tidak ditemukan.');
+        }
 
         // Simpan data ketua umum
         KetuaUmum::create([
@@ -50,35 +52,36 @@ class KetuaUmumController extends Controller
         return redirect()->route('ketua-umum.index')->with('success', 'Data Ketua Umum berhasil ditambahkan.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        $ketuaUmum = KetuaUmum::findOrFail($id);
-        $anggota = Anggota::all(); // Ambil semua data anggota untuk dropdown
-        return view('ketua-umum.edit', compact('ketuaUmum', 'anggota'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
-        // Validasi input
         $request->validate([
-            'id_anggota' => 'required|exists:anggota,id_anggota',
+            'id_anggota' => 'required',
             'tahun_jabatan' => 'required|integer|min:1900|max:' . date('Y'),
         ]);
 
+        // Cek apakah id_anggota ada di tabel anggota
+        $anggota = Anggota::where('id_anggota', $request->id_anggota)->first();
+        if (!$anggota) {
+            return redirect()->route('ketua-umum.index')->with('error', 'ID Anggota tidak ditemukan.');
+        }
+
         // Update data ketua umum
-        $ketuaUmum = KetuaUmum::findOrFail($id);
-        $ketuaUmum->update([
+        $ketum = KetuaUmum::findOrFail($id);
+        $ketum->update([
             'id_anggota' => $request->id_anggota,
             'tahun_jabatan' => $request->tahun_jabatan,
         ]);
 
         return redirect()->route('ketua-umum.index')->with('success', 'Data Ketua Umum berhasil diperbarui.');
+    }
+
+
+
+    public function edit($id)
+    {
+        $ketuaUmum = KetuaUmum::findOrFail($id);
+        $anggota = Anggota::all(); // Ambil semua data anggota untuk dropdown
+        return view('ketua-umum.edit', compact('ketuaUmum', 'anggota'));
     }
 
     /**

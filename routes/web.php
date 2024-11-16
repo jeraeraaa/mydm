@@ -103,6 +103,8 @@ Route::group(['middleware' => 'auth'], function () {
     //Route untuk ketum dan inventaris
     Route::resource('ketua-umum', KetuaUmumController::class);
     Route::resource('inventaris', InventarisController::class);
+
+    
 });
 
 

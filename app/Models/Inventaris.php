@@ -18,11 +18,9 @@ class Inventaris extends Model
 
     // Kolom yang dapat diisi (mass assignable)
     protected $fillable = [
-        'id_inventaris',
-        'nama_inventaris',
+        'id_anggota',
         'tahun_jabatan',
     ];
-
     public function anggota()
     {
         return $this->belongsTo(Anggota::class, 'id_anggota', 'id_anggota');

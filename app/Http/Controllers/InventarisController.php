@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Inventaris;
-use App\Models\Anggota; // Karena ada relasi dengan anggota
+use App\Models\Anggota;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class InventarisController extends Controller
 {
@@ -13,18 +14,13 @@ class InventarisController extends Controller
      */
     public function index()
     {
-        // Ambil data inventaris beserta nama anggota terkait
-        $inventaris = Inventaris::with('anggota')->get(); // Asumsi relasi anggota sudah dibuat
-        return view('inventaris.index', compact('inventaris'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $anggota = Anggota::all(); // Ambil semua data anggota untuk dropdown
-        return view('inventaris.create', compact('anggota'));
+        try {
+            // Ambil data inventaris beserta nama anggota terkait
+            $inventaris = Inventaris::with('anggota')->get();
+            return view('inventaris.index', compact('inventaris'));
+        } catch (\Exception $e) {
+            return redirect()->route('inventaris.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -32,72 +28,100 @@ class InventarisController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'id_anggota' => 'required|exists:anggota,id_anggota',
-            'tahun_jabatan' => 'required|integer|min:1900|max:' . date('Y'),
-        ]);
-    
-        $lastInventaris = Inventaris::orderBy('created_at', 'desc')->first();
-        $newIdNumber = $lastInventaris ? ((int) str_replace('INV-', '', $lastInventaris->id_inventaris)) + 1 : 1;
-        $newIdInventaris = 'INV-' . str_pad($newIdNumber, 3, '0', STR_PAD_LEFT);
-    
-        // Debugging untuk memastikan data yang akan disimpan
-        dd([
-            'id_inventaris' => $newIdInventaris,
-            'id_anggota' => $request->id_anggota,
-            'tahun_jabatan' => $request->tahun_jabatan,
-        ]);
-    
-        Inventaris::create([
-            'id_inventaris' => $newIdInventaris,
-            'id_anggota' => $request->id_anggota,
-            'tahun_jabatan' => $request->tahun_jabatan,
-        ]);
-    
-        return redirect()->route('inventaris.index')->with('success', 'Data Inventaris berhasil ditambahkan.');
-    }
-    
+        try {
+            // Validasi input
+            $request->validate([
+                'id_anggota' => 'required|exists:anggota,id_anggota',
+                'tahun_jabatan' => 'required|integer|min:1900|max:' . date('Y'),
+            ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        $inventaris = Inventaris::findOrFail($id);
-        $anggota = Anggota::all(); // Ambil semua data anggota untuk dropdown
-        return view('inventaris.edit', compact('inventaris', 'anggota'));
+            // Generate ID Inventaris otomatis
+            $lastInventaris = Inventaris::orderBy('created_at', 'desc')->first();
+            $newIdNumber = $lastInventaris ? ((int) str_replace('INV-', '', $lastInventaris->id_inventaris)) + 1 : 1;
+            $newIdInventaris = 'INV-' . str_pad($newIdNumber, 3, '0', STR_PAD_LEFT);
+
+            // Simpan data inventaris baru
+            $inventaris = new Inventaris();
+            $inventaris->id_inventaris = $newIdInventaris;
+            $inventaris->id_anggota = $request->id_anggota;
+            $inventaris->tahun_jabatan = $request->tahun_jabatan;
+            $inventaris->save();
+
+            return redirect()->route('inventaris.index')->with('success', 'Data Inventaris berhasil ditambahkan.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Validasi gagal
+            return redirect()->route('inventaris.index')->withErrors($e->validator)->withInput();
+        } catch (\Exception $e) {
+            // Error lain
+            return redirect()->route('inventaris.index')->with('error', 'Terjadi kesalahan saat menambahkan data: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function update(Request $request, $id)
     {
-        // Validasi input
-        $request->validate([
-            'id_inventaris' => 'required|max:20|unique:inventaris,id_inventaris,' . $id . ',id_inventaris',
-            'id_anggota' => 'required|exists:anggota,id_anggota',
-        ]);
+        try {
+            // Validasi input
+            $request->validate([
+                'id_anggota' => [
+                    'required',
+                    'exists:anggota,id_anggota',
+                    'regex:/^\d{9}$/', // Validasi panjang dan format ID Anggota (9 digit angka)
+                ],
+                'tahun_jabatan' => 'required|integer|min:1900|max:' . date('Y'),
+            ]);
 
-        // Update data inventaris
-        $inventaris = Inventaris::findOrFail($id);
-        $inventaris->update([
-            'id_inventaris' => $request->id_inventaris,
-            'id_anggota' => $request->id_anggota,
-        ]);
+            // Cari data inventaris, jika tidak ditemukan, tangkap error
+            $inventaris = Inventaris::findOrFail($id);
 
-        return redirect()->route('inventaris.index')->with('success', 'Data Inventaris berhasil diperbarui.');
+            // Update data inventaris
+            $inventaris->update([
+                'id_anggota' => $request->id_anggota,
+                'tahun_jabatan' => $request->tahun_jabatan,
+            ]);
+
+            // Redirect dengan pesan sukses
+            return redirect()->route('inventaris.index')->with('success', 'Data Inventaris berhasil diperbarui.');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // Jika data inventaris tidak ditemukan
+            Log::error('Inventaris tidak ditemukan untuk ID: ' . $id);
+            return redirect()->route('inventaris.index')->with('error', 'Data Inventaris tidak ditemukan.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Jika validasi gagal
+            return redirect()->route('inventaris.index')->withErrors($e->validator)->withInput();
+        } catch (\Exception $e) {
+            // Penanganan error lainnya
+            Log::error('Update Error:', ['error' => $e->getMessage()]);
+            return redirect()->route('inventaris.index')->with('error', 'Terjadi kesalahan saat memperbarui data.');
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
-        // Hapus data inventaris
-        $inventaris = Inventaris::findOrFail($id);
-        $inventaris->delete();
+        try {
+            // Cari data inventaris, jika tidak ditemukan, tangkap error
+            $inventaris = Inventaris::findOrFail($id);
 
-        return redirect()->route('inventaris.index')->with('success', 'Data Inventaris berhasil dihapus.');
+            // Hapus data inventaris
+            $inventaris->delete();
+
+            return redirect()->route('inventaris.index')->with('success', 'Data Inventaris berhasil dihapus.');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // Jika data tidak ditemukan
+            return redirect()->route('inventaris.index')->with('error', 'Data Inventaris tidak ditemukan.');
+        } catch (\Exception $e) {
+            return redirect()->route('inventaris.index')->with('error', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
+        }
+    }
+
+    public function checkNim(Request $request)
+    {
+        $nim = $request->query('nim');
+        $exists = Anggota::where('id_anggota', $nim)->exists();
+        return response()->json(['exists' => $exists]);
     }
 }
