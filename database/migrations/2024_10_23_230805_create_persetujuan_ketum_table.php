@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('persetujuan_ketum', function (Blueprint $table) {
             $table->id('id_persetujuan_ketum');
-            $table->unsignedBigInteger('id_ketum');
+            $table->unsignedBigInteger('id_ketum')->nullable();
             $table->enum('status_persetujuan', ['menunggu', 'disetujui', 'ditolak'])->default('menunggu');
             $table->text('catatan')->nullable();
             $table->timestamps();

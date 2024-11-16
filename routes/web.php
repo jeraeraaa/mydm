@@ -22,6 +22,10 @@ use App\Http\Controllers\BackendKegiatan\PembicaraController;
 use App\Http\Controllers\BackendKegiatan\DetailKegiatanController;
 use App\Http\Controllers\FrontendPeminjamanController;
 
+use App\Http\Controllers\BackendAlat\PersetujuanKetumController;
+use App\Http\Controllers\BackendAlat\StatusController;
+use App\Http\Controllers\BackendAlat\PengembalianController;
+
 // Halaman home dan halaman statis lainnya
 Route::get('/', function () {
     return view('home');
@@ -67,10 +71,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/frontend-peminjaman/checkout', [FrontendPeminjamanController::class, 'checkout'])->name('alat.frontend.checkout');
     Route::get('/frontend-peminjaman/checkout-confirmation', [FrontendPeminjamanController::class, 'checkoutConfirmation'])->name('alat.frontend.checkout-confirmation');
 
-
-
-
-
     //Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -104,9 +104,21 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('ketua-umum', KetuaUmumController::class);
     Route::resource('inventaris', InventarisController::class);
 
-    
-});
 
+    Route::get('backend-alat/persetujuan', [PersetujuanKetumController::class, 'index'])->name('persetujuan.index');
+    Route::get('backend-alat/persetujuan/{id}', [PersetujuanKetumController::class, 'show'])->name('persetujuan.show');
+    Route::post('backend-alat/persetujuan/{id}/approve', [PersetujuanKetumController::class, 'approve'])->name('persetujuan.approve');
+    Route::post('backend-alat/persetujuan/{id}/reject', [PersetujuanKetumController::class, 'reject'])->name('persetujuan.reject');
+
+    Route::prefix('backend-alat/status-peminjaman')->group(function () {
+        Route::get('/', [StatusController::class, 'index'])->name('status-peminjaman.index');
+        Route::get('/{id}', [StatusController::class, 'show'])->name('status-peminjaman.show');
+        Route::post('/{id}/update', [StatusController::class, 'updateStatus'])->name('status-peminjaman.update');
+    });
+
+    Route::get('backend-alat/pengembalian-alat/{id}', [PengembalianController::class, 'create'])->name('pengembalian-alat.create');
+    Route::post('backend-alat/pengembalian-alat/{id}', [PengembalianController::class, 'store'])->name('pengembalian-alat.store');
+});
 
 
 // Route untuk logout setelah login

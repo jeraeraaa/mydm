@@ -8,19 +8,24 @@ use Illuminate\Database\Eloquent\Model;
 class DetailPeminjamanAlat extends Model
 {
     use HasFactory;
+
     protected $table = 'detail_peminjaman_alat';
+    protected $primaryKey = 'id_detail_peminjaman_alat';
+    
     protected $fillable = [
         'peminjamable_id',
         'peminjamable_type',
         'id_alat',
         'id_inventaris',
         'id_persetujuan_ketum',
+        'id_grup_peminjaman',
         'tanggal_pinjam',
         'tanggal_kembali',
         'kondisi_alat_dipinjam',
         'kondisi_setelah_dikembalikan',
         'catatan',
         'jumlah_dipinjam',
+        'is_returned',
     ];
 
     // Relasi ke model 'Alat'
@@ -45,5 +50,28 @@ class DetailPeminjamanAlat extends Model
     public function peminjamable()
     {
         return $this->morphTo();
+    }
+
+    public function grupPeminjaman()
+    {
+        return $this->belongsTo(PersetujuanKetum::class, 'id_grup_peminjaman', 'id_persetujuan_ketum');
+    }
+
+    // Accessor untuk status peminjaman
+    public function getStatusPeminjamanAttribute()
+    {
+        if ($this->persetujuanKetum && $this->persetujuanKetum->status_persetujuan === 'ditolak') {
+            return 'ditolak';
+        }
+
+        if ($this->is_returned) {
+            return 'dikembalikan';
+        }
+
+        if ($this->persetujuanKetum && $this->persetujuanKetum->status_persetujuan === 'disetujui') {
+            return 'dipinjam';
+        }
+
+        return 'menunggu persetujuan';
     }
 }

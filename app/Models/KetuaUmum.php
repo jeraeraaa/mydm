@@ -16,6 +16,7 @@ class KetuaUmum extends Model
     public $incrementing = true;
 
     protected $fillable = [
+        'id_ketum',
         'id_anggota',
         'tahun_jabatan',
     ];

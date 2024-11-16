@@ -12,24 +12,27 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('detail_peminjaman_alat', function (Blueprint $table) {
-            $table->id('id_detail_peminjaman_alat');
-            $table->morphs('peminjamable'); //polymorphism id_anggota dan id_peminjam_eksternal
-            $table->string('id_alat');
-            $table->string('id_inventaris')->nullable(); // Set as nullable without foreign key initially
-            $table->unsignedBigInteger('id_persetujuan_ketum')->nullable();
-            $table->date('tanggal_pinjam');
-            $table->date('tanggal_kembali')->nullable();
-            $table->string('kondisi_alat_dipinjam');
-            $table->string('kondisi_setelah_dikembalikan')->nullable();
-            $table->text('catatan')->nullable();
-            $table->integer('jumlah_dipinjam');
-            $table->timestamps();
+            $table->id('id_detail_peminjaman_alat'); // Primary key
+            $table->morphs('peminjamable'); // Polymorphism untuk peminjam (anggota atau eksternal)
+            $table->string('id_alat'); // Foreign key untuk alat
+            $table->string('id_inventaris')->nullable(); // Foreign key untuk inventaris (nullable)
+            $table->unsignedBigInteger('id_persetujuan_ketum')->nullable(); // Foreign key untuk persetujuan ketum (nullable)
+            $table->string('id_grup_peminjaman')->nullable(); // Kolom tambahan untuk mengelompokkan peminjaman
+            $table->date('tanggal_pinjam'); // Tanggal peminjaman
+            $table->date('tanggal_kembali')->nullable(); // Tanggal pengembalian (nullable)
+            $table->boolean('is_returned')->default(false);
+            $table->string('kondisi_alat_dipinjam'); // Kondisi alat saat dipinjam
+            $table->string('kondisi_setelah_dikembalikan')->nullable(); // Kondisi alat setelah dikembalikan (nullable)
+            $table->text('catatan')->nullable(); // Catatan tambahan (nullable)
+            $table->integer('jumlah_dipinjam'); // Jumlah alat yang dipinjam
+            $table->timestamps(); // Timestamps
 
+            // Foreign key relationships
             $table->foreign('id_alat')->references('id_alat')->on('alat')->onDelete('cascade');
             $table->foreign('id_persetujuan_ketum')->references('id_persetujuan_ketum')->on('persetujuan_ketum')->onDelete('cascade');
         });
 
-        // Add foreign key constraint in separate migration
+        // Tambahkan foreign key constraint untuk `id_inventaris` di migrasi terpisah
         Schema::table('detail_peminjaman_alat', function (Blueprint $table) {
             $table->foreign('id_inventaris')->references('id_inventaris')->on('inventaris')->onDelete('cascade');
         });
@@ -42,6 +45,9 @@ return new class extends Migration
     {
         Schema::table('detail_peminjaman_alat', function (Blueprint $table) {
             $table->dropForeign(['id_inventaris']);
+            $table->dropForeign(['id_alat']);
+            $table->dropForeign(['id_persetujuan_ketum']);
+            $table->dropColumn('is_returned');
         });
 
         Schema::dropIfExists('detail_peminjaman_alat');

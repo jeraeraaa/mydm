@@ -165,6 +165,13 @@ class FrontendPeminjamanController extends Controller
         $cart = session()->get('cart', []);
         Log::info("Memproses peminjaman keranjang: ", $cart);
 
+        // Buat satu entri persetujuan dengan id_ketum NULL
+        $persetujuanKetum = PersetujuanKetum::create([
+            'id_ketum' => null, // Biarkan NULL terlebih dahulu
+            'status_persetujuan' => 'menunggu',
+            'catatan' => null,
+        ]);
+
         foreach ($cart as $id => $details) {
             $alat = Alat::find($id);
 
@@ -173,18 +180,13 @@ class FrontendPeminjamanController extends Controller
                 return redirect()->route('alat.frontend.cart')->withErrors('Jumlah alat yang diminta melebihi jumlah yang tersedia.');
             }
 
-            $persetujuanKetum = PersetujuanKetum::create([
-                'id_ketum' => 1, // Sesuaikan dengan id_ketum yang sesuai
-                'status_persetujuan' => 'menunggu',
-                'catatan' => null,
-            ]);
-
             DetailPeminjamanAlat::create([
                 'peminjamable_type' => Auth::user() instanceof Anggota ? 'App\Models\Anggota' : 'App\Models\PeminjamEksternal',
                 'peminjamable_id' => Auth::id(),
                 'id_alat' => $details['id_alat'],
                 'id_inventaris' => null,
                 'id_persetujuan_ketum' => $persetujuanKetum->id_persetujuan_ketum,
+                'id_grup_peminjaman' => $persetujuanKetum->id_persetujuan_ketum,
                 'tanggal_pinjam' => $request->input('tanggal_peminjaman'),
                 'tanggal_kembali' => $request->input('tanggal_pengembalian'),
                 'kondisi_alat_dipinjam' => 'Baik',
@@ -201,6 +203,8 @@ class FrontendPeminjamanController extends Controller
         // Redirect ke halaman konfirmasi
         return redirect()->route('alat.frontend.checkout-confirmation');
     }
+
+
 
     public function checkoutConfirmation()
     {

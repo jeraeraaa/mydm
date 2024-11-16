@@ -11,15 +11,27 @@ class PersetujuanKetum extends Model
 
     protected $table = 'persetujuan_ketum';
 
+    // Primary key, jika menggunakan nama selain 'id'
+    protected $primaryKey = 'id_persetujuan_ketum';
+
+    // Primary key bukan integer auto-increment
+    public $incrementing = true;
+
+    // Tipe primary key
+    protected $keyType = 'int';
+
     // Kolom yang dapat diisi (mass assignable)
     protected $fillable = [
-        'id_ketum',
-        'status_persetujuan',
+        'id_ketum',                // ID Ketua Umum
+        'status_persetujuan',      // Status: menunggu, disetujui, ditolak
         'catatan',
+        'updated_at',
+        'created_at',                 
     ];
 
     /**
      * Relasi ke model KetuaUmum
+     * Setiap persetujuan dikaitkan dengan satu Ketua Umum
      */
     public function ketuaUmum()
     {
@@ -27,16 +39,26 @@ class PersetujuanKetum extends Model
     }
 
     /**
-     * Relasi ke model DetailPeminjamanAlat
+     * Relasi polimorfik ke peminjamable (anggota atau peminjam eksternal)
+     * Jika diperlukan untuk mengelola peminjam
      */
-    public function detailPeminjamanAlat()
+    public function peminjamable()
+    {
+        return $this->morphTo();
+    }
+
+    /**
+     * Relasi ke model DetailPeminjamanAlat
+     * Setiap persetujuan mencakup banyak detail peminjaman
+     */
+    public function detailPeminjaman()
     {
         return $this->hasMany(DetailPeminjamanAlat::class, 'id_persetujuan_ketum', 'id_persetujuan_ketum');
     }
 
     /**
-     * Accessor untuk status persetujuan dalam bentuk deskriptif.
-     * Mengembalikan status dalam bentuk teks deskriptif: "Menunggu Persetujuan", "Disetujui", atau "Ditolak".
+     * Accessor untuk status persetujuan dalam bentuk deskriptif
+     * Mengembalikan status: "Menunggu Persetujuan", "Disetujui", atau "Ditolak"
      */
     public function getStatusPersetujuanTextAttribute()
     {

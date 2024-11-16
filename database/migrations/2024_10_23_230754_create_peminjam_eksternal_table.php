@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('peminjam_eksternal', function (Blueprint $table) {
-            $table->id('id_peminjam_eksternal'); // Primary key otomatis increment
+            $table->string('id_peminjam_eksternal', 10)->primary(); // NIM sebagai primary key
             $table->string('id_prodi', 3); // Foreign key untuk program_studi
             $table->string('nama');
             $table->string('organisasi');
