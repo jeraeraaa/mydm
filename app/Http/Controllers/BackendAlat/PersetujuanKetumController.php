@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\DetailPeminjamanAlat;
 use App\Models\PersetujuanKetum;
 use App\Models\KetuaUmum;
+use Illuminate\Support\Facades\Log;
+
 
 class PersetujuanKetumController extends Controller
 {
@@ -156,28 +158,34 @@ class PersetujuanKetumController extends Controller
 
     public function reject(Request $request, $id)
     {
-        // Ambil data pengguna yang login
         $user = Auth::guard('anggota')->user();
 
-        // Periksa apakah user adalah Ketua Umum
         $ketuaUmum = KetuaUmum::where('id_anggota', $user->id_anggota)->first();
-
         if (!$ketuaUmum) {
             return redirect()->back()->withErrors(['error' => 'Pengguna ini bukan Ketua Umum yang valid.']);
         }
 
-        // Cari data persetujuan berdasarkan ID
-        $persetujuan = PersetujuanKetum::findOrFail($id);
+        $persetujuan = PersetujuanKetum::with('detailPeminjaman')->findOrFail($id);
 
-        // Perbarui data persetujuan
+        $detailPeminjaman = $persetujuan->detailPeminjaman;
+
+        if ($detailPeminjaman->isEmpty()) {
+            Log::info('Detail Peminjaman Tidak Ditemukan', ['id_grup_peminjaman' => $persetujuan->id_grup_peminjaman]);
+            return redirect()->back()->withErrors(['error' => 'Detail peminjaman tidak ditemukan.']);
+        }
+
+        foreach ($detailPeminjaman as $detail) {
+            $alat = $detail->alat;
+            $alat->jumlah_tersedia += $detail->jumlah_dipinjam;
+            $alat->save();
+        }
+
         $persetujuan->update([
-            'id_ketum' => $ketuaUmum->id_ketum, // Masukkan ID Ketua Umum dari tabel `ketua_umum`
-            'status_persetujuan' => 'ditolak', // Ubah status menjadi 'ditolak'
-            'catatan' => $request->input('alasan'), // Masukkan alasan penolakan ke kolom `catatan`
-            'updated_at' => now(),
+            'id_ketum' => $ketuaUmum->id_ketum,
+            'status_persetujuan' => 'ditolak',
+            'catatan' => $request->input('alasan'),
         ]);
 
-        // Redirect dengan pesan sukses
         return redirect()->route('persetujuan.index')->with('success', 'Peminjaman telah ditolak.');
     }
 }

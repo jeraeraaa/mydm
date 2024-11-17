@@ -86,14 +86,16 @@
                     </table>
                 </div>
 
-                <!-- Tombol Aksi -->
                 @if ($actionButton)
                     <div class="mt-4 d-flex justify-content-end">
                         <a href="{{ $actionButton['route'] }}" class="{{ $actionButton['class'] }}">
                             {{ $actionButton['label'] }}
                         </a>
                     </div>
+                @else
+                    <p>Tombol aksi tidak tersedia</p>
                 @endif
+
 
             </div>
         </div>

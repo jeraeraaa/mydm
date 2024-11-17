@@ -299,7 +299,7 @@
                 </a>
             </li>
             <li class="nav-item pb-2">
-                <a class="nav-link {{ Request::is('persetujuan') ? 'active' : '' }}"
+                <a class="nav-link {{ Request::is('backend-alat/persetujuan') ? 'active' : '' }}"
                     href="{{ route('persetujuan.index') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -331,7 +331,7 @@
             </li>
 
             <li class="nav-item pb-2">
-                <a class="nav-link {{ Request::is('status-peminjaman') ? 'active' : '' }}"
+                <a class="nav-link {{ Request::is('backend-alat/status-peminjaman') ? 'active' : '' }}"
                     href="{{ route('status-peminjaman.index') }}">
                     <div
                         class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">

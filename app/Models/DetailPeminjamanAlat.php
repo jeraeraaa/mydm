@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class DetailPeminjamanAlat extends Model
 {
@@ -11,7 +12,7 @@ class DetailPeminjamanAlat extends Model
 
     protected $table = 'detail_peminjaman_alat';
     protected $primaryKey = 'id_detail_peminjaman_alat';
-    
+
     protected $fillable = [
         'peminjamable_id',
         'peminjamable_type',
@@ -60,6 +61,11 @@ class DetailPeminjamanAlat extends Model
     // Accessor untuk status peminjaman
     public function getStatusPeminjamanAttribute()
     {
+        Log::info('Accessor status_peminjaman', [
+            'is_returned' => $this->is_returned,
+            'status_persetujuan' => $this->persetujuanKetum->status_persetujuan ?? 'null',
+        ]);
+
         if ($this->persetujuanKetum && $this->persetujuanKetum->status_persetujuan === 'ditolak') {
             return 'ditolak';
         }

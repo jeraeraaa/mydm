@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\DetailPeminjamanAlat;
 use App\Models\Alat;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use App\Models\PersetujuanKetum;
+use App\Models\KetuaUmum;
 
 class StatusController extends Controller
 {
@@ -82,12 +85,22 @@ class StatusController extends Controller
 
         // Cek apakah data peminjaman ditemukan
         if ($detailPeminjaman->isEmpty()) {
-            return redirect()->route('status-peminjaman.index')->withErrors(['error' => 'Data peminjaman tidak ditemukan.']);
+            return redirect()->route('status-peminjaman.index')
+                ->withErrors(['error' => 'Data peminjaman tidak ditemukan.']);
+        }
+
+        // Ambil status peminjaman dari elemen pertama
+        $statusPeminjaman = $detailPeminjaman->first()->status_peminjaman ?? null;
+
+        // Debug: Pastikan status peminjaman valid
+        if (is_null($statusPeminjaman)) {
+            return redirect()->route('status-peminjaman.index')
+                ->withErrors(['error' => 'Status peminjaman tidak valid.']);
         }
 
         // Ambil data peminjam (polymorphic)
         $peminjam = $detailPeminjaman->first()->peminjamable;
-        $namaPeminjam = null;
+        $namaPeminjam = 'Tidak Diketahui';
         $nim = null;
         $fakultas = null;
         $jurusan = null;
@@ -109,33 +122,16 @@ class StatusController extends Controller
                 $fakultas = $programStudi->fakultas->nama_fakultas ?? 'Tidak Berlaku';
                 $organisasi = $peminjam->organisasi ?? 'Tidak Diketahui';
             }
-        } else {
-            $namaPeminjam = 'Tidak Diketahui';
         }
 
         // Tentukan tombol aksi berdasarkan status peminjaman
-        $statusPeminjaman = $detailPeminjaman->first()->status_peminjaman ?? null;
-        $actionButton = null;
+        $actionButton = $this->determineActionButton($statusPeminjaman, $id);
+        // dd([
+        //     'statusPeminjaman' => $statusPeminjaman,
+        //     'userRole' => Auth::user()->role ?? 'guest',
+        //     'actionButton' => $actionButton,
+        // ]);
 
-        $user = Auth::user(); // Ambil data user login menggunakan Auth
-
-        if ($statusPeminjaman === 'menunggu persetujuan' || $statusPeminjaman === 'ditolak') {
-            if ($user && $user->role === 'super_user') {
-                $actionButton = [
-                    'label' => 'Setujui Peminjaman',
-                    'route' => route('persetujuan.approve', ['id' => $id]),
-                    'class' => 'btn btn-warning btn-sm',
-                ];
-            }
-        } elseif ($statusPeminjaman === 'dipinjam') {
-            $actionButton = [
-                'label' => 'Kembalikan Alat',
-                'route' => route('pengembalian-alat.create', ['id' => $id]),
-                'class' => 'btn btn-primary btn-sm',
-            ];
-        }
-
-        // Return view dengan data
         return view('backend-alat.status-peminjaman.show', compact(
             'detailPeminjaman',
             'namaPeminjam',
@@ -147,11 +143,86 @@ class StatusController extends Controller
         ));
     }
 
+    private function determineActionButton($statusPeminjaman, $id)
+    {
+        $user = Auth::user();
+
+        switch ($statusPeminjaman) {
+            case 'menunggu persetujuan':
+                // Tindakan hanya untuk `super_user`
+                if ($user && $user->role === 'super_user') {
+                    return [
+                        'label' => 'Setujui Peminjaman',
+                        'route' => route('persetujuan.approve', ['id' => $id]),
+                        'class' => 'btn btn-warning btn-sm',
+                    ];
+                }
+                return [
+                    'label' => 'Menunggu Persetujuan',
+                    'route' => '#',
+                    'class' => 'btn btn-secondary btn-sm',
+                ];
+
+            case 'ditolak':
+                // Tindakan hanya untuk `super_user`
+                if ($user && $user->role === 'super_user') {
+                    return [
+                        'label' => 'Ajukan Ulang',
+                        'route' => route('pengajuan.ulang', ['id' => $id]),
+                        'class' => 'btn btn-danger btn-sm',
+                    ];
+                }
+                return [
+                    'label' => 'Peminjaman Ditolak',
+                    'route' => '#',
+                    'class' => 'btn btn-secondary btn-sm',
+                ];
+
+            case 'dipinjam':
+                return [
+                    'label' => 'Kembalikan Alat',
+                    'route' => route('pengembalian-alat.store', ['id' => $id]),
+                    'class' => 'btn btn-primary btn-sm',
+                ];
+
+            case 'dikembalikan':
+                return [
+                    'label' => 'Sudah Dikembalikan',
+                    'route' => '#',
+                    'class' => 'btn btn-success btn-sm',
+                ];
+
+            default:
+                return null;
+        }
+    }
 
 
+    public function approve($id)
+    {
+        // Ambil data pengguna yang login
+        $user = Auth::guard('anggota')->user();
 
+        // Pastikan user adalah Ketua Umum dengan validasi di tabel `ketua_umum`
+        $ketuaUmum = KetuaUmum::where('id_anggota', $user->id_anggota)->first();
 
+        if (!$ketuaUmum) {
+            return redirect()->back()->withErrors(['error' => 'Pengguna ini bukan Ketua Umum yang valid.']);
+        }
 
+        // Cari data persetujuan berdasarkan ID
+        $persetujuan = PersetujuanKetum::findOrFail($id);
+
+        // Perbarui data persetujuan
+        $persetujuan->update([
+            'id_ketum' => $ketuaUmum->id_ketum, // Masukkan ID Ketua Umum dari tabel `ketua_umum`
+            'status_persetujuan' => 'disetujui',
+            'updated_at' => now(),
+        ]);
+
+        // Redirect dengan pesan sukses
+        return redirect()->route('persetujuan.index')->with('success', 'Peminjaman telah disetujui.');
+    }
 
     /**
      * Memperbarui status alat.
