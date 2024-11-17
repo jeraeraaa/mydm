@@ -37,9 +37,32 @@ class FrontendPeminjamanController extends Controller
     public function show($id)
     {
         Log::info("Memuat detail alat dengan ID: $id");
-        $alat = Alat::findOrFail($id);
+
+        // Ambil data alat beserta relasi ke detail peminjaman dengan filter status 'disetujui'
+        $alat = Alat::with([
+            'detailPeminjaman' => function ($query) {
+                $query->whereHas('persetujuanKetum', function ($q) {
+                    $q->where('status_persetujuan', 'disetujui');
+                });
+            },
+            'detailPeminjaman.peminjamable',
+        ])->findOrFail($id);
+
+        // Tambahkan informasi nama peminjam ke setiap detail peminjaman
+        foreach ($alat->detailPeminjaman as $peminjaman) {
+            // Polymorphic relation untuk mendapatkan nama peminjam
+            if ($peminjaman->peminjamable_type === \App\Models\Anggota::class) {
+                $peminjaman->nama_peminjam = $peminjaman->peminjamable->nama_anggota ?? 'Tidak Diketahui';
+            } elseif ($peminjaman->peminjamable_type === \App\Models\PeminjamEksternal::class) {
+                $peminjaman->nama_peminjam = $peminjaman->peminjamable->nama ?? 'Tidak Diketahui';
+            } else {
+                $peminjaman->nama_peminjam = 'Tidak Diketahui';
+            }
+        }
+
         return view('frontend-peminjaman.detail_alat', compact('alat'));
     }
+
 
     // Menambahkan alat ke keranjang
     public function addToCart(Request $request, $id)

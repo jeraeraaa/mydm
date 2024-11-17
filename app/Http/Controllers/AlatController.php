@@ -7,6 +7,8 @@ use App\Models\Bph;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+
 
 class AlatController extends Controller
 {
@@ -23,6 +25,53 @@ class AlatController extends Controller
         $alat = $query->get();
         return view('alat.index', compact('alat', 'bph'));
     }
+
+    /**
+     * Display the specified resource.
+     */
+    /**
+     * Display the specified resource.
+     */
+    public function show($id)
+    {
+        Log::info("Memuat detail alat dengan ID: $id");
+
+        // Ambil data alat beserta relasi ke bph dan detail peminjaman
+        $alat = Alat::with([
+            'bph',
+            'detailPeminjaman' => function ($query) {
+                $query->whereHas('persetujuanKetum', function ($q) {
+                    $q->where('status_persetujuan', 'disetujui');
+                });
+            },
+            'detailPeminjaman.peminjamable',
+        ])->findOrFail($id);
+
+        // Tambahkan informasi nama peminjam ke setiap detail peminjaman
+        foreach ($alat->detailPeminjaman as $peminjaman) {
+            if ($peminjaman->peminjamable_type === \App\Models\Anggota::class) {
+                $peminjaman->nama_peminjam = $peminjaman->peminjamable->nama_anggota ?? 'Tidak Diketahui';
+            } elseif ($peminjaman->peminjamable_type === \App\Models\PeminjamEksternal::class) {
+                $peminjaman->nama_peminjam = $peminjaman->peminjamable->nama ?? 'Tidak Diketahui';
+            } else {
+                $peminjaman->nama_peminjam = 'Tidak Diketahui';
+            }
+
+            // Tambahkan log lebih detail
+            Log::info('Detail Peminjaman', [
+                'id_detail_peminjaman' => $peminjaman->id_detail_peminjaman_alat,
+                'peminjamable_id' => $peminjaman->peminjamable_id,
+                'peminjamable_type' => $peminjaman->peminjamable_type,
+                'nama_peminjam' => $peminjaman->nama_peminjam,
+            ]);
+        }
+
+
+        // Redirect ke tampilan detail alat di backend
+        return view('alat.show', compact('alat'));
+    }
+
+
 
     public function create()
     {

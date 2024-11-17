@@ -11,26 +11,19 @@
             <h6 class="font-weight-bolder mb-0 text-capitalize">{{ str_replace('-', ' ', Request::path()) }}</h6>
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4 d-flex justify-content-end" id="navbar">
-            <div class="nav-item d-flex align-self-end">
-                <a href="https://www.creative-tim.com/product/soft-ui-dashboard-laravel" target="_blank"
-                    class="btn btn-primary active mb-0 text-white" role="button" aria-pressed="true">
-                    Download
-                </a>
-            </div>
             <div class="ms-md-3 pe-md-3 d-flex align-items-center">
-                <div class="input-group">
+                <div class="nav-item d-flex align-self-end">
+                    <a href={{ route('home') }} class="btn btn-primary active mb-0 text-white" role="button"
+                        aria-pressed="true">
+                        Home Website
+                    </a>
+                </div>
+                {{-- <div class="input-group">
                     <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
                     <input type="text" class="form-control" placeholder="Type here...">
-                </div>
+                </div> --}}
             </div>
             <ul class="navbar-nav  justify-content-end">
-                {{-- <li class="nav-item d-flex align-items-center">
-                    <a href="#" class="nav-link text-body font-weight-bold px-0"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="fa fa-user me-sm-1"></i>
-                        <span class="d-sm-inline d-none">Sign Out</span>
-                    </a>
-                </li> --}}
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                     @csrf
                 </form>

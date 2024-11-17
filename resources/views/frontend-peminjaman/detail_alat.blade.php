@@ -53,7 +53,7 @@
                                 {{ session('message') }}
                             </div>
                         @endif
-                        
+
                         @if (!$inCart)
                             <form action="{{ route('alat.frontend.addToCart', $alat->id_alat) }}" method="POST"
                                 class="add-to-cart-form" data-id="{{ $alat->id_alat }}">
@@ -78,29 +78,54 @@
                     @if ($alat->detailPeminjaman->isEmpty())
                         <p class="text-sm text-gray-500">Belum ada riwayat peminjaman untuk alat ini.</p>
                     @else
-                        <table class="w-full text-sm text-left text-gray-700 border">
-                            <thead>
-                                <tr class="bg-gray-100">
-                                    <th class="py-2 px-4">Peminjam</th>
-                                    <th class="py-2 px-4">Tanggal Pinjam</th>
-                                    <th class="py-2 px-4">Tanggal Kembali</th>
+                    <table class="w-full text-sm text-left text-gray-700 border border-collapse">
+                        <thead>
+                            <tr class="bg-gray-200">
+                                <th class="py-3 px-6 text-center text-xs font-medium text-gray-600 uppercase tracking-wider border">
+                                    Peminjam
+                                </th>
+                                <th class="py-3 px-6 text-center text-xs font-medium text-gray-600 uppercase tracking-wider border">
+                                    Tanggal Pinjam
+                                </th>
+                                <th class="py-3 px-6 text-center text-xs font-medium text-gray-600 uppercase tracking-wider border">
+                                    Tanggal Kembali
+                                </th>
+                                <th class="py-3 px-6 text-center text-xs font-medium text-gray-600 uppercase tracking-wider border">
+                                    Kondisi Dipinjam
+                                </th>
+                                <th class="py-3 px-6 text-center text-xs font-medium text-gray-600 uppercase tracking-wider border">
+                                    Kondisi Dikembalikan
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($alat->detailPeminjaman as $peminjaman)
+                                <tr class="hover:bg-gray-100">
+                                    <td class="py-3 px-6 text-center text-gray-800 border">
+                                        {{ $peminjaman->nama_peminjam ?? 'Tidak Diketahui' }}
+                                    </td>
+                                    <td class="py-3 px-6 text-center text-gray-800 border">
+                                        {{ $peminjaman->tanggal_pinjam ? \Carbon\Carbon::parse($peminjaman->tanggal_pinjam)->format('d/m/Y') : '-' }}
+                                    </td>
+                                    <td class="py-3 px-6 text-center text-gray-800 border">
+                                        {{ $peminjaman->tanggal_kembali ? \Carbon\Carbon::parse($peminjaman->tanggal_kembali)->format('d/m/Y') : 'Belum Dikembalikan' }}
+                                    </td>
+                                    <td class="py-3 px-6 text-center text-gray-800 border">
+                                        {{ $peminjaman->kondisi_alat_dipinjam ?? 'Tidak Ada Data' }}
+                                    </td>
+                                    <td class="py-3 px-6 text-center text-gray-800 border">
+                                        {{ $peminjaman->kondisi_setelah_dikembalikan ?? 'Belum Dikembalikan' }}
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($alat->detailPeminjaman as $peminjaman)
-                                    <tr class="border-b">
-                                        <td class="py-2 px-4">
-                                            {{ $peminjaman->peminjamable->nama ?? 'Tidak Diketahui' }}</td>
-                                        <td class="py-2 px-4">
-                                            {{ $peminjaman->tanggal_pinjam ? \Carbon\Carbon::parse($peminjaman->tanggal_pinjam)->format('d/m/Y') : '-' }}
-                                        </td>
-                                        <td class="py-2 px-4">
-                                            {{ $peminjaman->tanggal_kembali ? \Carbon\Carbon::parse($peminjaman->tanggal_kembali)->format('d/m/Y') : '-' }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="py-3 px-6 text-center text-gray-500 border">
+                                        Belum ada riwayat peminjaman untuk alat ini.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                     @endif
                 </div>
             </div>
