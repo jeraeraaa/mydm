@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AbsensiController as ControllersAbsensiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AlatController;
 use App\Http\Controllers\Auth\LoginController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\BackendKegiatan\KegiatanController;
 use App\Http\Controllers\BackendKegiatan\MateriController;
 use App\Http\Controllers\BackendKegiatan\PembicaraController;
 use App\Http\Controllers\BackendKegiatan\DetailKegiatanController;
+use App\Http\Controllers\BackendKegiatan\AbsensiController;
 use App\Http\Controllers\FrontendPeminjamanController;
 
 use App\Http\Controllers\BackendAlat\PersetujuanKetumController;
@@ -38,6 +40,12 @@ Route::get('/about', function () {
 
 Route::get('/frontend-kegiatan', [FrontendKegiatanController::class, 'index'])->name('frontend-kegiatan.index');
 Route::get('/frontend-kegiatan/{id}', [FrontendKegiatanController::class, 'show'])->name('frontend-kegiatan.show');
+Route::get('/frontend-kegiatan/{id}/absensi', [FrontendKegiatanController::class, 'formAbsensi'])->name('frontend-kegiatan.absensi');
+Route::post('/frontend-kegiatan/{id}/absensi', [FrontendKegiatanController::class, 'storeAbsensi'])->name('frontend-kegiatan.store-absensi');
+Route::get('/kegiatan/{id}/absensi', [FrontendKegiatanController::class, 'formAbsensi'])->name('frontend-kegiatan.formAbsensi');
+Route::post('/kegiatan/{id}/absensi', [FrontendKegiatanController::class, 'storeAbsensi'])->name('frontend-kegiatan.storeAbsensi');
+Route::get('/kegiatan/absensi/confirmation', [FrontendKegiatanController::class, 'absensiConfirmation'])
+    ->name('frontend-kegiatan.absensiConfirmation');
 
 
 Route::get('/contact', function () {
@@ -99,6 +107,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('detail-kegiatan', DetailKegiatanController::class);
     Route::resource('materi', MateriController::class);
     Route::resource('pembicara', PembicaraController::class);
+    Route::resource('absensi', AbsensiController::class);
+    Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
+
 
     // Route untuk user profile
     Route::get('/user-profile', [InfoUserController::class, 'create']);

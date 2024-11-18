@@ -5,7 +5,15 @@
             <!-- Detail Kegiatan -->
             <div class="mb-6">
                 <h1 class="text-2xl font-bold md:text-3xl">{{ $detailKegiatan->nama_detail_kegiatan }}</h1>
-
+                @if (now()->toDateString() >= $detailKegiatan->tanggal_mulai->toDateString() &&
+                        now()->toDateString() <= $detailKegiatan->tanggal_selesai->toDateString())
+                    <div class="mt-6">
+                        <a href="{{ route('frontend-kegiatan.absensi', $detailKegiatan->id_detail_kegiatan) }}"
+                            class="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 focus:outline-none">
+                            Absensi
+                        </a>
+                    </div>
+                @endif
                 <!-- Deskripsi Kegiatan -->
                 @if ($detailKegiatan->kegiatan)
                     <div class="mt-8">
@@ -28,6 +36,9 @@
                     src="{{ $detailKegiatan->foto ? url('storage/' . $detailKegiatan->foto) : asset('assets/img/defaultbarang.jpg') }}"
                     alt="{{ $detailKegiatan->nama_detail_kegiatan }}">
             </div>
+
+            <!-- Tombol Absensi -->
+
 
             <!-- Materi -->
             @if ($detailKegiatan->materi->count() > 0)
