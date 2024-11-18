@@ -37,22 +37,24 @@
                     Auth::user()->role->name === 'inventaris')
                 <!-- Link khusus untuk pengguna dengan role 'anggota' -->
                 <a href="/frontend-peminjaman/alat"
-                    class="text-sm font-semibold leading-6 {{ Request::is('frontend-peminjaman/alat') ? 'bg-orange-500 text-white rounded-full px-4 py-2' : 'text-orange-500 hover:bg-orange-500 hover:text-white rounded-full px-4 py-2' }}">
+                    class="text-sm font-semibold leading-6 {{ Request::is('frontend-peminjaman/alat*') ? 'bg-orange-500 text-white rounded-full px-4 py-2' : 'text-orange-500 hover:bg-orange-500 hover:text-white rounded-full px-4 py-2' }}">
                     Alat
                 </a>
             @endif
+        @endauth
 
+        @auth
             @if (
                 (Auth::user()->role && Auth::user()->role->name === 'super_user') ||
                     Auth::user()->role->name === 'admin' ||
                     Auth::user()->role->name === 'inventaris')
                 <a href={{ route('dashboard') }}
-                    class="text-sm font-semibold leading-6 {{ Request::is('frontend-peminjaman/alat') ? 'bg-orange-500 text-white rounded-full px-4 py-2' : 'text-orange-500 hover:bg-orange-500 hover:text-white rounded-full px-4 py-2' }}">
+                    class="text-sm font-semibold leading-6 {{ Request::is('dashboard*') ? 'bg-orange-500 text-white rounded-full px-4 py-2' : 'text-orange-500 hover:bg-orange-500 hover:text-white rounded-full px-4 py-2' }}">
                     Dashboard
                 </a>
             @endif
-
         @endauth
+
 
         <a href="/contact"
             class="text-sm font-semibold leading-6 {{ Request::is('contact') ? 'bg-orange-500 text-white rounded-full px-4 py-2' : 'text-orange-500 hover:bg-orange-500 hover:text-white rounded-full px-4 py-2' }}">Contact</a>

@@ -37,6 +37,8 @@ Route::get('/about', function () {
 });
 
 Route::get('/frontend-kegiatan', [FrontendKegiatanController::class, 'index'])->name('frontend-kegiatan.index');
+Route::get('/frontend-kegiatan/{id}', [FrontendKegiatanController::class, 'show'])->name('frontend-kegiatan.show');
+
 
 Route::get('/contact', function () {
     return view('contact', ['title' => 'Contact']);

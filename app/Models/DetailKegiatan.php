@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class DetailKegiatan extends Model
 {
     use HasFactory;
+
     protected $table = 'detail_kegiatan';
     protected $primaryKey = 'id_detail_kegiatan';
     public $incrementing = true;
+
     protected $fillable = [
         'id_bph',
         'id_kegiatan',
@@ -22,6 +24,12 @@ class DetailKegiatan extends Model
         'waktu_selesai',
         'lokasi',
         'foto',
+    ];
+
+    // Tambahkan casting ke tipe date/datetime
+    protected $casts = [
+        'tanggal_mulai' => 'datetime',
+        'tanggal_selesai' => 'datetime',
     ];
 
     public function kegiatan()
@@ -38,5 +46,4 @@ class DetailKegiatan extends Model
     {
         return $this->hasMany(Materi::class, 'id_detail_kegiatan');
     }
-
 }

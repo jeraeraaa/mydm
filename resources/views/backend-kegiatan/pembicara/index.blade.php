@@ -133,17 +133,17 @@
             const nameError = document.getElementById('nameError');
             const contactError = document.getElementById('contactError');
 
-            // Name Validation: Only letters and spaces
-            nameField.addEventListener('input', function() {
-                const regex = /^[A-Za-z\s]+$/;
-                if (!regex.test(nameField.value)) {
-                    nameError.textContent = "Nama Pembicara hanya boleh mengandung huruf dan spasi.";
-                    nameField.classList.add('is-invalid');
-                } else {
-                    nameError.textContent = "";
-                    nameField.classList.remove('is-invalid');
-                }
-            });
+            // // Name Validation: Only letters and spaces
+            // nameField.addEventListener('input', function() {
+            //     const regex = /^[A-Za-z\s]+$/;
+            //     if (!regex.test(nameField.value)) {
+            //         nameError.textContent = "Nama Pembicara hanya boleh mengandung huruf dan spasi.";
+            //         nameField.classList.add('is-invalid');
+            //     } else {
+            //         nameError.textContent = "";
+            //         nameField.classList.remove('is-invalid');
+            //     }
+            // });
 
             // Contact Validation: Only numbers, between 10 to 15 digits
             contactField.addEventListener('input', function() {
