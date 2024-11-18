@@ -25,6 +25,7 @@ use App\Http\Controllers\FrontendPeminjamanController;
 use App\Http\Controllers\BackendAlat\PersetujuanKetumController;
 use App\Http\Controllers\BackendAlat\StatusController;
 use App\Http\Controllers\BackendAlat\PengembalianController;
+use App\Http\Controllers\FrontendKegiatanController;
 
 // Halaman home dan halaman statis lainnya
 Route::get('/', function () {
@@ -35,10 +36,11 @@ Route::get('/about', function () {
     return view('about', ['title' => 'About']);
 });
 
-Route::get('/kegiatan', function () {
-    return view('kegiatan', ['title' => 'Kegiatan']);
-});
+Route::get('/frontend-kegiatan', [FrontendKegiatanController::class, 'index'])->name('frontend-kegiatan.index');
 
+Route::get('/contact', function () {
+    return view('contact', ['title' => 'Contact']);
+});
 
 // Authentication Routes
 Route::group(['middleware' => 'guest'], function () {

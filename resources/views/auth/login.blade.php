@@ -79,4 +79,6 @@
             </p>
         </div>
     </div>
+    <x-footers></x-footers>
 @endsection
+

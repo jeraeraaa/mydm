@@ -23,8 +23,11 @@
             class="text-sm font-semibold leading-6 {{ Request::is('/') ? 'bg-orange-500 text-white rounded-full px-4 py-2' : 'text-orange-500 hover:bg-orange-500 hover:text-white rounded-full px-4 py-2' }}">Home</a>
         <a href="/about"
             class="text-sm font-semibold leading-6 {{ Request::is('about') ? 'bg-orange-500 text-white rounded-full px-4 py-2' : 'text-orange-500 hover:bg-orange-500 hover:text-white rounded-full px-4 py-2' }}">About</a>
-        <a href="/kegiatan"
-            class="text-sm font-semibold leading-6 {{ Request::is('kegiatan') ? 'bg-orange-500 text-white rounded-full px-4 py-2' : 'text-orange-500 hover:bg-orange-500 hover:text-white rounded-full px-4 py-2' }}">Kegiatan</a>
+        <a href="{{ route('frontend-kegiatan.index') }}"
+            class="text-sm font-semibold leading-6 {{ Request::is('frontend-kegiatan') ? 'bg-orange-500 text-white rounded-full px-4 py-2' : 'text-orange-500 hover:bg-orange-500 hover:text-white rounded-full px-4 py-2' }}">
+            Kegiatan
+        </a>
+
 
         @auth
             @if (
@@ -51,6 +54,8 @@
 
         @endauth
 
+        <a href="/contact"
+            class="text-sm font-semibold leading-6 {{ Request::is('contact') ? 'bg-orange-500 text-white rounded-full px-4 py-2' : 'text-orange-500 hover:bg-orange-500 hover:text-white rounded-full px-4 py-2' }}">Contact</a>
     </div>
 
     <div class="hidden lg:flex lg:flex-1 lg:justify-end">
