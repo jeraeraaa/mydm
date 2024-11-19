@@ -7,12 +7,12 @@
                 <div class="card-header pb-0">
                     <div class="d-flex flex-row justify-content-between">
                         <div>
-                            <h5 class="mb-0">All Activity Categories</h5>
+                            <h5 class="mb-0">External Borrowers</h5>
                         </div>
-                        <!-- Add Category Button that opens the modal -->
+                        <!-- Add Borrower Button that opens the modal -->
                         <a href="#" class="btn bg-gradient-primary btn-sm mb-0" data-bs-toggle="modal"
-                            data-bs-target="#createCategoryModal">
-                            +&nbsp; Add Category
+                            data-bs-target="#createBorrowerModal">
+                            +&nbsp; Add Borrower
                         </a>
                     </div>
                 </div>
@@ -26,36 +26,56 @@
                                         Actions
                                     </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Category Name
+                                        NIM
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Name
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Organization
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Program
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($kategori as $category)
+                                @foreach ($peminjamEksternal as $borrower)
                                     <tr>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center gap-2">
-                                                <!-- Edit Category -->
-                                                <a href="{{ route('kategori-kegiatan.edit', $category->id_kategori_kegiatan) }}"
+                                                <!-- Edit Borrower -->
+                                                <a href="{{ route('peminjam-eksternal.edit', $borrower->id_peminjam_eksternal) }}"
                                                     class="btn btn-link p-0 m-0">
                                                     <i class="fas fa-edit text-secondary"></i>
                                                 </a>
 
-                                                <!-- Delete Category -->
+                                                <!-- Delete Borrower -->
                                                 <form
-                                                    action="{{ route('kategori-kegiatan.destroy', $category->id_kategori_kegiatan) }}"
+                                                    action="{{ route('peminjam-eksternal.destroy', $borrower->id_peminjam_eksternal) }}"
                                                     method="POST" class="d-inline-block d-flex align-items-center m-0 p-0">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-link p-0 m-0"
-                                                        onclick="return confirm('Are you sure you want to delete this category?')">
+                                                        onclick="return confirm('Are you sure you want to delete this borrower?')">
                                                         <i class="fas fa-trash text-secondary"></i>
                                                     </button>
                                                 </form>
                                             </div>
                                         </td>
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $category->nama_kategori }}</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $borrower->id_peminjam_eksternal }}
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $borrower->nama }}</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $borrower->organisasi }}</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">
+                                                {{ $borrower->program_studi->nama_prodi }}</p>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -85,24 +105,33 @@
         </div>
     @endif
 
-    <!-- Modal for Creating New Category -->
-    <div class="modal fade" id="createCategoryModal" tabindex="-1" role="dialog"
-        aria-labelledby="createCategoryModalLabel" aria-hidden="true">
+    <!-- Modal for Adding New Borrower -->
+    <div class="modal fade" id="createBorrowerModal" tabindex="-1" role="dialog"
+        aria-labelledby="createBorrowerModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createCategoryModalLabel">Add New Category</h5>
+                    <h5 class="modal-title" id="createBorrowerModalLabel">Add New Borrower</h5>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Category Creation Form -->
-                    <form action="{{ route('kategori-kegiatan.store') }}" method="POST">
+                    <!-- Borrower Creation Form -->
+                    <form action="{{ route('peminjam-eksternal.store') }}" method="POST">
                         @csrf
                         <div class="mb-3">
-                            <label for="nama_kategori" class="form-label">Category Name</label>
-                            <input type="text" class="form-control" id="nama_kategori" name="nama_kategori" required>
+                            <label for="id_peminjam_eksternal" class="form-label">NIM</label>
+                            <input type="text" class="form-control" id="id_peminjam_eksternal"
+                                name="id_peminjam_eksternal" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="nama" name="nama" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="organisasi" class="form-label">Organization</label>
+                            <input type="text" class="form-control" id="organisasi" name="organisasi" required>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

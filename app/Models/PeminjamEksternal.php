@@ -19,7 +19,7 @@ class PeminjamEksternal extends Model
     protected $fillable = [
         'id_peminjam_eksternal',
         'nama',
-        'id_prodi',      // Mengganti 'jurusan' dengan 'id_prodi' agar sesuai dengan migrasi
+        'id_prodi',
         'organisasi',
     ];
 
@@ -33,7 +33,7 @@ class PeminjamEksternal extends Model
      * Relasi ke model ProgramStudi.
      * Setiap peminjam eksternal berhubungan dengan satu program studi.
      */
-    public function programStudi()
+    public function program_studi()
     {
         return $this->belongsTo(ProgramStudi::class, 'id_prodi', 'id_prodi');
     }

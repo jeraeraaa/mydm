@@ -6,14 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Models\KategoriKegiatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class KategoriKegiatanController extends Controller
 {
     // Menampilkan daftar kategori kegiatan
+
     public function index()
     {
-        $kategori = KategoriKegiatan::all();
-        return view('backend-kegiatan.kategori-kegiatan.index', compact('kategori'));
+        $user = Auth::guard('anggota')->user();
+        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'admin') {
+            $kategori = KategoriKegiatan::all();
+            return view('backend-kegiatan.kategori-kegiatan.index', compact('kategori'));
+        } else {
+            abort(403, 'Akses Ditolak');
+        }
     }
 
     // Menampilkan form untuk membuat kategori baru

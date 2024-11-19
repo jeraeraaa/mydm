@@ -7,12 +7,12 @@
                 <div class="card-header pb-0">
                     <div class="d-flex flex-row justify-content-between">
                         <div>
-                            <h5 class="mb-0">All Activity Categories</h5>
+                            <h5 class="mb-0">All Visitors</h5>
                         </div>
-                        <!-- Add Category Button that opens the modal -->
+                        <!-- Add Visitor Button that opens the modal -->
                         <a href="#" class="btn bg-gradient-primary btn-sm mb-0" data-bs-toggle="modal"
-                            data-bs-target="#createCategoryModal">
-                            +&nbsp; Add Category
+                            data-bs-target="#createVisitorModal">
+                            +&nbsp; Add Visitor
                         </a>
                     </div>
                 </div>
@@ -26,36 +26,41 @@
                                         Actions
                                     </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Category Name
+                                        Visitor Name
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Phone Number
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($kategori as $category)
+                                @foreach ($pengunjung as $visitor)
                                     <tr>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center gap-2">
-                                                <!-- Edit Category -->
-                                                <a href="{{ route('kategori-kegiatan.edit', $category->id_kategori_kegiatan) }}"
+                                                <!-- Edit Visitor -->
+                                                <a href="{{ route('pengunjung.edit', $visitor->id_pengunjung) }}"
                                                     class="btn btn-link p-0 m-0">
                                                     <i class="fas fa-edit text-secondary"></i>
                                                 </a>
 
-                                                <!-- Delete Category -->
-                                                <form
-                                                    action="{{ route('kategori-kegiatan.destroy', $category->id_kategori_kegiatan) }}"
+                                                <!-- Delete Visitor -->
+                                                <form action="{{ route('pengunjung.destroy', $visitor->id_pengunjung) }}"
                                                     method="POST" class="d-inline-block d-flex align-items-center m-0 p-0">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-link p-0 m-0"
-                                                        onclick="return confirm('Are you sure you want to delete this category?')">
+                                                        onclick="return confirm('Are you sure you want to delete this visitor?')">
                                                         <i class="fas fa-trash text-secondary"></i>
                                                     </button>
                                                 </form>
                                             </div>
                                         </td>
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $category->nama_kategori }}</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $visitor->nama_pengunjung }}</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $visitor->no_hp }}</p>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -85,24 +90,28 @@
         </div>
     @endif
 
-    <!-- Modal for Creating New Category -->
-    <div class="modal fade" id="createCategoryModal" tabindex="-1" role="dialog"
-        aria-labelledby="createCategoryModalLabel" aria-hidden="true">
+    <!-- Modal for Adding New Visitor -->
+    <div class="modal fade" id="createVisitorModal" tabindex="-1" role="dialog" aria-labelledby="createVisitorModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createCategoryModalLabel">Add New Category</h5>
+                    <h5 class="modal-title" id="createVisitorModalLabel">Add New Visitor</h5>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Category Creation Form -->
-                    <form action="{{ route('kategori-kegiatan.store') }}" method="POST">
+                    <!-- Visitor Creation Form -->
+                    <form action="{{ route('pengunjung.store') }}" method="POST">
                         @csrf
                         <div class="mb-3">
-                            <label for="nama_kategori" class="form-label">Category Name</label>
-                            <input type="text" class="form-control" id="nama_kategori" name="nama_kategori" required>
+                            <label for="nama_pengunjung" class="form-label">Visitor Name</label>
+                            <input type="text" class="form-control" id="nama_pengunjung" name="nama_pengunjung" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="no_hp" class="form-label">Phone Number</label>
+                            <input type="text" class="form-control" id="no_hp" name="no_hp" required>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

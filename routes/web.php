@@ -15,6 +15,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\KetuaUmumController;
 use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\PengunjungController;
+use App\Http\Controllers\PeminjamEksternalController;
 
 // Import Controller di BackendKegiatan
 use App\Http\Controllers\BackendKegiatan\KategoriKegiatanController;
@@ -90,6 +92,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/api/dashboard/stats', [DashboardController::class, 'getStats']);
+
 
     Route::get('profile', function () {
         return view('profile');
@@ -114,16 +118,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('pembicara', PembicaraController::class);
     Route::resource('absensi', AbsensiController::class);
     Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
-
-
-    // Route untuk user profile
-    Route::get('/user-profile', [InfoUserController::class, 'create']);
-    Route::post('/user-profile', [InfoUserController::class, 'store']);
+    Route::resource('pengunjung', PengunjungController::class);
+    Route::resource('peminjam-eksternal', PeminjamEksternalController::class);
 
     //Route untuk ketum dan inventaris
     Route::resource('ketua-umum', KetuaUmumController::class);
     Route::resource('inventaris', InventarisController::class);
-
 
     Route::get('backend-alat/persetujuan', [PersetujuanKetumController::class, 'index'])->name('persetujuan.index');
     Route::get('backend-alat/persetujuan/{id}', [PersetujuanKetumController::class, 'show'])->name('persetujuan.show');

@@ -18,57 +18,63 @@ class StatusController extends Controller
      */
     public function index(Request $request)
     {
-        // Ambil nilai filter dari query string
-        $filterStatus = $request->get('filter_status');
+        $user = Auth::guard('anggota')->user();
 
-        // Ambil data alat dengan relasi terkait
-        $statusPeminjaman = DetailPeminjamanAlat::with(['alat', 'persetujuanKetum', 'peminjamable'])
-            ->when($filterStatus, function ($query, $filterStatus) {
-                // Tambahkan filter berdasarkan status
-                $query->where(function ($q) use ($filterStatus) {
-                    if ($filterStatus === 'dikembalikan') {
-                        $q->where('is_returned', true);
-                    } elseif ($filterStatus === 'menunggu persetujuan') {
-                        $q->whereHas('persetujuanKetum', function ($q) {
-                            $q->where('status_persetujuan', 'menunggu');
-                        });
-                    } elseif ($filterStatus === 'dipinjam') {
-                        $q->whereHas('persetujuanKetum', function ($q) {
-                            $q->where('status_persetujuan', 'disetujui');
-                        })->where('is_returned', false);
-                    } elseif ($filterStatus === 'ditolak') {
-                        $q->whereHas('persetujuanKetum', function ($q) {
-                            $q->where('status_persetujuan', 'ditolak');
-                        });
+        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'admin' || $user->role->name === 'inventaris') {
+            // Ambil nilai filter dari query string
+            $filterStatus = $request->get('filter_status');
+
+            // Ambil data alat dengan relasi terkait
+            $statusPeminjaman = DetailPeminjamanAlat::with(['alat', 'persetujuanKetum', 'peminjamable'])
+                ->when($filterStatus, function ($query, $filterStatus) {
+                    // Tambahkan filter berdasarkan status
+                    $query->where(function ($q) use ($filterStatus) {
+                        if ($filterStatus === 'dikembalikan') {
+                            $q->where('is_returned', true);
+                        } elseif ($filterStatus === 'menunggu persetujuan') {
+                            $q->whereHas('persetujuanKetum', function ($q) {
+                                $q->where('status_persetujuan', 'menunggu');
+                            });
+                        } elseif ($filterStatus === 'dipinjam') {
+                            $q->whereHas('persetujuanKetum', function ($q) {
+                                $q->where('status_persetujuan', 'disetujui');
+                            })->where('is_returned', false);
+                        } elseif ($filterStatus === 'ditolak') {
+                            $q->whereHas('persetujuanKetum', function ($q) {
+                                $q->where('status_persetujuan', 'ditolak');
+                            });
+                        }
+                    });
+                })
+                ->orderBy('id_grup_peminjaman', 'asc') // Urutkan berdasarkan ID Grup Peminjaman
+                ->get()
+                ->groupBy('id_grup_peminjaman') // Kelompokkan berdasarkan ID Grup Peminjaman
+                ->map(function ($details, $grupId) {
+                    $firstDetail = $details->first(); // Ambil elemen pertama dari grup peminjaman
+
+                    // Ambil nama peminjam dari polymorphic relation
+                    $peminjam = null;
+                    if ($firstDetail->peminjamable) {
+                        if (get_class($firstDetail->peminjamable) === 'App\\Models\\Anggota') {
+                            $peminjam = $firstDetail->peminjamable->nama_anggota;
+                        } elseif (get_class($firstDetail->peminjamable) === 'App\\Models\\PeminjamEksternal') {
+                            $peminjam = $firstDetail->peminjamable->nama;
+                        }
                     }
+
+                    return [
+                        'id_grup_peminjaman' => $grupId,
+                        'nama_peminjam' => $peminjam ?? 'Tidak Diketahui',
+                        'status_peminjaman' => $firstDetail->status_peminjaman, // Menggunakan accessor
+                        'tanggal_pinjam' => $firstDetail->tanggal_pinjam,
+                        'tanggal_kembali' => $firstDetail->tanggal_kembali ?? '-',
+                    ];
                 });
-            })
-            ->orderBy('id_grup_peminjaman', 'asc') // Urutkan berdasarkan ID Grup Peminjaman
-            ->get()
-            ->groupBy('id_grup_peminjaman') // Kelompokkan berdasarkan ID Grup Peminjaman
-            ->map(function ($details, $grupId) {
-                $firstDetail = $details->first(); // Ambil elemen pertama dari grup peminjaman
 
-                // Ambil nama peminjam dari polymorphic relation
-                $peminjam = null;
-                if ($firstDetail->peminjamable) {
-                    if (get_class($firstDetail->peminjamable) === 'App\\Models\\Anggota') {
-                        $peminjam = $firstDetail->peminjamable->nama_anggota;
-                    } elseif (get_class($firstDetail->peminjamable) === 'App\\Models\\PeminjamEksternal') {
-                        $peminjam = $firstDetail->peminjamable->nama;
-                    }
-                }
-
-                return [
-                    'id_grup_peminjaman' => $grupId,
-                    'nama_peminjam' => $peminjam ?? 'Tidak Diketahui',
-                    'status_peminjaman' => $firstDetail->status_peminjaman, // Menggunakan accessor
-                    'tanggal_pinjam' => $firstDetail->tanggal_pinjam,
-                    'tanggal_kembali' => $firstDetail->tanggal_kembali ?? '-',
-                ];
-            });
-
-        return view('backend-alat.status-peminjaman.index', compact('statusPeminjaman', 'filterStatus'));
+            return view('backend-alat.status-peminjaman.index', compact('statusPeminjaman', 'filterStatus'));
+        } else {
+            abort(403, 'Akses Ditolak');
+        }
     }
 
 
@@ -78,75 +84,81 @@ class StatusController extends Controller
      */
     public function show($id)
     {
-        // Ambil semua detail peminjaman dalam grup yang sama
-        $detailPeminjaman = DetailPeminjamanAlat::with(['alat', 'peminjamable', 'persetujuanKetum'])
-            ->where('id_grup_peminjaman', $id)
-            ->get();
+        $user = Auth::guard('anggota')->user();
 
-        // Cek apakah data peminjaman ditemukan
-        if ($detailPeminjaman->isEmpty()) {
-            return redirect()->route('status-peminjaman.index')
-                ->withErrors(['error' => 'Data peminjaman tidak ditemukan.']);
-        }
+        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'admin' || $user->role->name === 'inventaris') {
 
-        // Ambil status peminjaman dari elemen pertama
-        $statusPeminjaman = $detailPeminjaman->first()->status_peminjaman ?? null;
+            // Ambil semua detail peminjaman dalam grup yang sama
+            $detailPeminjaman = DetailPeminjamanAlat::with(['alat', 'peminjamable', 'persetujuanKetum'])
+                ->where('id_grup_peminjaman', $id)
+                ->get();
 
-        // Debug: Pastikan status peminjaman valid
-        if (is_null($statusPeminjaman)) {
-            return redirect()->route('status-peminjaman.index')
-                ->withErrors(['error' => 'Status peminjaman tidak valid.']);
-        }
-
-        // Ambil data peminjam (polymorphic)
-        $peminjam = $detailPeminjaman->first()->peminjamable;
-        $namaPeminjam = 'Tidak Diketahui';
-        $nim = null;
-        $fakultas = null;
-        $jurusan = null;
-        $organisasi = null;
-
-        if ($peminjam) {
-            if ($peminjam instanceof \App\Models\Anggota) {
-                $namaPeminjam = $peminjam->nama_anggota;
-                $nim = $peminjam->id_anggota;
-                $programStudi = $peminjam->prodi;
-                $jurusan = $programStudi->nama_prodi ?? 'Tidak Berlaku';
-                $fakultas = $programStudi->fakultas->nama_fakultas ?? 'Tidak Berlaku';
-                $organisasi = 'Internal Dharmayana';
-            } elseif ($peminjam instanceof \App\Models\PeminjamEksternal) {
-                $namaPeminjam = $peminjam->nama;
-                $nim = $peminjam->id_peminjam_eksternal;
-                $programStudi = $peminjam->programStudi;
-                $jurusan = $programStudi->nama_prodi ?? 'Tidak Berlaku';
-                $fakultas = $programStudi->fakultas->nama_fakultas ?? 'Tidak Berlaku';
-                $organisasi = $peminjam->organisasi ?? 'Tidak Diketahui';
+            // Cek apakah data peminjaman ditemukan
+            if ($detailPeminjaman->isEmpty()) {
+                return redirect()->route('status-peminjaman.index')
+                    ->withErrors(['error' => 'Data peminjaman tidak ditemukan.']);
             }
+
+            // Ambil status peminjaman dari elemen pertama
+            $statusPeminjaman = $detailPeminjaman->first()->status_peminjaman ?? null;
+
+            // Debug: Pastikan status peminjaman valid
+            if (is_null($statusPeminjaman)) {
+                return redirect()->route('status-peminjaman.index')
+                    ->withErrors(['error' => 'Status peminjaman tidak valid.']);
+            }
+
+            // Ambil data peminjam (polymorphic)
+            $peminjam = $detailPeminjaman->first()->peminjamable;
+            $namaPeminjam = 'Tidak Diketahui';
+            $nim = null;
+            $fakultas = null;
+            $jurusan = null;
+            $organisasi = null;
+
+            if ($peminjam) {
+                if ($peminjam instanceof \App\Models\Anggota) {
+                    $namaPeminjam = $peminjam->nama_anggota;
+                    $nim = $peminjam->id_anggota;
+                    $programStudi = $peminjam->prodi;
+                    $jurusan = $programStudi->nama_prodi ?? 'Tidak Berlaku';
+                    $fakultas = $programStudi->fakultas->nama_fakultas ?? 'Tidak Berlaku';
+                    $organisasi = 'Internal Dharmayana';
+                } elseif ($peminjam instanceof \App\Models\PeminjamEksternal) {
+                    $namaPeminjam = $peminjam->nama;
+                    $nim = $peminjam->id_peminjam_eksternal;
+                    $programStudi = $peminjam->programStudi;
+                    $jurusan = $programStudi->nama_prodi ?? 'Tidak Berlaku';
+                    $fakultas = $programStudi->fakultas->nama_fakultas ?? 'Tidak Berlaku';
+                    $organisasi = $peminjam->organisasi ?? 'Tidak Diketahui';
+                }
+            }
+
+            // Tentukan tombol aksi berdasarkan status peminjaman
+            $actionButton = $this->determineActionButton($statusPeminjaman, $id);
+            // dd([
+            //     'statusPeminjaman' => $statusPeminjaman,
+            //     'userRole' => Auth::user()->role ?? 'guest',
+            //     'actionButton' => $actionButton,
+            // ]);
+
+            return view('backend-alat.status-peminjaman.show', compact(
+                'detailPeminjaman',
+                'namaPeminjam',
+                'nim',
+                'fakultas',
+                'jurusan',
+                'organisasi',
+                'actionButton'
+            ));
+        } else {
+            abort(403, 'Akses Ditolak');
         }
-
-        // Tentukan tombol aksi berdasarkan status peminjaman
-        $actionButton = $this->determineActionButton($statusPeminjaman, $id);
-        // dd([
-        //     'statusPeminjaman' => $statusPeminjaman,
-        //     'userRole' => Auth::user()->role ?? 'guest',
-        //     'actionButton' => $actionButton,
-        // ]);
-
-        return view('backend-alat.status-peminjaman.show', compact(
-            'detailPeminjaman',
-            'namaPeminjam',
-            'nim',
-            'fakultas',
-            'jurusan',
-            'organisasi',
-            'actionButton'
-        ));
     }
 
     private function determineActionButton($statusPeminjaman, $id)
     {
         $user = Auth::user();
-
         switch ($statusPeminjaman) {
             case 'menunggu persetujuan':
                 // Tindakan hanya untuk `super_user`
@@ -203,25 +215,30 @@ class StatusController extends Controller
         // Ambil data pengguna yang login
         $user = Auth::guard('anggota')->user();
 
-        // Pastikan user adalah Ketua Umum dengan validasi di tabel `ketua_umum`
-        $ketuaUmum = KetuaUmum::where('id_anggota', $user->id_anggota)->first();
+        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'admin') {
 
-        if (!$ketuaUmum) {
-            return redirect()->back()->withErrors(['error' => 'Pengguna ini bukan Ketua Umum yang valid.']);
+            // Pastikan user adalah Ketua Umum dengan validasi di tabel `ketua_umum`
+            $ketuaUmum = KetuaUmum::where('id_anggota', $user->id_anggota)->first();
+
+            if (!$ketuaUmum) {
+                return redirect()->back()->withErrors(['error' => 'Pengguna ini bukan Ketua Umum yang valid.']);
+            }
+
+            // Cari data persetujuan berdasarkan ID
+            $persetujuan = PersetujuanKetum::findOrFail($id);
+
+            // Perbarui data persetujuan
+            $persetujuan->update([
+                'id_ketum' => $ketuaUmum->id_ketum, // Masukkan ID Ketua Umum dari tabel `ketua_umum`
+                'status_persetujuan' => 'disetujui',
+                'updated_at' => now(),
+            ]);
+
+            // Redirect dengan pesan sukses
+            return redirect()->route('persetujuan.index')->with('success', 'Peminjaman telah disetujui.');
+        } else {
+            abort(403, 'Akses Ditolak');
         }
-
-        // Cari data persetujuan berdasarkan ID
-        $persetujuan = PersetujuanKetum::findOrFail($id);
-
-        // Perbarui data persetujuan
-        $persetujuan->update([
-            'id_ketum' => $ketuaUmum->id_ketum, // Masukkan ID Ketua Umum dari tabel `ketua_umum`
-            'status_persetujuan' => 'disetujui',
-            'updated_at' => now(),
-        ]);
-
-        // Redirect dengan pesan sukses
-        return redirect()->route('persetujuan.index')->with('success', 'Peminjaman telah disetujui.');
     }
 
     /**

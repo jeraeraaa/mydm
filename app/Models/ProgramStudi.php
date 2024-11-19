@@ -26,4 +26,14 @@ class ProgramStudi extends Model
     {
         return $this->belongsTo(Fakultas::class, 'id_fakultas');
     }
+
+    public function peminjam_eksternal()
+    {
+        return $this->hasMany(PeminjamEksternal::class, 'id_prodi', 'id_prodi');
+    }
+    
+    public function anggota()
+    {
+        return $this->hasMany(Anggota::class, 'id_prodi', 'id_prodi');
+    }
 }

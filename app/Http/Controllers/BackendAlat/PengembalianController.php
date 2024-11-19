@@ -16,8 +16,11 @@ class PengembalianController extends Controller
      * @param int $id ID Grup Peminjaman
      * @return \Illuminate\View\View
      */
+
+
     public function create($id)
     {
+
         // Ambil semua detail peminjaman dalam grup yang sama
         $detailPeminjaman = DetailPeminjamanAlat::with('alat')->where('id_grup_peminjaman', $id)->get();
 
@@ -29,7 +32,15 @@ class PengembalianController extends Controller
         $defaultTanggalKembali = $detailPeminjaman->first()->tanggal_kembali ?? now()->format('Y-m-d');
 
         // Return view dengan semua data yang diperlukan
-        return view('backend-alat.pengembalian-alat.create', compact('id', 'detailPeminjaman', 'defaultTanggalKembali'));
+
+        $user = Auth::guard('anggota')->user();
+        // dd($user->role->name); // Menampilkan nama role untuk verifikasi
+
+        if ($user->role && ($user->role->name === 'admin' || $user->role->name === 'super_user' || $user->role->name === 'inventaris')) {
+            return view('backend-alat.pengembalian-alat.create', compact('id', 'detailPeminjaman', 'defaultTanggalKembali'));
+        } else {
+            abort(403, 'Akses Ditolak');
+        }
     }
 
 
@@ -61,6 +72,13 @@ class PengembalianController extends Controller
             $alat->save();
         }
 
-        return redirect()->route('status-peminjaman.index')->with('success', 'Pengembalian berhasil disimpan.');
+        $user = Auth::guard('anggota')->user();
+        // dd($user->role->name); // Menampilkan nama role untuk verifikasi
+        
+        if ($user->role && ($user->role->name === 'admin' || $user->role->name === 'super_user' || $user->role->name === 'inventaris')) {
+            return redirect()->route('status-peminjaman.index')->with('success', 'Pengembalian berhasil disimpan.');
+        } else {
+            abort(403, 'Akses Ditolak');
+        }
     }
 }

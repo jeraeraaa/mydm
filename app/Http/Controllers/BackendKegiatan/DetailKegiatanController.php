@@ -10,34 +10,45 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DetailKegiatanController extends Controller
 {
     // Display a listing of the detail kegiatan
     public function index()
     {
-        try {
-            $details = DetailKegiatan::with(['kegiatan', 'bph'])->get();
-            $bphList = Bph::all(); // Mendapatkan seluruh data divisi BPH
-            $kegiatanList = Kegiatan::all(); // Menyertakan kegiatan untuk tampilan index jika diperlukan
-            return view('backend-kegiatan.detail-kegiatan.index', compact('details', 'bphList', 'kegiatanList'));
-        } catch (\Exception $e) {
-            Log::error("Failed to display detail kegiatan list: " . $e->getMessage());
-            return back()->withErrors(['error' => 'Failed to display detail kegiatan list.']);
+        $user = Auth::guard('anggota')->user();
+        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'admin') {
+            try {
+                $details = DetailKegiatan::with(['kegiatan', 'bph'])->get();
+                $bphList = Bph::all(); // Mendapatkan seluruh data divisi BPH
+                $kegiatanList = Kegiatan::all(); // Menyertakan kegiatan untuk tampilan index jika diperlukan
+                return view('backend-kegiatan.detail-kegiatan.index', compact('details', 'bphList', 'kegiatanList'));
+            } catch (\Exception $e) {
+                Log::error("Failed to display detail kegiatan list: " . $e->getMessage());
+                return back()->withErrors(['error' => 'Failed to display detail kegiatan list.']);
+            }
+        } else {
+            abort(403, 'Akses Ditolak');
         }
     }
 
     public function show($id)
     {
-        try {
-            // Temukan detail kegiatan berdasarkan ID
-            $detailKegiatan = DetailKegiatan::with(['kegiatan', 'bph'])->findOrFail($id);
+        $user = Auth::guard('anggota')->user();
+        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'admin') {
+            try {
+                // Temukan detail kegiatan berdasarkan ID
+                $detailKegiatan = DetailKegiatan::with(['kegiatan', 'bph'])->findOrFail($id);
 
-            // Kembalikan view dengan data detail kegiatan
-            return view('backend-kegiatan.detail-kegiatan.show', compact('detailKegiatan'));
-        } catch (\Exception $e) {
-            Log::error("Failed to show detail kegiatan: " . $e->getMessage());
-            return back()->withErrors(['error' => 'Gagal menampilkan detail kegiatan.']);
+                // Kembalikan view dengan data detail kegiatan
+                return view('backend-kegiatan.detail-kegiatan.show', compact('detailKegiatan'));
+            } catch (\Exception $e) {
+                Log::error("Failed to show detail kegiatan: " . $e->getMessage());
+                return back()->withErrors(['error' => 'Gagal menampilkan detail kegiatan.']);
+            }
+        } else {
+            abort(403, 'Akses Ditolak');
         }
     }
 
@@ -45,9 +56,14 @@ class DetailKegiatanController extends Controller
     // Show the form for creating a new detail kegiatan
     public function create()
     {
-        $kegiatanList = Kegiatan::all();
-        $bphList = Bph::all(); // Mengambil seluruh data BPH untuk ditampilkan di form
-        return view('backend-kegiatan.detail-kegiatan.create', compact('kegiatanList', 'bphList'));
+        $user = Auth::guard('anggota')->user();
+        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'admin') {
+            $kegiatanList = Kegiatan::all();
+            $bphList = Bph::all(); // Mengambil seluruh data BPH untuk ditampilkan di form
+            return view('backend-kegiatan.detail-kegiatan.create', compact('kegiatanList', 'bphList'));
+        } else {
+            abort(403, 'Akses Ditolak');
+        }
     }
 
     public function store(Request $request)
