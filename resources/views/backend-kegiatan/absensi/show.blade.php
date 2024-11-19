@@ -49,7 +49,12 @@
                             +&nbsp; Tambah Absensi
                         </button>
                     </div>
-
+                    <div class="my-4">
+                        <h6>Scan QR Code untuk Form Absensi</h6>
+                        <div>
+                            {!! QrCode::size(200)->generate($qrCodeUrl) !!}
+                        </div>
+                    </div>
                     <!-- Modal Form Absensi -->
                     <div class="modal fade" id="absensiModal" tabindex="-1" aria-labelledby="absensiModalLabel"
                         aria-hidden="true">

@@ -11,6 +11,7 @@ use App\Models\Anggota;
 use App\Models\Bph;
 use App\Models\PeminjamEksternal;
 use App\Models\PersetujuanKetum;
+use App\Models\ProgramStudi;
 
 class FrontendPeminjamanController extends Controller
 {
@@ -160,18 +161,53 @@ class FrontendPeminjamanController extends Controller
         $cart = session()->get('cart', []);
         $selectedCart = array_intersect_key($cart, array_flip($selectedItems));
 
-        // Ambil data peminjam dari pengguna yang sedang login
-        $peminjam = Auth::user(); // Pastikan guard auth mengarah ke model Anggota
-        $peminjamData = [
-            'nama' => $peminjam->nama_anggota,
-            'nim' => $peminjam->id_anggota,
-            'fakultas' => $peminjam->prodi->fakultas->nama_fakultas ?? 'Fakultas Tidak Diketahui',
-            'jurusan' => $peminjam->prodi->nama_prodi ?? 'Jurusan Tidak Diketahui',
-            'organisasi' => 'Internal Dharmayana',
-        ];
+        if (empty($selectedCart)) {
+            // Jika tidak ada data yang valid di session, kembalikan ke keranjang
+            return redirect()->route('alat.frontend.cart')->with('message', 'Data keranjang tidak valid.');
+        }
+        // Ambil data jenis peminjam (pribadi atau eksternal) dari request
+        $jenisPeminjam = $request->input('jenis_peminjam', 'pribadi');
+
+        if ($jenisPeminjam === 'pribadi') {
+            // Jika peminjam adalah pribadi (anggota), gunakan data dari pengguna yang sedang login
+            $peminjam = Auth::user(); // Pastikan guard auth mengarah ke model Anggota
+            $peminjamData = [
+                'nama' => $peminjam->nama_anggota,
+                'nim' => $peminjam->id_anggota,
+                'fakultas' => $peminjam->prodi->fakultas->nama_fakultas ?? 'Fakultas Tidak Diketahui',
+                'jurusan' => $peminjam->prodi->nama_prodi ?? 'Jurusan Tidak Diketahui',
+                'organisasi' => 'Internal Dharmayana',
+            ];
+        } elseif ($jenisPeminjam === 'eksternal') {
+            // Jika peminjam adalah eksternal, ambil data dari input form
+            $validated = $request->validate([
+                'nama_eksternal' => 'required|string|max:255',
+                'id_eksternal' => 'required|string|max:10|unique:peminjam_eksternal,id_peminjam_eksternal',
+                'organisasi_eksternal' => 'required|string|max:255',
+            ]);
+
+            $peminjamData = [
+                'nama' => $validated['nama_eksternal'],
+                'nim' => $validated['id_eksternal'],
+                'fakultas' => 'Eksternal',
+                'jurusan' => 'Eksternal',
+                'organisasi' => $validated['organisasi_eksternal'],
+            ];
+
+            // Simpan data ke tabel `peminjam_eksternal`
+            \App\Models\PeminjamEksternal::create([
+                'id_peminjam_eksternal' => $validated['id_eksternal'],
+                'id_prodi' => $request->input('id_prodi', '000'), // Default ID Prodi jika tidak tersedia
+                'nama' => $validated['nama_eksternal'],
+                'organisasi' => $validated['organisasi_eksternal'],
+            ]);
+        } else {
+            return redirect()->route('alat.frontend.cart')->with('error', 'Jenis peminjam tidak valid.');
+        }
 
         return view('frontend-peminjaman.confirm-loan', compact('selectedCart', 'peminjamData'));
     }
+
 
 
     // Generate nomor invoice
@@ -185,47 +221,122 @@ class FrontendPeminjamanController extends Controller
     // Simpan peminjaman alat ke dalam database
     public function checkout(Request $request)
     {
-        $cart = session()->get('cart', []);
+        $cart = session()->get('cart', []); // Ambil data keranjang dari sesi
+
         Log::info("Memproses peminjaman keranjang: ", $cart);
 
-        // Buat satu entri persetujuan dengan id_ketum NULL
+        // Validasi input tanggal dan jenis peminjam
+        $validatedData = $request->validate([
+            'tanggal_peminjaman' => 'required|date|after_or_equal:today',
+            'tanggal_pengembalian' => 'required|date|after:tanggal_peminjaman',
+            'jenis_peminjam' => 'required|in:pribadi,eksternal',
+        ]);
+
+        // Pastikan keranjang tidak kosong
+        if (empty($cart)) {
+            return redirect()->route('alat.frontend.cart')->with('error', 'Keranjang Anda kosong.');
+        }
+
+        // Buat persetujuan ketum
         $persetujuanKetum = PersetujuanKetum::create([
-            'id_ketum' => null, // Biarkan NULL terlebih dahulu
+            'id_ketum' => null, // Biarkan null sampai disetujui
             'status_persetujuan' => 'menunggu',
             'catatan' => null,
         ]);
 
-        foreach ($cart as $id => $details) {
-            $alat = Alat::find($id);
+        // Jenis peminjam: pribadi atau eksternal
+        $jenisPeminjam = $validatedData['jenis_peminjam'];
 
-            if ($alat->jumlah_tersedia < $details['jumlah']) {
-                Log::warning("Jumlah alat yang diminta melebihi stok untuk ID: $id");
-                return redirect()->route('alat.frontend.cart')->withErrors('Jumlah alat yang diminta melebihi jumlah yang tersedia.');
+        try {
+            foreach ($cart as $id => $details) {
+                $alat = Alat::find($id);
+
+                // Validasi ketersediaan alat
+                if (!$alat) {
+                    throw new \Exception("Alat dengan ID $id tidak ditemukan.");
+                }
+
+                if ($alat->jumlah_tersedia < $details['jumlah']) {
+                    throw new \Exception("Jumlah alat dengan ID $id tidak mencukupi.");
+                }
+
+                if ($jenisPeminjam === 'pribadi') {
+                    // Jika jenis peminjam adalah anggota
+                    DetailPeminjamanAlat::create([
+                        'peminjamable_type' => Anggota::class,
+                        'peminjamable_id' => Auth::id(),
+                        'id_alat' => $details['id_alat'],
+                        'id_inventaris' => null,
+                        'id_persetujuan_ketum' => $persetujuanKetum->id_persetujuan_ketum,
+                        'id_grup_peminjaman' => $persetujuanKetum->id_persetujuan_ketum,
+                        'tanggal_pinjam' => $validatedData['tanggal_peminjaman'],
+                        'tanggal_kembali' => $validatedData['tanggal_pengembalian'],
+                        'kondisi_alat_dipinjam' => 'Baik',
+                        'jumlah_dipinjam' => $details['jumlah'],
+                    ]);
+                } elseif ($jenisPeminjam === 'eksternal') {
+                    // Validasi data eksternal
+                    $validatedEksternal = $request->validate([
+                        'id_eksternal' => 'required|string|max:10',
+                        'nama_eksternal' => 'required|string|max:255',
+                        'organisasi_eksternal' => 'required|string|max:255',
+                    ]);
+
+                    // Ambil kode prodi dari 3 digit pertama ID peminjam
+                    $kodeProdi = substr($validatedEksternal['id_eksternal'], 0, 3);
+
+                    // Validasi program studi
+                    $prodi = ProgramStudi::where('id_prodi', $kodeProdi)->first();
+                    if (!$prodi) {
+                        throw new \Exception("Kode prodi tidak valid untuk NIM {$validatedEksternal['id_eksternal']}.");
+                    }
+
+                    // Periksa apakah peminjam eksternal sudah ada di database
+                    $peminjamEksternal = PeminjamEksternal::where('id_peminjam_eksternal', $validatedEksternal['id_eksternal'])->first();
+
+                    if (!$peminjamEksternal) {
+                        // Jika belum ada, buat entri baru
+                        $peminjamEksternal = PeminjamEksternal::create([
+                            'id_peminjam_eksternal' => $validatedEksternal['id_eksternal'], // NIM yang diinput
+                            'nama' => $validatedEksternal['nama_eksternal'],
+                            'organisasi' => $validatedEksternal['organisasi_eksternal'],
+                            'id_prodi' => $prodi->id_prodi, // 3 digit pertama sebagai id_prodi
+                        ]);
+                    }
+
+                    // Buat detail peminjaman
+                    DetailPeminjamanAlat::create([
+                        'peminjamable_type' => PeminjamEksternal::class,
+                        'peminjamable_id' => $peminjamEksternal->id_peminjam_eksternal,
+                        'id_alat' => $details['id_alat'],
+                        'id_inventaris' => null,
+                        'id_persetujuan_ketum' => $persetujuanKetum->id_persetujuan_ketum,
+                        'id_grup_peminjaman' => $persetujuanKetum->id_persetujuan_ketum,
+                        'tanggal_pinjam' => $validatedData['tanggal_peminjaman'],
+                        'tanggal_kembali' => $validatedData['tanggal_pengembalian'],
+                        'kondisi_alat_dipinjam' => 'Baik',
+                        'jumlah_dipinjam' => $details['jumlah'],
+                    ]);
+                }
+
+                // Update jumlah alat tersedia
+                $alat->decrement('jumlah_tersedia', $details['jumlah']);
             }
 
-            DetailPeminjamanAlat::create([
-                'peminjamable_type' => Auth::user() instanceof Anggota ? 'App\Models\Anggota' : 'App\Models\PeminjamEksternal',
-                'peminjamable_id' => Auth::id(),
-                'id_alat' => $details['id_alat'],
-                'id_inventaris' => null,
-                'id_persetujuan_ketum' => $persetujuanKetum->id_persetujuan_ketum,
-                'id_grup_peminjaman' => $persetujuanKetum->id_persetujuan_ketum,
-                'tanggal_pinjam' => $request->input('tanggal_peminjaman'),
-                'tanggal_kembali' => $request->input('tanggal_pengembalian'),
-                'kondisi_alat_dipinjam' => 'Baik',
-                'jumlah_dipinjam' => $details['jumlah']
-            ]);
+            // Kosongkan keranjang setelah sukses
+            session()->forget('cart');
 
-            $alat->jumlah_tersedia -= $details['jumlah'];
-            $alat->save();
+            Log::info("Checkout berhasil, keranjang dikosongkan.");
+            return redirect()->route('alat.frontend.checkout-confirmation');
+        } catch (\Exception $e) {
+            Log::error("Error saat checkout: " . $e->getMessage());
+            return redirect()->route('alat.frontend.cart')->with('error', $e->getMessage());
         }
-
-        session()->forget('cart');
-        Log::info("Checkout berhasil, keranjang dikosongkan.");
-
-        // Redirect ke halaman konfirmasi
-        return redirect()->route('alat.frontend.checkout-confirmation');
     }
+
+
+
+
 
 
 

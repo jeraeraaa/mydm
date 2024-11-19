@@ -8,6 +8,8 @@ use App\Models\DetailKegiatan;
 use App\Models\Anggota;
 use App\Models\Pengunjung;
 use Illuminate\Http\Request;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 
 class AbsensiController extends Controller
 {
@@ -26,7 +28,10 @@ class AbsensiController extends Controller
         $detail = DetailKegiatan::findOrFail($id_detail_kegiatan);
         $absensi = Absensi::where('id_detail_kegiatan', $id_detail_kegiatan)->with(['anggota', 'pengunjung'])->get();
 
-        return view('backend-kegiatan.absensi.show', compact('detail', 'absensi'));
+        // Tambahkan definisi QR Code URL
+        $qrCodeUrl = route('frontend-kegiatan.formAbsensi', ['id' => $id_detail_kegiatan]);
+
+        return view('backend-kegiatan.absensi.show', compact('detail', 'absensi', 'qrCodeUrl'));
     }
 
 
@@ -134,7 +139,6 @@ class AbsensiController extends Controller
         $absensi->update($validated);
 
         return redirect()->route('absensi.show', $validated['id_detail_kegiatan'])->with('success', 'Absensi berhasil diperbarui!');
-
     }
 
     /**
@@ -146,6 +150,5 @@ class AbsensiController extends Controller
         $absensi->delete();
 
         return redirect()->route('absensi.show', $absensi->id_detail_kegiatan)->with('success', 'Absensi berhasil dihapus!');
-
     }
 }

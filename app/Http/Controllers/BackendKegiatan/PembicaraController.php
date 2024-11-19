@@ -59,7 +59,7 @@ class PembicaraController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama_pembicara' => 'required|string|regex:/^[A-Za-z\s]+$/|max:255', // Hanya huruf dan spasi
+            'nama_pembicara' => 'required|string|max:255', // Hanya huruf dan spasi
             'kontak_pembicara' => 'required|digits_between:10,15', // Hanya angka, minimal 10 dan maksimal 15 digit
         ]);
 

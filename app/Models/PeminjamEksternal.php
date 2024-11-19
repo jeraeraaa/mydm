@@ -10,9 +10,14 @@ class PeminjamEksternal extends Model
     use HasFactory;
 
     protected $table = 'peminjam_eksternal';
+    protected $primaryKey = 'id_peminjam_eksternal';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
 
     // Kolom yang dapat diisi (mass assignable)
     protected $fillable = [
+        'id_peminjam_eksternal',
         'nama',
         'id_prodi',      // Mengganti 'jurusan' dengan 'id_prodi' agar sesuai dengan migrasi
         'organisasi',

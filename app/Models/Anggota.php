@@ -58,4 +58,8 @@ class Anggota extends Authenticatable
     {
         return $this->belongsTo(Role::class, 'id_role');
     }
+    public function absensi()
+    {
+        return $this->hasMany(Absensi::class, 'id_anggota', 'id_anggota');
+    }
 }

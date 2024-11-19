@@ -14,6 +14,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\KetuaUmumController;
 use App\Http\Controllers\InventarisController;
+use App\Http\Controllers\ProfilController;
 
 // Import Controller di BackendKegiatan
 use App\Http\Controllers\BackendKegiatan\KategoriKegiatanController;
@@ -46,6 +47,10 @@ Route::get('/kegiatan/{id}/absensi', [FrontendKegiatanController::class, 'formAb
 Route::post('/kegiatan/{id}/absensi', [FrontendKegiatanController::class, 'storeAbsensi'])->name('frontend-kegiatan.storeAbsensi');
 Route::get('/kegiatan/absensi/confirmation', [FrontendKegiatanController::class, 'absensiConfirmation'])
     ->name('frontend-kegiatan.absensiConfirmation');
+Route::get('/profil/{id_anggota}', [ProfilController::class, 'show'])->name('profil.show');
+Route::get('/profile/edit/{id}', [ProfilController::class, 'edit'])->name('profile.edit');
+Route::put('/profile/update/{id}', [ProfilController::class, 'update'])->name('profile.update');
+Route::get('/profile/show/{id}', [ProfilController::class, 'show'])->name('profile.show');
 
 
 Route::get('/contact', function () {
