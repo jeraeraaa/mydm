@@ -27,6 +27,7 @@ return new class extends Migration
 
             // Foreign key ke tabel program_studi
             $table->foreign('id_prodi')->references('id_prodi')->on('program_studi')->onDelete('cascade');
+            $table->foreignId('id_role')->nullable()->default(4)->constrained('roles')->onDelete('set null');
         });
     }
 

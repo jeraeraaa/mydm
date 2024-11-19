@@ -81,6 +81,13 @@
                             ? asset('storage/foto_profil/' . Auth::user()->foto_profil)
                             : asset('assets/img/default-user.png') }}"
                         alt="Foto Profil {{ Auth::user()->nama_anggota }}">
+
+
+                    {{-- <img class="inline-block size-16 rounded-full ring-2 ring-white"
+                                src="{{ file_exists(public_path('storage/foto_profil/' . $anggota->foto_profil)) && $anggota->foto_profil
+                                    ? asset('storage/foto_profil/' . $anggota->foto_profil)
+                                    : asset('assets/img/default-user.png') }}"
+                                alt="Foto profil {{ $anggota->nama_anggota }}"> --}}
                 </a>
             @endif
         @endauth

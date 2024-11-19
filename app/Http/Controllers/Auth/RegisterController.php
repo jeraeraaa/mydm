@@ -69,7 +69,8 @@ class RegisterController extends Controller
             'no_hp' => $request->no_hp,
             'alamat' => $request->alamat,
             'jenis_kelamin' => $request->jenis_kelamin,
-            'id_prodi' => $prodi->id_prodi
+            'id_prodi' => $prodi->id_prodi,
+            'id_role' => 4,
         ];
 
         // Proses upload foto profil jika ada

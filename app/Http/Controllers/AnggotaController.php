@@ -91,6 +91,7 @@ class AnggotaController extends Controller
             $data = $request->all();
             $data['id_prodi'] = $prodi->id_prodi;
             $data['password'] = bcrypt($password_default);
+            $data['id_role'] = 4; 
 
             // Proses upload foto profil jika ada
             if ($request->hasFile('foto_profil')) {
