@@ -16,6 +16,7 @@ class ProgramStudi extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'id_prodi',
         'id_fakultas',
         'nama_prodi',
     ];
@@ -32,7 +33,7 @@ class ProgramStudi extends Model
     {
         return $this->hasMany(PeminjamEksternal::class, 'id_prodi', 'id_prodi');
     }
-    
+
     public function anggota()
     {
         return $this->hasMany(Anggota::class, 'id_prodi', 'id_prodi');

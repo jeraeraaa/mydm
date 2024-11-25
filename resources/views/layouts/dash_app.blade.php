@@ -27,6 +27,8 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
+
+
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -59,6 +61,96 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages, etc. -->
     <script src="{{ asset('assets/js/soft-ui-dashboard.min.js?v=1.0.3') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('.nav-link');
+            const contentContainer = document.querySelector('.main-content .container-fluid');
+
+            // Tambahkan event listener untuk setiap link
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const url = this.getAttribute('href'); // Gunakan 'href' sebagai URL
+
+                    // Tambahkan class active pada sidebar
+                    links.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Gunakan fetch untuk memuat konten
+                    fetch(url)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.text();
+                        })
+                        .then(data => {
+                            const parser = new DOMParser();
+                            const html = parser.parseFromString(data, 'text/html');
+                            const newContent = html.querySelector('.container-fluid');
+
+                            if (newContent) {
+                                contentContainer.innerHTML = newContent.innerHTML;
+
+                                // Update URL di address bar tanpa refresh
+                                window.history.pushState({
+                                    path: url
+                                }, '', url);
+                            } else {
+                                console.error(
+                                    'Error: Container content not found in the response.');
+                            }
+                        })
+                        .catch(err => console.error('Error loading content:', err));
+                });
+
+                // Tambahkan efek hover pada ikon
+                const iconDiv = link.querySelector('.icon');
+                if (iconDiv) {
+                    link.addEventListener('mouseover', () => {
+                        iconDiv.style.backgroundColor = '#343a40'; // Warna gelap
+                        iconDiv.style.color = 'white'; // Ikon menjadi putih
+                    });
+                    link.addEventListener('mouseout', () => {
+                        iconDiv.style.backgroundColor = 'white'; // Warna default
+                        iconDiv.style.color = 'black'; // Ikon kembali menjadi hitam
+                    });
+                }
+            });
+
+            // Tangani back/forward browser navigation
+            window.addEventListener('popstate', function(event) {
+                const currentPath = window.location.pathname;
+
+                fetch(currentPath)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        const parser = new DOMParser();
+                        const html = parser.parseFromString(data, 'text/html');
+                        const newContent = html.querySelector('.container-fluid');
+
+                        if (newContent) {
+                            contentContainer.innerHTML = newContent.innerHTML;
+
+                            // Perbarui active link pada sidebar
+                            links.forEach(link => {
+                                const linkUrl = link.getAttribute('href');
+                                link.classList.toggle('active', linkUrl === currentPath);
+                            });
+                        } else {
+                            console.error('Error: Container content not found in the response.');
+                        }
+                    })
+                    .catch(err => console.error('Error handling popstate:', err));
+            });
+        });
+    </script>
+
 </body>
 
 </html>

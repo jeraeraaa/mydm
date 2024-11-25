@@ -30,6 +30,9 @@ use App\Http\Controllers\FrontendPeminjamanController;
 use App\Http\Controllers\BackendAlat\PersetujuanKetumController;
 use App\Http\Controllers\BackendAlat\StatusController;
 use App\Http\Controllers\BackendAlat\PengembalianController;
+use App\Http\Controllers\BphController;
+use App\Http\Controllers\FakultasController;
+use App\Http\Controllers\ProgramStudiController;
 use App\Http\Controllers\FrontendKegiatanController;
 
 // Halaman home dan halaman statis lainnya
@@ -124,6 +127,9 @@ Route::group(['middleware' => 'auth'], function () {
     //Route untuk ketum dan inventaris
     Route::resource('ketua-umum', KetuaUmumController::class);
     Route::resource('inventaris', InventarisController::class);
+    Route::resource('bph', BphController::class);
+    Route::resource('fakultas', FakultasController::class);
+    Route::resource('program-studi', ProgramStudiController::class);
 
     Route::get('backend-alat/persetujuan', [PersetujuanKetumController::class, 'index'])->name('persetujuan.index');
     Route::get('backend-alat/persetujuan/{id}', [PersetujuanKetumController::class, 'show'])->name('persetujuan.show');

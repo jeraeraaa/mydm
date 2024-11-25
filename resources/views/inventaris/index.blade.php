@@ -34,9 +34,6 @@
                                     <th
                                         class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
                                         Tahun Jabatan</th>
-                                    <th
-                                        class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                        Tanggal Ditambahkan</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -73,10 +70,6 @@
                                         </td>
                                         <td class="text-center">
                                             <p class="text-xs font-weight-bold mb-0">{{ $item->tahun_jabatan }}</p>
-                                        </td>
-                                        <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">
-                                                {{ $item->created_at->format('d M Y') }}</p>
                                         </td>
                                     </tr>
                                     {{-- Modal Edit Inventaris --}}
