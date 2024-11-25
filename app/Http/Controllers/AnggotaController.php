@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\AnggotaExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Barryvdh\Snappy\Facades\SnappyPdf;
+
 
 
 class AnggotaController extends Controller
@@ -91,7 +96,7 @@ class AnggotaController extends Controller
             $data = $request->all();
             $data['id_prodi'] = $prodi->id_prodi;
             $data['password'] = bcrypt($password_default);
-            $data['id_role'] = 4; 
+            $data['id_role'] = 4;
 
             // Proses upload foto profil jika ada
             if ($request->hasFile('foto_profil')) {
@@ -186,5 +191,103 @@ class AnggotaController extends Controller
         } else {
             abort(403, 'Akses Ditolak');
         }
+    }
+
+    public function laporanDataAnggota(Request $request)
+    {
+        // Debug input filter
+        Log::info('Filter Input:', $request->all());
+
+        $user = Auth::guard('anggota')->user();
+        if ($user->role && ($user->role->name === 'super_user' || $user->role->name === 'admin')) {
+            // Query awal
+            $query = DB::table('anggota')
+                ->join('program_studi', 'anggota.id_prodi', '=', 'program_studi.id_prodi')
+                ->select(
+                    'anggota.id_anggota',
+                    'anggota.nama_anggota',
+                    'program_studi.nama_prodi',
+                    'anggota.email',
+                    'anggota.no_hp',
+                    'anggota.jenis_kelamin',
+                    'anggota.tanggal_lahir'
+                );
+
+            // Filter rentang tanggal lahir
+            if ($request->filled('tanggal_lahir_start') && $request->filled('tanggal_lahir_end')) {
+                $query->whereBetween('anggota.tanggal_lahir', [$request->tanggal_lahir_start, $request->tanggal_lahir_end]);
+            } elseif ($request->filled('tanggal_lahir_start')) {
+                $query->whereDate('anggota.tanggal_lahir', '>=', $request->tanggal_lahir_start);
+            } elseif ($request->filled('tanggal_lahir_end')) {
+                $query->whereDate('anggota.tanggal_lahir', '<=', $request->tanggal_lahir_end);
+            }
+
+            if ($request->filled('id_prodi')) {
+                Log::info('Program Studi Filter:', $request->id_prodi);
+                $query->whereIn('anggota.id_prodi', $request->id_prodi);
+            }
+
+
+            // Dapatkan hasil
+            $anggota = $query->orderBy('anggota.id_anggota', 'asc')->get();
+
+            // Dapatkan daftar program studi untuk checkbox
+            $programStudi = DB::table('program_studi')->get();
+
+            return view('anggota.laporan', compact('anggota', 'programStudi'));
+        } else {
+            abort(403, 'Akses Ditolak');
+        }
+    }
+
+    public function downloadPdf(Request $request)
+    {
+        Log::info('Asset Path Gambar: ' . asset('assets/img/logos/dm.png'));
+        // Filter query
+        $query = DB::table('anggota')
+            ->join('program_studi', 'anggota.id_prodi', '=', 'program_studi.id_prodi')
+            ->select(
+                'anggota.id_anggota',
+                'anggota.nama_anggota',
+                'program_studi.nama_prodi',
+                'anggota.email',
+                'anggota.no_hp',
+                'anggota.jenis_kelamin',
+                'anggota.tanggal_lahir'
+            );
+
+        // Apply filters
+        if ($request->filled('tanggal_lahir_start') && $request->filled('tanggal_lahir_end')) {
+            $query->whereBetween('anggota.tanggal_lahir', [$request->tanggal_lahir_start, $request->tanggal_lahir_end]);
+        }
+
+        if ($request->filled('id_prodi')) {
+            $query->whereIn('anggota.id_prodi', $request->id_prodi);
+        }
+
+        $anggota = $query->orderBy('anggota.nama_anggota', 'asc')->get();
+
+        // Fetch filtered program studi names
+        $filteredProdi = [];
+        if ($request->filled('id_prodi')) {
+            $filteredProdi = DB::table('program_studi')
+                ->whereIn('id_prodi', $request->id_prodi)
+                ->pluck('nama_prodi')
+                ->toArray();
+        }
+
+        // User info
+        $user = Auth::guard('anggota')->user();
+
+        // Generate PDF
+        $pdf = PDF::loadView('anggota.pdf', compact('anggota', 'filteredProdi', 'user'));
+        return $pdf->download('laporan_anggota.pdf');
+    }
+
+
+    public function downloadExcel(Request $request)
+    {
+        // Pass filter ke AnggotaExport
+        return Excel::download(new AnggotaExport($request), 'laporan_anggota.xlsx');
     }
 }

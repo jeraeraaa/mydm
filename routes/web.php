@@ -110,7 +110,12 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     // Resource untuk Anggota dan Alat
-    Route::resource('anggota', AnggotaController::class);
+    Route::resource('anggota', AnggotaController::class)->except(['show']);
+    Route::get('/anggota/laporan', [AnggotaController::class, 'laporanDataAnggota'])->name('anggota.laporan');
+    Route::get('/anggota/download/pdf', [AnggotaController::class, 'downloadPdf'])->name('anggota.download.pdf');
+    Route::get('/anggota/download/excel', [AnggotaController::class, 'downloadExcel'])->name('anggota.download.excel');
+
+
     Route::resource('alat', AlatController::class);
 
     // Resource routes untuk controller di BackendKegiatan

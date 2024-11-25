@@ -9,11 +9,17 @@
                         <div>
                             <h5 class="mb-0">All Members</h5>
                         </div>
-                        <!-- Tombol New Member yang membuka modal -->
-                        <a href="#" class="btn bg-gradient-primary btn-sm mb-0" data-bs-toggle="modal"
-                            data-bs-target="#createMemberModal">
-                            +&nbsp; New Member
-                        </a>
+                        <div class="d-flex gap-2">
+                            <!-- Tombol untuk membuka halaman laporan -->
+                            <a href="{{ route('anggota.laporan') }}" class="btn bg-gradient-info btn-sm mb-0">
+                                <i class="fas fa-file-alt me-2"></i> Laporan Anggota
+                            </a>
+                            
+                            <!-- Tombol New Member yang membuka modal -->
+                            <a href="#" class="btn bg-gradient-primary btn-sm mb-0" data-bs-toggle="modal" data-bs-target="#createMemberModal">
+                                +&nbsp; New Member
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
