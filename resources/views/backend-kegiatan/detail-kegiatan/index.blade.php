@@ -9,6 +9,12 @@
                         <h5 class="mb-0">All Activity Details</h5>
                         <p class="text-sm">Daftar semua detail kegiatan yang tersedia</p>
                     </div>
+
+                    <div class="text-right">
+                        <a href="{{ route('alat.laporan') }}" class="btn bg-gradient-info btn-sm mb-0">
+                            <i class="fas fa-file-alt me-2"></i> Laporan Alat
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="card-body">

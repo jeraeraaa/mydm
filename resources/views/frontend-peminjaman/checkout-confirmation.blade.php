@@ -1,7 +1,7 @@
 <!-- resources/views/frontend-peminjaman/checkout-confirmation.blade.php -->
 <x-layout></x-layout>
 
-<div class="w-full pt-24">
+<div>
     <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
         <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden p-6">
             <h2 class="text-2xl font-semibold text-gray-800">Checkout Berhasil</h2>

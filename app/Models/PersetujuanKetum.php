@@ -25,9 +25,7 @@ class PersetujuanKetum extends Model
     protected $fillable = [
         'id_ketum',                // ID Ketua Umum
         'status_persetujuan',      // Status: menunggu, disetujui, ditolak
-        'catatan',
-        'updated_at',
-        'created_at',                 
+        'catatan',                
     ];
 
     /**

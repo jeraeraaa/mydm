@@ -9,18 +9,27 @@
                         <h5 class="mb-0">All Items</h5>
                         <p class="text-sm">Berikut adalah daftar alat yang tersedia</p>
                     </div>
-                    <div class="text-right">
-                        <form action="{{ route('alat.index') }}" method="GET" class="d-inline-block">
-                            <select name="divisi_filter" class="form-select" onchange="this.form.submit()">
-                                <option value="">Semua Divisi</option>
-                                @foreach ($bph as $divisi)
-                                    <option value="{{ $divisi->id_bph }}"
-                                        {{ request('divisi_filter') == $divisi->id_bph ? 'selected' : '' }}>
-                                        {{ $divisi->nama_divisi_bph }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </form>
+                    <div class="d-flex gap-2">
+                        <!-- Tombol untuk membuka halaman laporan -->
+                        <div>
+                            <a href="{{ route('alat.laporan') }}" class="btn bg-gradient-info btn-sm mb-0">
+                                <i class="fas fa-file-alt me-2"></i> Laporan Alat
+                            </a>
+                        </div>
+
+                        <div class="text-right">
+                            <form action="{{ route('alat.index') }}" method="GET" class="d-inline-block">
+                                <select name="divisi_filter" class="form-select" onchange="this.form.submit()">
+                                    <option value="">Semua Divisi</option>
+                                    @foreach ($bph as $divisi)
+                                        <option value="{{ $divisi->id_bph }}"
+                                            {{ request('divisi_filter') == $divisi->id_bph ? 'selected' : '' }}>
+                                            {{ $divisi->nama_divisi_bph }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -51,7 +60,8 @@
                                             class="btn btn-outline-primary btn-sm mb-0">Details</a>
                                         <div class="d-flex justify-content-right align-items-center gap-2">
                                             <!-- Edit Activity -->
-                                            <a href="{{ route('alat.edit', $item->id_alat) }}" class="btn btn-link p-0 m-0">
+                                            <a href="{{ route('alat.edit', $item->id_alat) }}"
+                                                class="btn btn-link p-0 m-0">
                                                 <i class="fas fa-edit text-secondary fa-2x"></i>
                                             </a>
                                             <!-- Delete Activity -->
@@ -134,7 +144,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="jumlah_tersedia" class="form-label">Jumlah Tersedia</label>
-                            <input type="number" class="form-control" id="jumlah_tersedia" name="jumlah_tersedia" required>
+                            <input type="number" class="form-control" id="jumlah_tersedia" name="jumlah_tersedia"
+                                required>
                             @error('jumlah_tersedia')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror

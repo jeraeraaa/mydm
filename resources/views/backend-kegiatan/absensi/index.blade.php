@@ -32,9 +32,6 @@
                                     </tr>
                                 </thead>
 
-
-
-
                                 <tbody>
                                     @foreach ($details as $detail)
                                         <tr>

@@ -116,7 +116,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/anggota/download/excel', [AnggotaController::class, 'downloadExcel'])->name('anggota.download.excel');
 
 
+    Route::get('/alat/laporan', [AlatController::class, 'laporanDataAlat'])->name('alat.laporan');
+    Route::get('/alat/laporan/pdf', [AlatController::class, 'downloadPdf'])->name('alat.download.pdf');
+    Route::get('/alat/laporan/excel', [AlatController::class, 'downloadExcel'])->name('alat.download.excel');
     Route::resource('alat', AlatController::class);
+
 
     // Resource routes untuk controller di BackendKegiatan
     Route::resource('kategori-kegiatan', KategoriKegiatanController::class);
@@ -125,7 +129,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('materi', MateriController::class);
     Route::resource('pembicara', PembicaraController::class);
     Route::resource('absensi', AbsensiController::class);
-    Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
+    Route::get('/absensi/laporan/{id_detail_kegiatan}', [AbsensiController::class, 'laporanDataAbsensi'])->name('absensi.laporan');
+    Route::get('/absensi/download/pdf/{id_detail_kegiatan}', [AbsensiController::class, 'downloadPdf'])->name('absensi.download.pdf');
+    Route::get('/absensi/download/excel/{id_detail_kegiatan}', [AbsensiController::class, 'downloadExcel'])->name('absensi.download.excel');
+
     Route::resource('pengunjung', PengunjungController::class);
     Route::resource('peminjam-eksternal', PeminjamEksternalController::class);
 

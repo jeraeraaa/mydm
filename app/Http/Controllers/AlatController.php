@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\AlatExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AlatController extends Controller
 {
@@ -201,5 +204,74 @@ class AlatController extends Controller
         } else {
             abort(403, 'Akses Ditolak');
         }
+    }
+
+    public function laporanDataAlat(Request $request)
+    {
+        Log::info('Laporan Data Alat Method Called');
+        // Debug input filter
+        Log::info('Filter Input:', $request->all());
+
+        $user = Auth::guard('anggota')->user();
+        if ($user->role && ($user->role->name === 'super_user' || $user->role->name === 'admin')) {
+            // Query awal
+            $query = Alat::join('bph', 'alat.id_bph', '=', 'bph.id_bph')
+                ->select(
+                    'alat.id_alat',
+                    'alat.nama_alat',
+                    'alat.deskripsi',
+                    'alat.jumlah_tersedia',
+                    'alat.status_alat',
+                    'bph.nama_divisi_bph'
+                );
+
+            // Filter berdasarkan divisi BPH
+            if ($request->filled('id_bph')) {
+                $query->where('alat.id_bph', $request->id_bph);
+            }
+
+            // Dapatkan hasil
+            $alat = $query->orderBy('alat.nama_alat', 'asc')->get();
+
+            // Dapatkan daftar BPH untuk dropdown filter
+            $bphList = Bph::all();
+
+            return view('alat.laporan', compact('alat', 'bphList'));
+        } else {
+            abort(403, 'Akses Ditolak');
+        }
+    }
+
+    public function downloadPdf(Request $request)
+    {
+        // Query awal
+        $query = Alat::join('bph', 'alat.id_bph', '=', 'bph.id_bph')
+            ->select(
+                'alat.id_alat',
+                'alat.nama_alat',
+                'alat.deskripsi',
+                'alat.jumlah_tersedia',
+                'alat.status_alat',
+                'bph.nama_divisi_bph'
+            );
+
+        // Apply filter
+        if ($request->filled('id_bph')) {
+            $query->where('alat.id_bph', $request->id_bph);
+        }
+
+        $alat = $query->orderBy('alat.nama_alat', 'asc')->get();
+        $filteredBph = $request->filled('id_bph') ? Bph::where('id_bph', $request->id_bph)->pluck('nama_divisi_bph')->first() : 'Semua Divisi';
+
+        $user = Auth::guard('anggota')->user();
+
+        // Generate PDF
+        $pdf = PDF::loadView('alat.pdf', compact('alat', 'filteredBph', 'user'));
+        return $pdf->download('laporan_alat.pdf');
+    }
+
+    public function downloadExcel(Request $request)
+    {
+        return Excel::download(new AlatExport($request), 'laporan_alat.xlsx');
     }
 }

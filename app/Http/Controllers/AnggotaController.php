@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Exports\AnggotaExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Barryvdh\Snappy\Facades\SnappyPdf;
 
 
 

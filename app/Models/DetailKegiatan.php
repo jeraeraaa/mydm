@@ -12,6 +12,7 @@ class DetailKegiatan extends Model
     protected $table = 'detail_kegiatan';
     protected $primaryKey = 'id_detail_kegiatan';
     public $incrementing = true;
+    public $timestamps = false; 
 
     protected $fillable = [
         'id_bph',

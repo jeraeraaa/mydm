@@ -10,6 +10,11 @@ use App\Models\Pengunjung;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\AbsensiExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 
 class AbsensiController extends Controller
@@ -46,9 +51,6 @@ class AbsensiController extends Controller
             abort(403, 'Akses Ditolak');
         }
     }
-
-
-
 
     /**
      * Simpan absensi baru.
@@ -183,5 +185,48 @@ class AbsensiController extends Controller
         } else {
             abort(403, 'Akses Ditolak');
         }
+    }
+
+    public function laporanDataAbsensi($id_detail_kegiatan)
+    {
+        $user = Auth::guard('anggota')->user();
+        if ($user->role && ($user->role->name === 'super_user' || $user->role->name === 'admin')) {
+            $absensi = Absensi::with(['anggota', 'pengunjung', 'detailKegiatan'])
+                ->where('id_detail_kegiatan', $id_detail_kegiatan)
+                ->orderBy('waktu_masuk', 'asc')
+                ->get();
+
+            $detailKegiatan = DetailKegiatan::findOrFail($id_detail_kegiatan);
+
+            return view('backend-kegiatan.absensi.laporan', compact('absensi', 'detailKegiatan'));
+        }
+
+        abort(403, 'Akses Ditolak');
+    }
+
+
+
+    public function downloadPdf($id_detail_kegiatan)
+    {
+        $absensi = Absensi::with(['anggota', 'pengunjung', 'detailKegiatan'])
+            ->where('id_detail_kegiatan', $id_detail_kegiatan)
+            ->orderBy('waktu_masuk', 'asc')
+            ->get();
+
+        $filteredKegiatan = DetailKegiatan::findOrFail($id_detail_kegiatan);
+
+        $user = Auth::guard('anggota')->user();
+
+        $pdf = PDF::loadView('backend-kegiatan.absensi.pdf', compact('absensi', 'filteredKegiatan', 'user'));
+
+        return $pdf->download('laporan_absensi.pdf');
+    }
+
+
+
+
+    public function downloadExcel($id_detail_kegiatan)
+    {
+        return Excel::download(new AbsensiExport($id_detail_kegiatan), 'laporan_absensi.xlsx');
     }
 }

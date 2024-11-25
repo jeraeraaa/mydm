@@ -44,7 +44,7 @@ class InventarisController extends Controller
                 ]);
 
                 // Generate ID Inventaris otomatis
-                $lastInventaris = Inventaris::orderBy('created_at', 'desc')->first();
+                $lastInventaris = Inventaris::orderBy('id_anggota', 'desc')->first();
                 $newIdNumber = $lastInventaris ? ((int) str_replace('INV-', '', $lastInventaris->id_inventaris)) + 1 : 1;
                 $newIdInventaris = 'INV-' . str_pad($newIdNumber, 3, '0', STR_PAD_LEFT);
 

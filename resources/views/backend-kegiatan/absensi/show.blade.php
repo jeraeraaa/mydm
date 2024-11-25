@@ -6,6 +6,7 @@
             <div class="card mb-4 mx-4">
                 <div class="card-header pb-0 d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Detail Kegiatan</h5>
+
                     <!-- Tombol Kembali ke Daftar Absensi -->
                     <a href="{{ route('absensi.index') }}" class="btn btn-secondary btn-sm">
                         Kembali ke Daftar Absensi
@@ -43,13 +44,25 @@
                     </table>
 
                     <!-- Tombol untuk memunculkan modal -->
-                    <div class="my-3">
-                        <button class="btn bg-gradient-primary btn-sm" data-bs-toggle="modal"
-                            data-bs-target="#absensiModal">
-                            +&nbsp; Tambah Absensi
-                        </button>
+
+
+                    <div class="d-flex gap-2">
+                        <!-- Tombol untuk membuka halaman laporan -->
+                        <div>
+                            <a href="{{ route('absensi.laporan', ['id_detail_kegiatan' => $detail->id_detail_kegiatan]) }}"
+                                class="btn bg-gradient-info btn-sm">
+                                <i class="fas fa-file-alt me-2"></i> Laporan Absensi
+                            </a>
+                        </div>
+
+                        <div>
+                            <button class="btn bg-gradient-primary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#absensiModal">
+                                +&nbsp; Tambah Absensi
+                            </button>
+                        </div>
                     </div>
-                    <div class="my-4">
+                    <div class="my-1">
                         <h6>Scan QR Code untuk Form Absensi</h6>
                         <div>
                             {!! QrCode::size(200)->generate($qrCodeUrl) !!}
