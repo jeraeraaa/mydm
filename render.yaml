@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: mydm
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_NAME
+        value: myDM
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        value: base64:G2aPcvD8vA8s8ucnyDp9qAiOui8m+LMzp47agyGWvRM=
+      - key: APP_DEBUG
+        value: false
+      - key: APP_TIMEZONE
+        value: Asia/Jakarta
+      - key: APP_URL
+        value: https://<YOUR_RENDER_URL>  # Ganti dengan URL yang akan diberikan Render
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        value: <RENDER_DATABASE_HOST>  # Ganti dengan host database Render
+      - key: DB_PORT
+        value: 3306
+      - key: DB_DATABASE
+        value: <DATABASE_NAME>  # Ganti dengan nama database Render
+      - key: DB_USERNAME
+        value: <DATABASE_USERNAME>  # Ganti dengan username database Render
+      - key: DB_PASSWORD
+        value: <DATABASE_PASSWORD>  # Ganti dengan password database Render
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: MAIL_MAILER
+        value: log
