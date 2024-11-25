@@ -1,5 +1,5 @@
 <x-layout></x-layout>
-<main class="relative isolate px-6 pt-24 lg:px-8 bg-gray-50">
+<main class="relative isolate px-6 pt-6 lg:px-8 bg-gray-50">
     <div class="max-w-5xl px-4 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
         <div class="max-w-4xl">
             <!-- Detail Kegiatan -->

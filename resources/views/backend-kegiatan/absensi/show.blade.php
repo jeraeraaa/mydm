@@ -117,6 +117,10 @@
                                 <tr>
                                     <th
                                         class="text-uppercase text-secondary text-xs font-weight-bolder text-start px-3 py-2">
+                                        No
+                                    </th>
+                                    <th
+                                        class="text-uppercase text-secondary text-xs font-weight-bolder text-start px-3 py-2">
                                         Nama
                                     </th>
                                     <th
@@ -136,6 +140,9 @@
                             <tbody>
                                 @foreach ($absensi as $absen)
                                     <tr>
+                                        <td class="text-sm px-3 py-2">
+                                            <p class="text-xs font-weight-bold mb-0">{{ $loop->iteration }}</p>
+                                        </td>
                                         <td class="text-sm px-3 py-2">
                                             @if ($absen->anggota)
                                                 {{ $absen->anggota->nama_anggota }}

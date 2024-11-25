@@ -1,47 +1,32 @@
 @extends('mydm')
 @section('title', 'Home - myDM')
 @section('content')
-    <main class="relative isolate px-6 pt-36 lg:px-8 bg-gray-50">
+    <main class="relative isolate px-6 pt-28 lg:px-8 bg-gray-50">
         <!-- Hero -->
         <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Grid -->
-            <div class="grid lg:grid-cols-7 lg:gap-x-8 xl:gap-x-12 lg:items-center">
+            <div class="grid lg:grid-cols-7 gap-6 items-center">
                 <!-- Branding Section -->
-                <div class="lg:col-span-3">
-                    <h1 class="block text-3xl font-bold text-gray-800 sm:text-4xl md:text-5xl lg:text-6xl">
+                <div class="lg:col-span-3 text-center lg:text-left">
+                    <h1 class="text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl text-gray-800">
                         Welcome to Dharmayana!
                     </h1>
-                    <p class="mt-6 text-lg text-gray-800 text-justify">
+                    <p class="mt-6 text-lg text-gray-800 text-justify sm:text-center lg:text-left">
                         KMB Dharmayana Untar adalah sebuah wadah organisasi yang bersifat kekeluargaan dan keagamaan bagi
-                        seluruh umat Buddha di
-                        Universitas Tarumanagara. Dharmayana dalam pengamalan Buddha Dharma, tidak bernaung pada suatu
-                        aliran atau sekte manapun, bukan
-                        pula merupakan sekte baru.
+                        seluruh umat Buddha di Universitas Tarumanagara.
                     </p>
-
-                    <!-- Logo/Brand Section -->
-                    <div class="mt-6 lg:mt-12">
-                        <div class="flex items-center space-x-4">
-                            <img class="h-12 w-auto" src="/assets/img/logos/untar.png" alt="Logo Untar">
-                            <img class="h-12 w-auto" src="/assets/img/logos/dm.png" alt="Logo Dharmayana">
-                        </div>
-
+                    <div class="mt-6 lg:mt-12 flex justify-center lg:justify-start items-center space-x-4">
+                        <img class="h-12 w-auto" src="/assets/img/logos/untar.png" alt="Logo Untar">
+                        <img class="h-12 w-auto" src="/assets/img/logos/dm.png" alt="Logo Dharmayana">
                     </div>
-                    <p class="mt-4 text-sm text-gray-600 text-left">
-                        Powered by Dharmayana Untar
-                    </p>
-
-                    <!-- End Branding -->
+                    <p class="mt-4 text-sm text-gray-600">Powered by Dharmayana Untar</p>
                 </div>
-                <!-- End Col -->
-
                 <!-- Hero Image -->
-                <div class="lg:col-span-4 mt-10 lg:mt-0 flex justify-end">
-                    <img class="max-w-[80%] w-auto rounded-xl shadow-lg" src="/assets/img/fotodm.jpeg"
-                        alt="Kegiatan Dharmayana">
+                <div class="lg:col-span-4 mt-10 lg:mt-0 flex justify-center">
+                    <img class="max-w-full rounded-xl shadow-lg" src="/assets/img/fotodm.jpeg" alt="Kegiatan Dharmayana">
                 </div>
-                <!-- End Col -->
             </div>
+
             <!-- End Grid -->
         </div>
         <!-- End Hero -->
@@ -66,7 +51,9 @@
                         <img class="w-full h-48 object-cover rounded-t-xl" src="/assets/img/dwp.jpeg" alt="Welcoming Party">
                         <div class="p-4">
                             <h4 class="text-lg font-bold text-gray-800">Dharmayana's Welcoming Party</h4>
-                            <p class="text-sm text-gray-600 mt-2">Acara penyambutan mahasiswa baru Universitas Tarumanagara.
+                            <p class="text-sm text-gray-600 mt-2">Dharmayana’s Welcoming Party adalah program kerja yang
+                                bertujuan menyambut mahasiswa baru Buddhis Universitas Tarumanagara sekaligus memperkenalkan
+                                Dharmayana sebagai wadah pembinaan dan kegiatan mahasiswa Buddhis.
                             </p>
                         </div>
                     </div>
@@ -76,7 +63,9 @@
                         <img class="w-full h-48 object-cover rounded-t-xl" src="/assets/img/dd.jpeg" alt="Darmadhista">
                         <div class="p-4">
                             <h4 class="text-lg font-bold text-gray-800">Darmadhista</h4>
-                            <p class="text-sm text-gray-600 mt-2">Malam keakraban bersama anggota Dharmayana.</p>
+                            <p class="text-sm text-gray-600 mt-2">Darmadhista adalah program kerja yang bertujuan mempererat
+                                tali persaudaraan dan membina hubungan antara mahasiswa baru Buddhis yang menjadi anggota
+                                Dharmayana dengan para pengurus dan aktivis organisasi. </p>
                         </div>
                     </div>
                     <!-- Pindapata dan Sangha Dana -->
@@ -86,8 +75,11 @@
                             alt="Pindapata dan Sangha Dana">
                         <div class="p-4">
                             <h4 class="text-lg font-bold text-gray-800">Pindapata dan Sangha Dana</h4>
-                            <p class="text-sm text-gray-600 mt-2">Perayaan hari suci Kathina dengan memberikan dana kepada
-                                Sangha.</p>
+                            <p class="text-sm text-gray-600 mt-2">Pindapata dan Sangha Dana di Bulan Kathina merupakan
+                                program kerja yang dilaksanakan untuk memperingati salah satu hari besar agama Buddha, yaitu
+                                Hari Suci Kathina. Perayaan ini menandai berakhirnya masa Vassa, sebuah periode penting
+                                dalam tradisi agama Buddha di mana para anggota Sangha menjalani kewajiban selama tiga
+                                bulan. </p>
                         </div>
                     </div>
                     <!-- Latihan Kepemimpinan -->
@@ -97,8 +89,9 @@
                             alt="Latihan Kepemimpinan">
                         <div class="p-4">
                             <h4 class="text-lg font-bold text-gray-800">Latihan Kepemimpinan</h4>
-                            <p class="text-sm text-gray-600 mt-2">Program untuk melatih jiwa kepemimpinan anggota
-                                Dharmayana.</p>
+                            <p class="text-sm text-gray-600 mt-2">Latihan Kepemimpinan (LK) merupakan salah satu program
+                                kerja unggulan yang dirancang untuk mengembangkan jiwa kepemimpinan anggota Dharmayana
+                                dengan pendekatan yang berlandaskan ajaran Buddha Dharma. </p>
                         </div>
                     </div>
                     <!-- Pekan Penghayatan Dhamma -->
@@ -108,8 +101,10 @@
                             alt="Pekan Penghayatan Dhamma">
                         <div class="p-4">
                             <h4 class="text-lg font-bold text-gray-800">Pekan Penghayatan Dhamma</h4>
-                            <p class="text-sm text-gray-600 mt-2">Menghayati nilai-nilai Dhamma melalui berbagai kegiatan
-                                reflektif.</p>
+                            <p class="text-sm text-gray-600 mt-2">Pekan Penghayatan Dhamma dirancang sebagai sarana untuk
+                                meningkatkan pemahaman, keyakinan, dan disiplin diri melalui praktik ajaran Buddha Dharma.
+                                Kegiatan PPD meliputi meditasi, pelatihan menjalankan atthasila, serta sesi mendengarkan
+                                ajaran Dharma dari para pembimbing.</p>
                         </div>
                     </div>
                     <!-- Metta Day -->
@@ -118,14 +113,53 @@
                         <img class="w-full h-48 object-cover rounded-t-xl" src="/assets/img/md.jpeg" alt="Metta Day">
                         <div class="p-4">
                             <h4 class="text-lg font-bold text-gray-800">Metta Day</h4>
-                            <p class="text-sm text-gray-600 mt-2">Bakti sosial berupa pengobatan gratis dan kegiatan cinta
-                                kasih lainnya.</p>
+                            <p class="text-sm text-gray-600 mt-2">Metta Day merupakan program kerja yang diselenggarakan
+                                sebagai perwujudan cinta kasih universal (Metta), sesuai dengan ajaran Buddha. “Metta”
+                                berasal dari bahasa Pali yang berarti cinta kasih, yang tidak hanya ditujukan kepada
+                                individu dengan keyakinan, ras, atau latar belakang ekonomi yang sama tetapi juga kepada
+                                seluruh makhluk hidup. </p>
+                        </div>
+                    </div>
+                    <!-- Buddhist Camp -->
+                    <div
+                        class="group flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition">
+                        <img class="w-full h-48 object-cover rounded-t-xl" src="/assets/img/bc.jpeg" alt="Buddhist Camp">
+                        <div class="p-4">
+                            <h4 class="text-lg font-bold text-gray-800">Buddhist Camp</h4>
+                            <p class="text-sm text-gray-600 mt-2">Buddhist Camp dirancang sebagai pengalaman unik yang
+                                mengombinasikan konsep camping dengan nilai-nilai Buddhis, bertujuan memberikan manfaat
+                                holistik bagi pribadi, komunitas, dan lingkungan.</p>
+                        </div>
+                    </div>
+                    <!-- Dharmayana Buddhist Festival -->
+                    <div
+                        class="group flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition">
+                        <img class="w-full h-48 object-cover rounded-t-xl" src="/assets/img/dbf.jpeg"
+                            alt="Dharmayana Buddhist Festival">
+                        <div class="p-4">
+                            <h4 class="text-lg font-bold text-gray-800">Dharmayana Buddhist Festival</h4>
+                            <p class="text-sm text-gray-600 mt-2">Acara tahunan yang diselenggarakan oleh Dharmayana
+                                Universitas Tarumanagara untuk memperingati Hari Tri Suci Waisak, sekaligus merayakan Hari
+                                Ulang Tahun (HUT) Dharmayana dan HUT Berita Dharmayana. </p>
+                        </div>
+                    </div>
+                    <!-- Berita Dharmayana -->
+                    <div
+                        class="group flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition">
+                        <img class="w-full h-48 object-cover rounded-t-xl" src="/assets/img/bd1.jpeg"
+                            alt="Berita Dharmayana ">
+                        <div class="p-4">
+                            <h4 class="text-lg font-bold text-gray-800">Berita Dharmayana </h4>
+                            <p class="text-sm text-gray-600 mt-2">Berita Dharmayana berperan sebagai media komunikasi dan
+                                informasi untuk menyebarkan Buddha Dharma. Majalah ini dirancang untuk mendukung misi
+                                Dharmayana dalam mempromosikan solidaritas dan toleransi umat beragama yang berlandaskan
+                                Pancasila.</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Proker -->
-                <div class="mt-12 text-center">
+                {{-- <div class="mt-12 text-center">
                     <a class="py-3 px-4 inline-flex items-center gap-x-1 text-sm font-medium rounded-full border border-gray-300 bg-white text-orange-500 shadow-md hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-orange-50 disabled:opacity-50 disabled:pointer-events-none"
                         href="#">
                         Read more
@@ -135,7 +169,7 @@
                             <path d="m9 18 6-6-6-6" />
                         </svg>
                     </a>
-                </div>
+                </div> --}}
                 <!-- end-->
 
 
@@ -180,7 +214,7 @@
                 </div>
 
                 <!-- kegiatan -->
-                <div class="mt-12 text-center">
+                {{-- <div class="mt-12 text-center">
                     <a class="py-3 px-4 inline-flex items-center gap-x-1 text-sm font-medium rounded-full border border-gray-300 bg-white text-orange-500 shadow-md hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-orange-50 disabled:opacity-50 disabled:pointer-events-none"
                         href="#">
                         Read more
@@ -190,7 +224,7 @@
                             <path d="m9 18 6-6-6-6" />
                         </svg>
                     </a>
-                </div>
+                </div> --}}
                 <!-- end-->
             </div>
 
@@ -332,7 +366,7 @@
 
 
         <!-- Apa Kata Mereka -->
-        <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+        {{-- <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
             <!-- Title -->
             <div class="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
                 <h2 class="text-2xl font-bold md:text-4xl md:leading-tight">Apa Kata Mereka</h2>
@@ -394,7 +428,7 @@
                 <!-- End Testimoni 3 -->
             </div>
             <!-- End Grid -->
-        </div>
+        </div> --}}
         <!-- End Apa Kata Mereka -->
 
     </main>

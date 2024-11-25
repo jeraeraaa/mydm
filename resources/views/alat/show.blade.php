@@ -6,6 +6,11 @@
             <div class="card-header pb-0">
                 <h5 class="mb-0">Detail Alat</h5>
                 <p class="text-sm">Informasi detail alat dan riwayat peminjamannya.</p>
+                <div>
+                    <a href="{{ route('alat.index') }}" class="btn btn-secondary mb-3">
+                        <i class="fas fa-arrow-left me-2"></i>Kembali ke Daftar Alat
+                    </a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="row">

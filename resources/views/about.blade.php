@@ -10,23 +10,17 @@
                     <!-- Grid -->
                     <div class="grid grid-cols-12 gap-2 sm:gap-6 items-center lg:-translate-x-10">
                         <div class="col-span-4">
-                            <img class="rounded-xl"
-                                src="https://images.unsplash.com/photo-1606868306217-dbf5046868d2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=920&q=80"
-                                alt="Features Image">
+                            <img class="rounded-xl" src="/assets/img/foto2.jpeg" alt="Foto1">
                         </div>
                         <!-- End Col -->
 
                         <div class="col-span-3">
-                            <img class="rounded-xl"
-                                src="https://images.unsplash.com/photo-1605629921711-2f6b00c6bbf4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=920&q=80"
-                                alt="Features Image">
+                            <img class="rounded-xl" src="/assets/img/foto3.jpg" alt="MBD">
                         </div>
                         <!-- End Col -->
 
                         <div class="col-span-5">
-                            <img class="rounded-xl"
-                                src="https://images.unsplash.com/photo-1600194992440-50b26e0a0309?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=920&q=80"
-                                alt="Features Image">
+                            <img class="rounded-xl" src="/assets/img/bd71.jpeg" alt="MBDD">
                         </div>
                         <!-- End Col -->
                     </div>
@@ -104,11 +98,8 @@
                         <h2 class="text-3xl text-gray-800 font-bold lg:text-4xl text-center">
                             Our Vision
                         </h2>
-                        <p class="mt-3 text-gray-800">
-                            For as long as there have been cities, the public square has been a fundamental part of the
-                            urban landscape - an open, approachable space to meet and engage with friends and neighbors.
-                            Space aims to capture this spirit of bringing people together in an exciting, welcoming
-                            environment.
+                        <p class="mt-3 text-gray-800 text-center">
+                            Dharmayana Universitas Tarumanagara bertujuan untuk:
                         </p>
                     </div>
                     <!-- End Vision Section -->
@@ -118,19 +109,14 @@
                         <!-- Feature 1 -->
                         <div class="flex gap-x-5 sm:gap-x-8">
                             <svg class="shrink-0 mt-2 size-6 text-gray-800" xmlns="http://www.w3.org/2000/svg"
-                                width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
-                                <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
-                                <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
-                                <path d="M10 6h4" />
-                                <path d="M10 10h4" />
-                                <path d="M10 14h4" />
-                                <path d="M10 18h4" />
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="3" />
+                                <path
+                                    d="M12 3v3M12 18v3M3 12h3M18 12h3M5.636 5.636l2.121 2.121M16.243 16.243l2.121 2.121M5.636 18.364l2.121-2.121M16.243 7.757l2.121-2.121" />
                             </svg>
                             <div class="grow">
                                 <h3 class="text-base sm:text-lg font-semibold text-gray-800">
-                                    High-Quality Co-Living Spaces
+                                    Buddha Dharma
                                 </h3>
                                 <p class="mt-1 text-gray-600">
                                     Melayani umat Buddha dalam menghayati, mengamalkan, dan melaksanakan Buddha Dharma.
@@ -151,7 +137,7 @@
                             </svg>
                             <div class="grow">
                                 <h3 class="text-base sm:text-lg font-semibold text-gray-800">
-                                    Fostering Vibrant Communities
+                                    Kehidupan dan Kerukunan Beragama
                                 </h3>
                                 <p class="mt-1 text-gray-600">
                                     Meningkatkan kehidupan dan kerukunan beragama di lingkungan Universitas Tarumanagara.
@@ -163,15 +149,12 @@
                         <!-- Feature 3 -->
                         <div class="flex gap-x-5 sm:gap-x-8">
                             <svg class="shrink-0 mt-2 size-6 text-gray-800" xmlns="http://www.w3.org/2000/svg"
-                                width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M7 10v12" />
-                                <path
-                                    d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z" />
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path d="M6 22V10M12 22V6M18 22V14" />
                             </svg>
                             <div class="grow">
                                 <h3 class="text-base sm:text-lg font-semibold text-gray-800">
-                                    Simple and All-Inclusive
+                                    Tri Dharma Perguruan Tinggi
                                 </h3>
                                 <p class="mt-1 text-gray-600">
                                     Menunjang dan menyukseskan Tri Dharma Perguruan Tinggi.
@@ -194,11 +177,8 @@
                         <h2 class="text-3xl text-gray-800 font-bold lg:text-4xl text-center">
                             Our Mision
                         </h2>
-                        <p class="mt-3 text-gray-800">
-                            For as long as there have been cities, the public square has been a fundamental part of the
-                            urban landscape - an open, approachable space to meet and engage with friends and neighbors.
-                            Space aims to capture this spirit of bringing people together in an exciting, welcoming
-                            environment.
+                        <p class="mt-3 text-gray-800 text-center">
+                            Untuk mencapai tujuannya, Dharmayana Universitas Tarumanagara berusaha antara lain:
                         </p>
                     </div>
                     <!-- End Mision Section -->
@@ -208,22 +188,16 @@
                         <!-- Feature 1 -->
                         <div class="flex gap-x-5 sm:gap-x-8">
                             <svg class="shrink-0 mt-2 size-6 text-gray-800" xmlns="http://www.w3.org/2000/svg"
-                                width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
-                                <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
-                                <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
-                                <path d="M10 6h4" />
-                                <path d="M10 10h4" />
-                                <path d="M10 14h4" />
-                                <path d="M10 18h4" />
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path d="M6 4h10v16H6a2 2 0 01-2-2V6a2 2 0 012-2z" />
+                                <path d="M10 8h4M12 6v4" />
                             </svg>
                             <div class="grow">
                                 <h3 class="text-base sm:text-lg font-semibold text-gray-800">
-                                    High-Quality Co-Living Spaces
+                                    Pemahaman, Penghayatan dan Pengamalan Buddha Dharma
                                 </h3>
                                 <p class="mt-1 text-gray-600">
-                                    Membina pemahaman, penghayatan dan pengalaman Buddha Dharma bagi seluruh anggota
+                                    Membina pemahaman, penghayatan dan pengamalan Buddha Dharma bagi seluruh anggota
                                     Dharmayana
                                     di Universitas Tarumanagara.
                                 </p>
@@ -233,17 +207,11 @@
 
                         <!-- Feature 2 -->
                         <div class="flex gap-x-5 sm:gap-x-8">
-                            <svg class="shrink-0 mt-2 size-6 text-gray-800" xmlns="http://www.w3.org/2000/svg"
-                                width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                <circle cx="9" cy="7" r="4" />
-                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                            </svg>
+                            <img class="shrink-0 mt-2" src="assets/img/family.png" alt="Logo Kegiatan Sosial Keagamaan"
+                                width="24" height="24" style="object-fit: contain;" />
                             <div class="grow">
                                 <h3 class="text-base sm:text-lg font-semibold text-gray-800">
-                                    Fostering Vibrant Communities
+                                    Hubungan Persaudaraan yang Harmonis
                                 </h3>
                                 <p class="mt-1 text-gray-600">
                                     Membina hubungan persaudaraan yang harmonis antara segenap unsur sivitas akademika
@@ -255,16 +223,12 @@
 
                         <!-- Feature 3 -->
                         <div class="flex gap-x-5 sm:gap-x-8">
-                            <svg class="shrink-0 mt-2 size-6 text-gray-800" xmlns="http://www.w3.org/2000/svg"
-                                width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M7 10v12" />
-                                <path
-                                    d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z" />
+                            <img class="shrink-0 mt-2" src="assets/img/love.png" alt="Logo Kegiatan Sosial Keagamaan"
+                                width="24" height="24" style="object-fit: contain;" />
                             </svg>
                             <div class="grow">
                                 <h3 class="text-base sm:text-lg font-semibold text-gray-800">
-                                    Simple and All-Inclusive
+                                    Hubungan dan Kerja Sama Berdasarkan Cinta Kasih
                                 </h3>
                                 <p class="mt-1 text-gray-600">
                                     Mengadakan hubungan dan kerja sama berdasarkan cinta kasih dengan seluruh unsur sivitas
@@ -276,31 +240,25 @@
 
                         <!-- Feature 4 -->
                         <div class="flex gap-x-5 sm:gap-x-8">
-                            <svg class="shrink-0 mt-2 size-6 text-gray-800" xmlns="http://www.w3.org/2000/svg"
-                                width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M7 10v12" />
-                                <path
-                                    d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z" />
-                            </svg>
+                            <img class="shrink-0 mt-2" src="assets/img/social.png" alt="Logo Kegiatan Sosial Keagamaan"
+                                width="24" height="24" style="object-fit: contain;" />
                             <div class="grow">
                                 <h3 class="text-base sm:text-lg font-semibold text-gray-800">
-                                    Simple and All-Inclusive
+                                    Kegiatan Sosial Keagamaan
                                 </h3>
                                 <p class="mt-1 text-gray-600">
                                     Melaksanakan kegiatan-kegiatan sosial keagamaan lainnya.
                                 </p>
                             </div>
                         </div>
+
                         <!-- End Feature 4 -->
                     </div>
                     <!-- End Features Section -->
                 </div>
             </div>
-
         </div>
 
-        <!-- Team -->
         <div class="max-w-5xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
             <!-- Title -->
             <div class="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
@@ -310,160 +268,110 @@
             <!-- End Title -->
 
             <!-- Grid -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 md:gap-12">
-                <div class="text-center">
-                    <img class="rounded-full size-24 mx-auto"
-                        src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                        alt="Avatar">
-                    <div class="mt-2 sm:mt-4">
-                        <h3 class="font-medium text-gray-800">
-                            David Forren
-                        </h3>
-                        <p class="text-sm text-gray-600">
-                            Ketua Umum
-                        </p>
+            <div>
+                <!-- Row 1: 5 Members -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-8">
+                    <div class="text-center">
+                        <img class="rounded-full w-24 h-24 mx-auto object-cover" src="assets/img/ketum.jpeg"
+                            alt="Avatar">
+                        <div class="mt-2 sm:mt-4">
+                            <h3 class="font-medium text-gray-800">Juvinto</h3>
+                            <p class="text-sm text-gray-600">Ketua Umum</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <img class="rounded-full w-24 h-24 mx-auto object-cover" src="assets/img/wakil1.jpeg"
+                            alt="Avatar">
+                        <div class="mt-2 sm:mt-4">
+                            <h3 class="font-medium text-gray-800">Bernardo Jati W.</h3>
+                            <p class="text-sm text-gray-600">Wakil Ketua Umum 1</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <img class="rounded-full w-24 h-24 mx-auto object-cover" src="assets/img/wakil2.jpeg"
+                            alt="Avatar">
+                        <div class="mt-2 sm:mt-4">
+                            <h3 class="font-medium text-gray-800">Amelia Aurora</h3>
+                            <p class="text-sm text-gray-600">Wakil Ketua Umum 1</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <img class="rounded-full w-24 h-24 mx-auto object-cover" src="assets/img/sekum.jpeg"
+                            alt="Avatar">
+                        <div class="mt-2 sm:mt-4">
+                            <h3 class="font-medium text-gray-800">Melinda Gloria</h3>
+                            <p class="text-sm text-gray-600">Sekretaris Umum</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <img class="rounded-full w-24 h-24 mx-auto object-cover" src="assets/img/bendum.jpeg"
+                            alt="Avatar">
+                        <div class="mt-2 sm:mt-4">
+                            <h3 class="font-medium text-gray-800">Tannia</h3>
+                            <p class="text-sm text-gray-600">Bendahara Umum</p>
+                        </div>
                     </div>
                 </div>
-                <!-- End Col -->
 
-                <div class="text-center">
-                    <img class="rounded-full size-24 mx-auto"
-                        src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                        alt="Avatar">
-                    <div class="mt-2 sm:mt-4">
-                        <h3 class="font-medium text-gray-800">
-                            Amil Evara
-                        </h3>
-                        <p class="text-sm text-gray-600">
-                            Wakil Ketua Umum
-                        </p>
+                <!-- Row 2: 6 Members -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-8 mt-10">
+                    <div class="text-center">
+                        <img class="rounded-full w-24 h-24 mx-auto object-cover" src="assets/img/bakti.jpeg"
+                            alt="Avatar">
+                        <div class="mt-2 sm:mt-4">
+                            <h3 class="font-medium text-gray-800">Metta Angellina</h3>
+                            <p class="text-sm text-gray-600">Koor. Bakti</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <img class="rounded-full w-24 h-24 mx-auto object-cover" src="assets/img/humas.jpeg"
+                            alt="Avatar">
+                        <div class="mt-2 sm:mt-4">
+                            <h3 class="font-medium text-gray-800">Griselda Y.</h3>
+                            <p class="text-sm text-gray-600">Koor. HuMas</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <img class="rounded-full w-24 h-24 mx-auto object-cover" src="assets/img/inven.jpeg"
+                            alt="Avatar">
+                        <div class="mt-2 sm:mt-4">
+                            <h3 class="font-medium text-gray-800">Hanna Padma</h3>
+                            <p class="text-sm text-gray-600">Koor. Inventaris</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <img class="rounded-full w-24 h-24 mx-auto object-cover" src="assets/img/pusdi.jpeg"
+                            alt="Avatar">
+                        <div class="mt-2 sm:mt-4">
+                            <h3 class="font-medium text-gray-800">Shevina V.</h3>
+                            <p class="text-sm text-gray-600">Koor. PusDiKes</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <img class="rounded-full w-24 h-24 mx-auto object-cover" src="assets/img/banat.jpeg"
+                            alt="Avatar">
+                        <div class="mt-2 sm:mt-4">
+                            <h3 class="font-medium text-gray-800">Michelle P. M.</h3>
+                            <p class="text-sm text-gray-600">Koor. BaNat</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <img class="rounded-full w-24 h-24 mx-auto object-cover" src="assets/img/mulmed.jpeg"
+                            alt="Avatar">
+                        <div class="mt-2 sm:mt-4">
+                            <h3 class="font-medium text-gray-800">Vinny Angelina</h3>
+                            <p class="text-sm text-gray-600">Koor. Multimedia</p>
+                        </div>
                     </div>
                 </div>
-                <!-- End Col -->
-
-                <div class="text-center">
-                    <img class="rounded-full size-24 mx-auto"
-                        src="https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                        alt="Avatar">
-                    <div class="mt-2 sm:mt-4">
-                        <h3 class="font-medium text-gray-800">
-                            Ebele Egbuna
-                        </h3>
-                        <p class="text-sm text-gray-600">
-                            Sekretaris
-                        </p>
-                    </div>
-                </div>
-                <!-- End Col -->
-
-                <div class="text-center">
-                    <img class="rounded-full size-24 mx-auto"
-                        src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                        alt="Avatar">
-                    <div class="mt-2 sm:mt-4">
-                        <h3 class="font-medium text-gray-800">
-                            Maria Powers
-                        </h3>
-                        <p class="text-sm text-gray-600">
-                            Bendahara
-                        </p>
-                    </div>
-                </div>
-                <!-- End Col -->
-
-                <div class="text-center">
-                    <img class="rounded-full size-24 mx-auto"
-                        src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                        alt="Avatar">
-                    <div class="mt-2 sm:mt-4">
-                        <h3 class="font-medium text-gray-800">
-                            Delia Pawelke
-                        </h3>
-                        <p class="text-sm text-gray-600">
-                            Koordinator Bakti
-                        </p>
-                    </div>
-                </div>
-                <!-- End Col -->
-
-                <div class="text-center">
-                    <img class="rounded-full size-24 mx-auto"
-                        src="https://images.unsplash.com/photo-1624224971170-2f84fed5eb5e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                        alt="Avatar">
-                    <div class="mt-2 sm:mt-4">
-                        <h3 class="font-medium text-gray-800">
-                            Tom Lowry
-                        </h3>
-                        <p class="text-sm text-gray-600">
-                            Koordinator HuMas
-                        </p>
-                    </div>
-                </div>
-                <!-- End Col -->
-
-                <div class="text-center">
-                    <img class="rounded-full size-24 mx-auto"
-                        src="https://images.unsplash.com/photo-1579017331263-ef82f0bbc748?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                        alt="Avatar">
-                    <div class="mt-2 sm:mt-4">
-                        <h3 class="font-medium text-gray-800">
-                            Louise Donadieu
-                        </h3>
-                        <p class="text-sm text-gray-600">
-                            Koordinator Inventaris
-                        </p>
-                    </div>
-                </div>
-                <!-- End Col -->
-
-                <div class="text-center">
-                    <img class="rounded-full size-24 mx-auto"
-                        src="https://images.unsplash.com/photo-1514222709107-a180c68d72b4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                        alt="Avatar">
-                    <div class="mt-2 sm:mt-4">
-                        <h3 class="font-medium text-gray-800">
-                            Jeff Fisher
-                        </h3>
-                        <p class="text-sm text-gray-600">
-                            Koordinator PusDiKes
-                        </p>
-                    </div>
-                </div>
-                <!-- End Col -->
-
-                <div class="text-center">
-                    <img class="rounded-full size-24 mx-auto"
-                        src="https://images.unsplash.com/photo-1602452920335-6a132309c7c8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                        alt="Avatar">
-                    <div class="mt-2 sm:mt-4">
-                        <h3 class="font-medium text-gray-800">
-                            Sophia Harrington
-                        </h3>
-                        <p class="text-sm text-gray-600">
-                            Koordinator BaNat
-                        </p>
-                    </div>
-                </div>
-                <!-- End Col -->
-
-                <div class="text-center">
-                    <img class="rounded-full size-24 mx-auto"
-                        src="https://images.unsplash.com/photo-1515621061946-eff1c2a352bd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=320&h=320&q=80"
-                        alt="Avatar">
-                    <div class="mt-2 sm:mt-4">
-                        <h3 class="font-medium text-gray-800">
-                            Christina Kray
-                        </h3>
-                        <p class="text-sm text-gray-600">
-                            Koordinator Multimedia
-                        </p>
-                    </div>
-                </div>
-                <!-- End Col -->
             </div>
             <!-- End Grid -->
         </div>
-        <!-- End Team -->
+
+
+
+
+
     </main>
 
     <x-footers></x-footers>

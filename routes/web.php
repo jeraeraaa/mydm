@@ -125,7 +125,13 @@ Route::group(['middleware' => 'auth'], function () {
     // Resource routes untuk controller di BackendKegiatan
     Route::resource('kategori-kegiatan', KategoriKegiatanController::class);
     Route::resource('kegiatan', KegiatanController::class);
+
+    Route::get('/detail-kegiatan/laporan', [DetailKegiatanController::class, 'laporanDetailKegiatan'])->name('detail-kegiatan.laporan');
+    Route::get('/detail-kegiatan/download/pdf', [DetailKegiatanController::class, 'downloadPdf'])->name('detail-kegiatan.download.pdf');
+    Route::get('/detail-kegiatan/download/excel', [DetailKegiatanController::class, 'downloadExcel'])->name('detail-kegiatan.download.excel');
+
     Route::resource('detail-kegiatan', DetailKegiatanController::class);
+
     Route::resource('materi', MateriController::class);
     Route::resource('pembicara', PembicaraController::class);
     Route::resource('absensi', AbsensiController::class);

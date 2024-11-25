@@ -6,6 +6,11 @@
             <div class="card-header pb-0">
                 <h5 class="mb-0">Detail Persetujuan Peminjaman</h5>
                 <p class="text-sm">Informasi detail peminjaman yang menunggu persetujuan.</p>
+                <div>
+                    <a href="{{ route('persetujuan.index') }}" class="btn btn-secondary mb-3">
+                        <i class="fas fa-arrow-left me-2"></i>Kembali ke Daftar Persetujuan
+                    </a>
+                </div>
             </div>
             <div class="card-body">
                 <!-- Informasi Peminjam -->

@@ -11,8 +11,8 @@
                     </div>
 
                     <div class="text-right">
-                        <a href="{{ route('alat.laporan') }}" class="btn bg-gradient-info btn-sm mb-0">
-                            <i class="fas fa-file-alt me-2"></i> Laporan Alat
+                        <a href="{{ route('detail-kegiatan.laporan') }}" class="btn bg-gradient-info btn-sm mb-0">
+                            <i class="fas fa-file-alt me-2"></i> Laporan Detail Kegiatan
                         </a>
                     </div>
                 </div>

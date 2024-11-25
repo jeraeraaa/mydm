@@ -1,7 +1,7 @@
 @extends('mydm')
 @section('title', 'Contact - myDM')
 @section('content')
-    <main class="relative isolate px-6 pt-12 lg:px-8 bg-gray-50">
+    <main class="relative isolate px-6 pt-8 lg:px-8 bg-gray-50">
         <!-- Contact -->
         <div class="max-w-7xl px-4 lg:px-6  py-12 lg:py-24 mx-auto">
             <div class="mb-6 sm:mb-10 max-w-3xl text-center mx-auto">
@@ -14,8 +14,7 @@
                 <!-- Image Section -->
                 <div class="aspect-w-16 aspect-h-6 lg:aspect-h-14 overflow-hidden bg-gray-100 rounded-2xl">
                     <img class="group-hover:scale-105 group-focus:scale-105 transition-transform duration-500 ease-in-out object-cover rounded-2xl"
-                        src="https://images.unsplash.com/photo-1572021335469-31706a17aaef?q=80&w=560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        alt="Gambar Kontak">
+                        src="/assets/img/dwpp.jpeg" alt="Gambar Kontak">
                 </div>
                 <!-- End Image Section -->
 

@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\DetailKegiatanExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DetailKegiatanController extends Controller
 {
@@ -198,5 +201,77 @@ class DetailKegiatanController extends Controller
             Log::error("Failed to delete detail kegiatan: " . $e->getMessage());
             return back()->withErrors(['error' => 'Gagal menghapus detail kegiatan.']);
         }
+    }
+
+    public function laporanDetailKegiatan(Request $request)
+    {
+        $user = Auth::guard('anggota')->user();
+        if ($user->role && ($user->role->name === 'super_user' || $user->role->name === 'admin')) {
+            // Query awal
+            $query = DetailKegiatan::select(
+                'id_detail_kegiatan',
+                'nama_detail_kegiatan',
+                'tanggal_mulai',
+                'tanggal_selesai',
+                'waktu_mulai',
+                'waktu_selesai',
+                'lokasi'
+            );
+
+            // Filter berdasarkan tanggal mulai dan tanggal selesai
+            if ($request->filled('tanggal_mulai') && $request->filled('tanggal_selesai')) {
+                $query->whereBetween('tanggal_mulai', [
+                    $request->tanggal_mulai,
+                    $request->tanggal_selesai
+                ]);
+            } elseif ($request->filled('tanggal_mulai')) {
+                $query->where('tanggal_mulai', '>=', $request->tanggal_mulai);
+            } elseif ($request->filled('tanggal_selesai')) {
+                $query->where('tanggal_mulai', '<=', $request->tanggal_selesai);
+            }
+
+            // Dapatkan hasil query
+            $detailKegiatan = $query->orderBy('tanggal_mulai', 'asc')->get();
+
+            return view('backend-kegiatan.detail-kegiatan.laporan', compact('detailKegiatan'));
+        } else {
+            abort(403, 'Akses Ditolak');
+        }
+    }
+
+    public function downloadPdf(Request $request)
+    {
+        // Query data sesuai filter
+        $query = DetailKegiatan::select(
+            'id_detail_kegiatan',
+            'nama_detail_kegiatan',
+            'tanggal_mulai',
+            'tanggal_selesai',
+            'waktu_mulai',
+            'waktu_selesai',
+            'lokasi'
+        );
+
+        if ($request->filled('tanggal_mulai') && $request->filled('tanggal_selesai')) {
+            $query->whereBetween('tanggal_mulai', [
+                $request->tanggal_mulai,
+                $request->tanggal_selesai
+            ]);
+        } elseif ($request->filled('tanggal_mulai')) {
+            $query->where('tanggal_mulai', '>=', $request->tanggal_mulai);
+        } elseif ($request->filled('tanggal_selesai')) {
+            $query->where('tanggal_mulai', '<=', $request->tanggal_selesai);
+        }
+
+        $detailKegiatan = $query->orderBy('tanggal_mulai', 'asc')->get();
+
+        // Render ke PDF
+        $pdf = PDF::loadView('backend-kegiatan.detail-kegiatan.pdf', compact('detailKegiatan'));
+        return $pdf->download('laporan_detail_kegiatan.pdf');
+    }
+
+    public function downloadExcel(Request $request)
+    {
+        return Excel::download(new DetailKegiatanExport($request), 'laporan_detail_kegiatan.xlsx');
     }
 }
