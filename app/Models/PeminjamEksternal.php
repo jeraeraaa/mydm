@@ -13,7 +13,7 @@ class PeminjamEksternal extends Model
     protected $primaryKey = 'id_peminjam_eksternal';
     public $incrementing = false;
     protected $keyType = 'string';
-
+    public $timestamps = false;
 
     // Kolom yang dapat diisi (mass assignable)
     protected $fillable = [

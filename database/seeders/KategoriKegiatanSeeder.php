@@ -15,13 +15,13 @@ class KategoriKegiatanSeeder extends Seeder
         DB::table('kategori_kegiatan')->insert([
             [
                 'nama_kategori' => 'BPH',
-                'created_at' => now(),
-                'updated_at' => now(),
+                // 'created_at' => now(),
+                // 'updated_at' => now(),
             ],
             [
                 'nama_kategori' => 'Program Kerja',
-                'created_at' => now(),
-                'updated_at' => now(),
+                // 'created_at' => now(),
+                // 'updated_at' => now(),
             ],
         ]);
     }

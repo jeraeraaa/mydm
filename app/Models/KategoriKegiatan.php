@@ -12,6 +12,7 @@ class KategoriKegiatan extends Model
     protected $table = 'kategori_kegiatan';
     protected $primaryKey = 'id_kategori_kegiatan';
     public $incrementing = true;
+    public $timestamps = false;
     protected $fillable = [
         'nama_kategori',
     ];

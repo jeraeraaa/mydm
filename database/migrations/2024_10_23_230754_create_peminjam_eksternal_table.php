@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('id_prodi', 3); // Foreign key untuk program_studi
             $table->string('nama');
             $table->string('organisasi');
-            $table->timestamps();
+            // $table->timestamps();
 
             // Foreign key constraint untuk menghubungkan ke tabel program_studi
             $table->foreign('id_prodi')->references('id_prodi')->on('program_studi')->onDelete('cascade');

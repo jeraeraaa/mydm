@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_pembicara')->nullable(); // Foreign key ke pembicara (boleh null jika tidak wajib)
             $table->string('nama_materi');
             $table->text('deskripsi_materi')->nullable(); // Menggunakan tipe text untuk deskripsi yang lebih panjang
-            $table->timestamps();
+            // $table->timestamps();
 
             // Relasi ke detail_kegiatan
             $table->foreign('id_detail_kegiatan')->references('id_detail_kegiatan')->on('detail_kegiatan')->onDelete('cascade');

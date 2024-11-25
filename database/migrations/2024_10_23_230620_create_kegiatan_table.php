@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_kategori_kegiatan');
             $table->string('nama_kegiatan');
             $table->text('deskripsi_kegiatan')->nullable();
-            $table->timestamps();
+            // $table->timestamps();
 
             // Foreign Key ke tabel kategori kegiatan
             $table->foreign('id_kategori_kegiatan')->references('id_kategori_kegiatan')->on('kategori_kegiatan')->onDelete('cascade');

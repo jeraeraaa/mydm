@@ -29,6 +29,7 @@ class Alat extends Model
     // Key ini bukan auto-incrementing karena kita pakai custom format
     public $incrementing = false;
     protected $keyType = 'string';
+    public $timestamps = false;
 
     /**
      * Boot method for model events.

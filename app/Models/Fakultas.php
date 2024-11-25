@@ -12,6 +12,7 @@ class Fakultas extends Model
     protected $table = 'fakultas';
     protected $primaryKey = 'id_fakultas';
     protected $fillable = ['nama_fakultas'];
+    public $timestamps = false;
 
     public function prodi()
     {

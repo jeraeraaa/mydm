@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('anggota', function (Blueprint $table) {
             $table->string('id_anggota', 10)->primary(); // NIM sebagai primary key
             $table->string('id_prodi', 3); // 3 digit pertama dari NIM sebagai kode prodi
-            $table->foreignId('id_role')->nullable()->constrained('roles')->onDelete('set null'); // Foreign key ke tabel roles
             $table->string('nama_anggota', 255);
             $table->string('email')->unique();
             $table->string('password');

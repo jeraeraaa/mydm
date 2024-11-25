@@ -13,6 +13,7 @@ class Anggota extends Authenticatable
     protected $primaryKey = 'id_anggota';
     public $incrementing = false; // Karena id_anggota bukan auto-increment
     protected $keyType = 'string';
+    public $timestamps = false;
 
     protected $hidden = [
         'password',

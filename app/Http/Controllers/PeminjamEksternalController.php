@@ -15,7 +15,7 @@ class PeminjamEksternalController extends Controller
     public function index()
     {
         $user = Auth::guard('anggota')->user();
-        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'admin') {
+        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'inventaris' || $user->role->name === 'admin') {
             $peminjamEksternal = PeminjamEksternal::with('program_studi')->get();
             $programStudi = ProgramStudi::all();
             return view('peminjam-eksternal.index', compact('peminjamEksternal', 'programStudi'));
@@ -30,7 +30,7 @@ class PeminjamEksternalController extends Controller
     public function store(Request $request)
     {
         $user = Auth::guard('anggota')->user();
-        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'admin') {
+        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'admin' || $user->role->name === 'inventaris') {
             $request->validate([
                 'id_peminjam_eksternal' => 'required|string|max:10|unique:peminjam_eksternal',
                 'nama' => 'required|string|max:255',
@@ -66,7 +66,7 @@ class PeminjamEksternalController extends Controller
     public function edit($id)
     {
         $user = Auth::guard('anggota')->user();
-        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'admin') {
+        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'admin' || $user->role->name === 'inventaris') {
             $borrower = PeminjamEksternal::findOrFail($id);
             $programStudi = ProgramStudi::all();
             return view('peminjam-eksternal.edit', compact('borrower', 'programStudi'));
@@ -81,7 +81,7 @@ class PeminjamEksternalController extends Controller
     public function update(Request $request, $id)
     {
         $user = Auth::guard('anggota')->user();
-        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'admin') {
+        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'admin' || $user->role->name === 'inventaris') {
             $request->validate([
                 'nama' => 'required|string|max:255',
                 'organisasi' => 'required|string|max:255',
@@ -117,7 +117,7 @@ class PeminjamEksternalController extends Controller
     public function destroy($id)
     {
         $user = Auth::guard('anggota')->user();
-        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'admin') {
+        if ($user->role && $user->role->name === 'super_user' || $user->role->name === 'admin' || $user->role->name === 'inventaris') {
             $borrower = PeminjamEksternal::findOrFail($id);
             $borrower->delete();
 

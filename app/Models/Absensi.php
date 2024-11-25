@@ -11,6 +11,7 @@ class Absensi extends Model
 
     protected $table = 'absensi'; // Nama tabel
     protected $primaryKey = 'id_absensi'; // Primary key
+    public $timestamps = false;
 
     /**
      * Kolom yang dapat diisi melalui mass assignment.

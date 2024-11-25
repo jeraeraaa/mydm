@@ -15,7 +15,7 @@ class CreateKetuaUmumTable extends Migration
             $table->id('id_ketum');
             $table->string('id_anggota', 10); // Menambahkan kolom id_anggota sebagai foreign key
             $table->year('tahun_jabatan');
-            $table->timestamps();
+            // $table->timestamps();
 
             // Menambahkan foreign key constraint
             $table->foreign('id_anggota')->references('id_anggota')->on('anggota')->onDelete('cascade');

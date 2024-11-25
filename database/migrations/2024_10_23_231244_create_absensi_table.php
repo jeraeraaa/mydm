@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_pengunjung')->nullable(); // Nullable untuk absensi anggota
             $table->unsignedBigInteger('id_detail_kegiatan');
             $table->timestamp('waktu_masuk')->default(DB::raw('CURRENT_TIMESTAMP')); // Beri nilai default
-            $table->timestamps();
+            // $table->timestamps();
 
             // Foreign key ke tabel anggota (opsional)
             $table->foreign('id_anggota')->references('id_anggota')->on('anggota')->onDelete('cascade');

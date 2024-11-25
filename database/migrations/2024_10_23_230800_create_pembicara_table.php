@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_pembicara');
             $table->string('nama_pembicara');
             $table->string('kontak_pembicara');
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 

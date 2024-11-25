@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('id_prodi', 3)->primary(); // 3 digit pertama dari NIM sebagai kode prodi
             $table->unsignedBigInteger('id_fakultas');
             $table->string('nama_prodi');
-            $table->timestamps();
+            // $table->timestamps();
 
             $table->foreign('id_fakultas')->references('id_fakultas')->on('fakultas')->onDelete('cascade');
         });

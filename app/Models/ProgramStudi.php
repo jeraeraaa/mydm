@@ -13,6 +13,7 @@ class ProgramStudi extends Model
     protected $primaryKey = 'id_prodi';
     public $incrementing = false; // Menambahkan untuk memastikan id_prodi tidak auto-incrementing
     protected $keyType = 'string';
+    public $timestamps = false;
 
     protected $fillable = [
         'id_fakultas',

@@ -11,6 +11,7 @@ class Kegiatan extends Model
     // Tentukan primary key custom
     protected $primaryKey = 'id_kegiatan';
     public $incrementing = true;
+    public $timestamps = false;
     protected $keyType = 'int';
 
     protected $fillable = ['id_kategori_kegiatan', 'nama_kegiatan', 'deskripsi_kegiatan'];

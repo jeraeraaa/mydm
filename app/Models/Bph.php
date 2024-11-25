@@ -12,6 +12,7 @@ class Bph extends Model
     protected $primaryKey = 'id_bph';
     public $incrementing = false;
     protected $keyType = 'string';
+    public $timestamps = false;
 
     protected $fillable = [
         'id_bph',
@@ -21,5 +22,9 @@ class Bph extends Model
     public function kegiatan()
     {
         return $this->hasMany(DetailKegiatan::class, 'id_bph', 'id_bph');
+    }
+    public function bph()
+    {
+        return $this->hasMany(Alat::class, 'id_bph', 'id_bph');
     }
 }

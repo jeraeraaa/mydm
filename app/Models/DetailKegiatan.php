@@ -46,4 +46,8 @@ class DetailKegiatan extends Model
     {
         return $this->hasMany(Materi::class, 'id_detail_kegiatan');
     }
+    public function absensi()
+    {
+        return $this->hasMany(Absensi::class, 'id_detail_kegiatan');
+    }
 }

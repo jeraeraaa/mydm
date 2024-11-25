@@ -25,9 +25,9 @@
             <x-mobile-menu></x-mobile-menu>
         </header>
 
-        <main class="pt-16">
-            <div class="container mx-auto px-4">
-                <h1 class="text-2xl font-bold mb-4">@yield('title')</h1>
+        <main>
+            <div>
+                <h1>@yield('title')</h1>
                 @yield('content')
             </div>
         </main>

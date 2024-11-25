@@ -23,7 +23,7 @@ return new class extends Migration
             $table->time('waktu_selesai');
             $table->string('lokasi');
             $table->string('foto')->nullable();
-            $table->timestamps();
+            // $table->timestamps();
 
             // Foreign Key ke tabel kegiatan
             $table->foreign('id_kegiatan')->references('id_kegiatan')->on('kegiatan')->onDelete('cascade');

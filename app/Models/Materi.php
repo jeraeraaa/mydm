@@ -18,7 +18,7 @@ class Materi extends Model
         'id_detail_kegiatan',
         'id_pembicara'
     ];
-
+    public $timestamps = false;
     /**
      * Relasi ke model Pembicara.
      * Setiap materi memiliki satu pembicara.

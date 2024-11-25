@@ -1,162 +1,169 @@
-@extends('layouts.app')
-
+@extends('mydm')
+@section('title', 'Register - myDM')
 @section('content')
-    <div class="font-[sans-serif] bg-white w-full min-h-screen flex items-center justify-center p-0 m-0">
-        <div class="items-center w-full h-full max-w-screen-xl mx-auto pt-100">
-            <!-- Bagian Form -->
-            <form method="POST" action="{{ route('register') }}"
-                class="w-full flex flex-col justify-center px-12 py-16 bg-white h-full" enctype="multipart/form-data">
-                @csrf
+    <main class="relative isolate px-6 pt-16 lg:px-8 bg-gray-50">
+        <div class="font-[sans-serif] bg-white w-full min-h-screen flex items-center justify-center p-0 m-0">
+            <div class="items-center w-full h-full max-w-screen-xl mx-auto pt-100">
+                <!-- Bagian Form -->
+                <form method="POST" action="{{ route('register') }}"
+                    class="w-full flex flex-col justify-center px-12 py-16 bg-white h-full" enctype="multipart/form-data">
+                    @csrf
 
-                <div class="mb-8">
-                    <h3 class="text-gray-800 text-3xl font-bold">Create an account</h3>
-                </div>
-
-                <div class="space-y-6">
-                    <!-- NIM Field -->
-                    <div>
-                        <label class="text-gray-800 text-sm mb-2 block">NIM</label>
-                        <input id="id_anggota" name="id_anggota" type="text" required
-                            class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
-                            placeholder="Enter NIM" value="{{ old('id_anggota') }}" />
-                        <div id="nimError" class="text-red-500 text-sm"></div>
-                        @error('id_anggota')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
+                    <div class="mb-8">
+                        <h3 class="text-gray-800 text-3xl font-bold">Create an account</h3>
                     </div>
 
-                    <!-- Nama Field -->
-                    <div>
-                        <label class="text-gray-800 text-sm mb-2 block">Nama Lengkap</label>
-                        <input id="nama_anggota" name="nama_anggota" type="text" required
-                            class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
-                            placeholder="Enter full name" value="{{ old('nama_anggota') }}" />
-                        <div id="namaError" class="text-red-500 text-sm"></div>
-                        @error('nama_anggota')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
+                    <div class="space-y-6">
+                        <!-- NIM Field -->
+                        <div>
+                            <label class="text-gray-800 text-sm mb-2 block">NIM</label>
+                            <input id="id_anggota" name="id_anggota" type="text" required
+                                class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
+                                placeholder="Enter NIM" value="{{ old('id_anggota') }}" />
+                            <div id="nimError" class="text-red-500 text-sm"></div>
+                            @error('id_anggota')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <!-- Nama Field -->
+                        <div>
+                            <label class="text-gray-800 text-sm mb-2 block">Nama Lengkap</label>
+                            <input id="nama_anggota" name="nama_anggota" type="text" required
+                                class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
+                                placeholder="Enter full name" value="{{ old('nama_anggota') }}" />
+                            <div id="namaError" class="text-red-500 text-sm"></div>
+                            @error('nama_anggota')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <!-- Email Field -->
+                        <div>
+                            <label class="text-gray-800 text-sm mb-2 block">Email</label>
+                            <input id="email" name="email" type="email" required
+                                class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
+                                placeholder="Enter email" value="{{ old('email') }}" />
+                            <div id="emailError" class="text-red-500 text-sm"></div>
+                            @error('email')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <!-- Password Field -->
+                        <div>
+                            <label class="text-gray-800 text-sm mb-2 block">Password</label>
+                            <input name="password" type="password" required
+                                class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
+                                placeholder="Enter password" />
+                            <div id="passwordError" class="text-red-500 text-sm"></div>
+                            @error('password')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <!-- Confirm Password Field -->
+                        <div>
+                            <label class="text-gray-800 text-sm mb-2 block">Confirm Password</label>
+                            <input name="password_confirmation" type="password" required
+                                class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
+                                placeholder="Confirm password" />
+                            <div id="confirmPasswordError" class="text-red-500 text-sm"></div>
+                        </div>
+
+                        <!-- No HP Field -->
+                        <div>
+                            <label class="text-gray-800 text-sm mb-2 block">Nomor HP</label>
+                            <input id="no_hp" name="no_hp" type="text" required
+                                class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
+                                placeholder="Enter phone number" value="{{ old('no_hp') }}" />
+                            <div id="noHpError" class="text-red-500 text-sm"></div>
+                            @error('no_hp')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <!-- Tanggal Lahir Field -->
+                        <div>
+                            <label class="text-gray-800 text-sm mb-2 block">Tanggal Lahir</label>
+                            <input id="tanggal_lahir" name="tanggal_lahir" type="date" required
+                                class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
+                                value="{{ old('tanggal_lahir') }}" />
+                            <div id="tanggalLahirError" class="text-red-500 text-sm"></div>
+                            @error('tanggal_lahir')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <!-- Jenis Kelamin Field -->
+                        <div>
+                            <label class="text-gray-800 text-sm mb-2 block">Jenis Kelamin</label>
+                            <select name="jenis_kelamin" required
+                                class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md">
+                                <option value="L" {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-laki
+                                </option>
+                                <option value="P" {{ old('jenis_kelamin') == 'P' ? 'selected' : '' }}>Perempuan
+                                </option>
+                            </select>
+                            @error('jenis_kelamin')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <!-- Alamat Field -->
+                        <div>
+                            <label class="text-gray-800 text-sm mb-2 block">Alamat</label>
+                            <textarea name="alamat" required
+                                class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
+                                placeholder="Enter address">{{ old('alamat') }}</textarea>
+                            @error('alamat')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <!-- Foto Profil Field -->
+                        <div>
+                            <label class="text-gray-800 text-sm mb-2 block">Foto Profil (Optional)</label>
+                            <input name="foto_profil" type="file"
+                                class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
+                                accept="image/*" />
+                            @error('foto_profil')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
                     </div>
 
-                    <!-- Email Field -->
-                    <div>
-                        <label class="text-gray-800 text-sm mb-2 block">Email</label>
-                        <input id="email" name="email" type="email" required
-                            class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
-                            placeholder="Enter email" value="{{ old('email') }}" />
-                        <div id="emailError" class="text-red-500 text-sm"></div>
-                        @error('email')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
+                    <!-- Submit Button -->
+                    <div class="mt-12">
+                        <button type="submit"
+                            class="w-full py-3 px-4 tracking-wider text-sm rounded-md text-white bg-orange-500 hover:bg-orange-800 focus:outline-none">
+                            Create an account
+                        </button>
                     </div>
 
-                    <!-- Password Field -->
-                    <div>
-                        <label class="text-gray-800 text-sm mb-2 block">Password</label>
-                        <input name="password" type="password" required
-                            class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
-                            placeholder="Enter password" />
-                        <div id="passwordError" class="text-red-500 text-sm"></div>
-                        @error('password')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
-                    </div>
+                    <!-- Pesan Sukses atau Error -->
+                    @if (session('success'))
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+                            role="alert">
+                            <strong class="font-bold">Success!</strong>
+                            <span class="block sm:inline">{{ session('success') }}</span>
+                        </div>
+                    @elseif(session('error'))
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                            role="alert">
+                            <strong class="font-bold">Error!</strong>
+                            <span class="block sm:inline">{{ session('error') }}</span>
+                        </div>
+                    @endif
 
-                    <!-- Confirm Password Field -->
-                    <div>
-                        <label class="text-gray-800 text-sm mb-2 block">Confirm Password</label>
-                        <input name="password_confirmation" type="password" required
-                            class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
-                            placeholder="Confirm password" />
-                        <div id="confirmPasswordError" class="text-red-500 text-sm"></div>
-                    </div>
-
-                    <!-- No HP Field -->
-                    <div>
-                        <label class="text-gray-800 text-sm mb-2 block">Nomor HP</label>
-                        <input id="no_hp" name="no_hp" type="text" required
-                            class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
-                            placeholder="Enter phone number" value="{{ old('no_hp') }}" />
-                        <div id="noHpError" class="text-red-500 text-sm"></div>
-                        @error('no_hp')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <!-- Tanggal Lahir Field -->
-                    <div>
-                        <label class="text-gray-800 text-sm mb-2 block">Tanggal Lahir</label>
-                        <input id="tanggal_lahir" name="tanggal_lahir" type="date" required
-                            class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
-                            value="{{ old('tanggal_lahir') }}" />
-                        <div id="tanggalLahirError" class="text-red-500 text-sm"></div>
-                        @error('tanggal_lahir')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <!-- Jenis Kelamin Field -->
-                    <div>
-                        <label class="text-gray-800 text-sm mb-2 block">Jenis Kelamin</label>
-                        <select name="jenis_kelamin" required
-                            class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md">
-                            <option value="L" {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                            <option value="P" {{ old('jenis_kelamin') == 'P' ? 'selected' : '' }}>Perempuan</option>
-                        </select>
-                        @error('jenis_kelamin')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <!-- Alamat Field -->
-                    <div>
-                        <label class="text-gray-800 text-sm mb-2 block">Alamat</label>
-                        <textarea name="alamat" required
-                            class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
-                            placeholder="Enter address">{{ old('alamat') }}</textarea>
-                        @error('alamat')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <!-- Foto Profil Field -->
-                    <div>
-                        <label class="text-gray-800 text-sm mb-2 block">Foto Profil (Optional)</label>
-                        <input name="foto_profil" type="file"
-                            class="text-gray-800 bg-white border border-gray-300 w-full text-sm px-4 py-2.5 rounded-md"
-                            accept="image/*" />
-                        @error('foto_profil')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
-                <div class="mt-12">
-                    <button type="submit"
-                        class="w-full py-3 px-4 tracking-wider text-sm rounded-md text-white bg-orange-500 hover:bg-orange-800 focus:outline-none">
-                        Create an account
-                    </button>
-                </div>
-
-                <!-- Pesan Sukses atau Error -->
-                @if (session('success'))
-                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
-                        role="alert">
-                        <strong class="font-bold">Success!</strong>
-                        <span class="block sm:inline">{{ session('success') }}</span>
-                    </div>
-                @elseif(session('error'))
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                        <strong class="font-bold">Error!</strong>
-                        <span class="block sm:inline">{{ session('error') }}</span>
-                    </div>
-                @endif
-
-                <p class="text-gray-800 text-sm mt-6 text-center">Already have an account? <a href="{{ route('login') }}"
-                        class="text-orange-500 font-semibold hover:underline ml-1">Login here</a></p>
-            </form>
+                    <p class="text-gray-800 text-sm mt-6 text-center">Already have an account? <a
+                            href="{{ route('login') }}" class="text-orange-500 font-semibold hover:underline ml-1">Login
+                            here</a></p>
+                </form>
+            </div>
         </div>
-    </div>
+    </main>
+    <x-footers></x-footers>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

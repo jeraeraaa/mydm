@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('bph', function (Blueprint $table) {
             $table->string('id_bph', 2)->primary();
             $table->string('nama_divisi_bph');
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 

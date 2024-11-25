@@ -12,7 +12,8 @@ class DetailPeminjamanAlat extends Model
 
     protected $table = 'detail_peminjaman_alat';
     protected $primaryKey = 'id_detail_peminjaman_alat';
-
+    public $timestamps = false;
+    
     protected $fillable = [
         'peminjamable_id',
         'peminjamable_type',

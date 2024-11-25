@@ -11,7 +11,8 @@ class Pengunjung extends Model
 
     protected $table = 'pengunjung'; // Nama tabel
     protected $primaryKey = 'id_pengunjung'; // Primary key
-
+    public $timestamps = false;
+    
     /**
      * Kolom yang dapat diisi melalui mass assignment.
      */

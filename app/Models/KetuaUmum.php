@@ -14,6 +14,7 @@ class KetuaUmum extends Model
 
     protected $keyType = 'int';
     public $incrementing = true;
+    public $timestamps = false;
 
     protected $fillable = [
         'id_ketum',

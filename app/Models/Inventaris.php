@@ -15,6 +15,7 @@ class Inventaris extends Model
     // Key ini bukan auto-incrementing karena kita pakai id anggota atau nim
     public $incrementing = false;
     protected $keyType = 'string';
+    public $timestamps = false;
 
     // Kolom yang dapat diisi (mass assignable)
     protected $fillable = [

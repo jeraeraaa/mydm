@@ -25,15 +25,11 @@ return new class extends Migration
             $table->string('kondisi_setelah_dikembalikan')->nullable(); // Kondisi alat setelah dikembalikan (nullable)
             $table->text('catatan')->nullable(); // Catatan tambahan (nullable)
             $table->integer('jumlah_dipinjam'); // Jumlah alat yang dipinjam
-            $table->timestamps(); // Timestamps
+            // $table->timestamps(); // Timestamps
 
             // Foreign key relationships
             $table->foreign('id_alat')->references('id_alat')->on('alat')->onDelete('cascade');
             $table->foreign('id_persetujuan_ketum')->references('id_persetujuan_ketum')->on('persetujuan_ketum')->onDelete('cascade');
-        });
-
-        // Tambahkan foreign key constraint untuk `id_inventaris` di migrasi terpisah
-        Schema::table('detail_peminjaman_alat', function (Blueprint $table) {
             $table->foreign('id_inventaris')->references('id_inventaris')->on('inventaris')->onDelete('cascade');
         });
     }

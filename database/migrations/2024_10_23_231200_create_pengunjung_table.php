@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_pengunjung'); // Primary Key
             $table->string('nama_pengunjung'); // Nama Pengunjung
             $table->string('no_hp', 15)->unique(); // Nomor HP (unik)
-            $table->timestamps();
+            // $table->timestamps();
         });
         
     }

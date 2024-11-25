@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_ketum')->nullable();
             $table->enum('status_persetujuan', ['menunggu', 'disetujui', 'ditolak'])->default('menunggu');
             $table->text('catatan')->nullable();
-            $table->timestamps();
+            // $table->timestamps();
 
             $table->foreign('id_ketum')->references('id_ketum')->on('ketua_umum')->onDelete('cascade');
         });

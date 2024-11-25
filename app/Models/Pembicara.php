@@ -17,7 +17,8 @@ class Pembicara extends Model
         'nama_pembicara',
         'kontak_pembicara',
     ];
-
+    public $timestamps = false;
+    
     /**
      * Relasi ke tabel DetailKegiatan.
      * Setiap pembicara berhubungan dengan satu DetailKegiatan.

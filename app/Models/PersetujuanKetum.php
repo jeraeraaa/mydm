@@ -16,6 +16,7 @@ class PersetujuanKetum extends Model
 
     // Primary key bukan integer auto-increment
     public $incrementing = true;
+    public $timestamps = false;
 
     // Tipe primary key
     protected $keyType = 'int';
